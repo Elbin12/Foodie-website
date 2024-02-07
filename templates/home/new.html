@@ -1,0 +1,177 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>home</title>
+
+
+
+{% endblock title%}
+
+{% block another %}
+
+
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for banner in banners %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %} banner-image" style="position: relative; overflow: hidden; z-index: 1;">
+        <img src="/media/{{ banner.image }}" style="width: 100%; height: auto;" class="d-block w-100 " alt="gf">
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="featured-products ">
+            <div class="title d-flex align-items-center">
+                <h5>Featured products</h5>
+            </div>
+            <div class="products">
+            {% for product in products %}
+            <div class="product">
+                <div class="product-img">
+                    <img class="img" src="/media/{{product.product_images.first.image}}" alt="">
+                </div>
+                <div class="detail">
+                    <p>{{product.product_name}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="card-line">
+            <div class="left" onclick="moveCards('left')">
+                <i class="fa-solid fa-angle-left"></i>
+            </div>     
+            <div class="out-card">
+                {% for product in products %}
+                <div class="cards" >
+                    <a href=""><i class="wishlist-icon far fa-heart"></i></a>
+                    <div class="">
+                        <a href=""><img class="image" src="/media/{{product.product_images.first.image}}" alt=""></a>
+                    </div>
+                    <div class="details d-flex flex-column">
+                        <p>{{product.product_name}}</p>
+                        <p>{{product.price}}</p>
+                        <p>rating</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="left">
+                <i class="fas fa-angle-right" onclick="moveCards('right')"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+        <div class="col-lg-3 mb-4">
+            <div class="card product-card">
+                <!-- Display the first product image -->
+                <a href="{% url 'products:product' product.uid %}">
+                    <img src="/media/{{product.product_images.first.image}}" class="card-img-top product-image" alt="{{ product.product_name }}">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{product.product_name}}</h5>
+                    <p class="card-text description">{{product.product_description}}</p>
+                    <h5 class="card-text">₹{{product.price}}</h5>
+                    <p onclick="add_to_cart('{{product.uid}}')" class="btn btn-primary">Add to Cart</p>
+                    <a href="{% url 'products:product' product.uid %}" class="btn btn-primary">Buy Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <h2 class="text-center mt-4 mb-5">Browse Categories</h2>
+        {% for category in categories %}
+        <div class="col-md-4">
+            <div class="card category-card">
+                    <!-- Display the first product image -->
+                    <img src="/media/{{category.category_image }}" class="card-img-top category-image"  alt="{{ category.category_name }}">
+    
+                <div class="card-body">
+                    <h5 class="card-title">{{ category.category_name }}</h5>
+                    <p class="card-text"> Starts From ₹{{category.starts_from}}</p>
+                    <a href="{% url 'products:categories' category.uid %}"><button class="btn btn-primary" >View </button></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- The actual snackbar -->
+<div id="snackbar">Some text some message..</div>
+
+
+
+
+<section class=" featured-products">
+    
+    <div class="row">
+        <!-- Sample Product Card -->
+        
+        <!-- Add more product cards as needed -->
+    </div>
+</section>
+
+<!-- Browse Categories Section -->
+<section class="container browse-categories">
+    
+    <div class="row">
+        <!-- Sample Category Card -->
+        
+
+        <!-- Add more category cards as needed -->
+    </div>
+</section>
+
+<!-- Footer -->
+
+<script>
+    function moveCards(direction) {
+        const outCard = document.querySelector('.out-card');
+        const cardWidth = document.querySelector('.cards').offsetWidth + 20; // Including margin
+
+        if (direction === 'left') {
+            outCard.style.transform = `translateX(${cardWidth}px)`;
+        } else if (direction === 'right') {
+            outCard.style.transform = `translateX(-${cardWidth}px)`;
+        }
+
+        // Reset the transform after the transition completes
+        setTimeout(() => {
+            outCard.style.transform = 'translateX(0)';
+        }, 500); // Adjust the duration to match your CSS transition duration
+    }
+</script>
+<script src="{% static 'js/image_zoom.js' %}" type="text/javascript"></script>
+{% endblock another %}

@@ -1,0 +1,155 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+    <title>my coupons</title>
+    <link rel="stylesheet" href="{% static 'css/new_css.css' %}">
+
+    <style>
+        .coupon-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.coupon {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+h4 {
+    color: #333;
+}
+
+p {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+
+.coupon-card {
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-details {
+    flex: 1;
+}
+
+.coupon-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.coupon-description-text {
+    color: #555;
+}
+
+.coupon-validity{
+    color: #878787;
+}
+
+.coupon-validity,
+.view-tc {
+    padding: 10px;
+}
+
+.terms-condition {
+    color: #007bff;
+    cursor: pointer;
+}
+.coupons{
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+    </style>
+{% endblock title %}
+
+{% block another %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'account_sidebar.html' %}
+        <div class=" col-lg-8 col-md-8 col-sm-12">
+            <div class="coupons mb-5">
+                <h4 class="mb-4">Available Coupons</h4>
+            {% if coupons %}
+            {% for coupon in coupons %}
+            <div class="row coupon-card">
+                <div class="col-md-8">
+                    <div class="coupon-details">
+                        <div class="coupon-title">{{coupon.coupon_code}}</div>
+                        <div class="coupon-description-text">Get extra <span style="font-weight: bold;">₹ {{coupon.discount_price}} off</span> on purchasing products above ₹{{coupon.minimum_amount}} (price inclusive of cashback/coupon)</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="coupon-validity">
+                        <span>{{coupon.expire_date}}</span>
+                    </div>
+                    <div class="view-tc">
+                        <span class="terms-condition">View T&amp;C</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor  %}
+            {% else %}
+            <h3>You have no coupons</h3>
+            {% endif %}
+            </div>
+
+            {% if applied_coupons %}
+            <div class="coupons">
+                <h4 class="mb-4">Applied Coupons</h4>
+            {% for coupon in applied_coupons %}
+            <div class="row coupon-card">
+                <div class="col-md-8">
+                    <div class="coupon-details">
+                        <div class="coupon-title">{{coupon.coupon.coupon_code}}</div>
+                        <div class="coupon-description-text">Get extra <span style="font-weight: bold;">₹ {{coupon.coupon.discount_price}} off</span> on purchasing products above ₹{{coupon.coupon.minimum_amount}} (price inclusive of cashback/coupon)</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="coupon-validity">
+                        <span>Applied</span>
+                    </div>
+                    <div class="view-tc">
+                        <span class="terms-condition">View T&amp;C</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor  %}
+            </div>
+            {% else %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div id="snackbar">Some text some message..</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <script>alert('{{ message }}')</script>
+        {% endfor %}
+    {% endif %}
+
+
+    <script src="{% static 'js/account.js' %}" type="text/javascript"></script>
+{% endblock another %}

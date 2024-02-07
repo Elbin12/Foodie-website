@@ -1,0 +1,94 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    {% endblock %}
+
+
+    {% block content %}
+
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Banner images</h2>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <form method="post" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Select Banner Image</label>
+                                <input type="file" name="banner" class="form-control" id="category" />
+                            </div>
+                            <div class="mb-4">
+                                <span id="categoryError"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_slug" class="form-label">Order</label>
+                                <input type="text"  name="order" class="form-control"/>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">Add Banner Image</button>
+                            </div>
+                            {% for message in messages %}
+                            <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+                            {% endfor %}
+                        </form>
+                    </div>
+                    <div class="table-responsive col-md-9">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Banner</th>
+                                    <th>order</th>
+                                    <th>Status</th>
+                                    <th class="text-end"> Action </th>
+                                </tr>
+                            </thead>
+                            {% for banner in banners %}
+                            <tbody>
+                                <tr>
+                                    <td width="40%">
+                                        <a href="" class="itemside">
+                                            <div class="left">
+                                                <img src="/media/{{banner.image}}" class="img-sm " alt="Userpic">
+                                            </div>
+                                            <div class="info pl-3">
+                                                <h7 class="mb-0 title">{{banner.image}}</h7>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td>{{banner.order}}</td>
+                                    <td>
+                                        {% if profile.user.is_active %}
+                                        <span class="badge rounded-pill alert-success">Active</span>
+                                        {% else %}
+                                        <span class="badge rounded-pill alert-success" style="color: rgb(162, 53, 53);">Inactive</span>
+                                        {% endif %}
+                                        
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'adminpage:delete_banner' banner.uid %}" class="btn btn-sm font-sm btn-light rounded">
+                                            <i class="material-icons md-delete_forever"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table> <!-- table-responsive.// -->
+                    </div>
+                </div>
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+    </section> <!-- content-main end// -->
+</main>
+    
+        
+    {% endblock content %}
+
+
+
+        

@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+<title>signup</title>
+<style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.signup-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 540px;
+    width: 70%;
+    margin: 20px;
+    height: fit-content;
+}
+
+h2 {
+    color: #333;
+}
+
+.label-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.label-container label {
+    width: 48%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group.inline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+.form-group.inline .form-control {
+    width: 100%;
+}
+
+.gender-label {
+    margin-right: 10px;
+}
+
+.form-check-input {
+    margin-top: 0.3rem;
+}
+
+.form-check-label {
+    margin-top: 0.2rem;
+}
+.btn{
+    background-color: #d69857;
+    color: white;
+}
+button {
+    background-color: #e2e6ea;
+    color: #333;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.sign-in-link {
+    margin-top: 20px;
+}
+
+.sign-in-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* Media Query for smaller screens */
+@media screen and (max-width: 768px) {
+
+    .signup-container {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+}
+
+
+.error-message {
+    color: #e40303; /* Red color for error messages */
+    font-size: 0.8rem; /* Adjust font size as needed */
+    margin-top: 5px; /* Add some spacing above the error message */
+}
+</style>
+{% endblock title%}
+
+{% block content %}
+
+
+
+
+
+<div class="signup-wrapper">
+    <div class="signup-container">
+        <form class="signup-form" id="signupForm" action="" method="post" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <h3 class="mb-4">Sign Up</h3>
+            
+            <div class="form-group inline gap-3">
+                <div class="form-group">
+                    <label for="first-name">First Name:</label>
+                    <input type="text" class="form-control" id="first-name" name="first_name" placeholder="Enter your first name">
+                    <span class="error-message" id="first-nameError"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" class="form-control" id="last-name" name="last_name" placeholder="Enter your last name">
+                    <span class="error-message" id="last-nameError"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="gender-label">Gender:</label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" onclick="updateSelectedGender('Male')" name="gender" id="male" value="male">
+                    <label class="form-check-label" for="male">Male</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" onclick="updateSelectedGender('Female')" name="gender" id="female" value="female">
+                    <label class="form-check-label" for="female">Female</label>
+                </div>
+                <input type="hidden" id="selectedGender" name="selectedGender">
+                <span class="error-message" id="genderError"></span>
+            </div>
+
+            <div class="form-group inline gap-3">
+                <div class="form-group ">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="tel" class="form-control" id="email" name="email" placeholder="Enter your email">
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+                </div>
+                
+                <div class="form-group ">
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number:</label>
+                        <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Enter your mobile number">
+                        <span class="error-message" id="mobileError"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                <span class="error-message" id="passwordError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password">
+                <span class="error-message" id="confirm_passwordError"></span>
+            </div>
+
+            <button type="submit" class="btn">Sign Up</button>
+
+            <div class="sign-in-link mt-3">
+                Already have an account? <a href="{% url 'account:login' %}">Sign in now</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/signup.js'%}"></script>
+{% endblock content %}

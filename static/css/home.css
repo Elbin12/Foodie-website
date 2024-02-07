@@ -1,0 +1,451 @@
+body {
+  background-color: #f1f3f6; /* Light background color */
+  color: #333333; /* Dark text color */
+}
+p{
+  font-size: 12px;
+  margin-bottom: 0;
+}
+.navbar{
+  height: 5rem;
+}
+.navbar-brand, .nav-link {
+  color: #333; /* Dark text color for navbar links */
+}
+.nav-item{
+  width: 5rem;
+}
+.navbar-brand:hover, .nav-link:hover {
+  color: #000; /* Hover color for navbar links */
+}
+.nav-icon{
+  width: 3rem;
+}
+.search{
+  border-radius: 30px;
+  border: 0;
+  background-color: #ffffff;
+}
+.search_btn{
+  border-radius: 30px !important;
+}
+.banner img {
+  max-width: 100%;
+  height: auto;
+}
+.banner-image::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px; /* Adjust the height of the gradient overlay as needed */
+}
+.featured-products, .browse-categories {
+  background-color: #fff; /* White background for product and category sections */
+}
+.up{
+  position: relative;
+  top: -250px;
+}
+
+
+/*  first section */
+
+.container-fluid {
+  max-width: 1450px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.card-line {
+  align-items: center;
+  width: 100%;
+  display: flex;
+  padding: 0 !important;
+  background-color: #ffffff;
+  position: relative;
+}
+
+.card-line .out-card{
+  display: flex ;
+  overflow: hidden;
+  padding: 10px;
+  width: 100%;
+  align-items: flex-start;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.cards {
+  margin-right: 20px;
+  width: 15%;
+  max-width: 250px; /* Set a maximum width for the cards */
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.cards:hover {
+  transform: scale(1.05);
+}
+
+.image {
+  width: 100%; /* Make the image fill the container */
+  height: 150px; /* Set a fixed height for all images */
+  object-fit: cover; /* Maintain aspect ratio and cover the container */
+  border-bottom: 1px solid #ddd;
+}
+.wishlist-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  color: #ffffff; /* Adjust color as needed */
+}
+
+.details {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.details p:first-child {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.details p:nth-child(2) {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.details p:nth-child(3) {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.left{
+  display: flex;
+  justify-content: center;
+  font-size: large;
+  color: #dedede;
+  margin: 0;
+  width: 2%;
+  height: 14%;
+  align-items: center;
+  background-color: #eeeeee;
+}
+
+.product-card, .category-card {
+  z-index: 2;
+  width: 242px;
+  height: 348px;
+  align-items: center;
+  padding: 20px;
+}
+.product-image {
+  height: 170px;
+  width: 170px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.description {
+  max-height: 1rem; /* Set the maximum height to 3 lines (adjust as needed) */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Display an ellipsis (...) when the text overflows */
+}
+.card-title{
+  font-size: larger;
+  color: #efaf4e;
+}
+.card-body{
+  flex: 1 1 auto;
+  padding-top: 1rem;
+}
+
+.category-card {
+  height: 90%;
+}
+
+.category-image {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.btn-primary{
+  height: 34px;
+  width: 78px;
+  font-size: x-small;
+}
+
+
+
+/* cart session */
+
+.cart-products{
+  height: 16rem;
+  background-color: aqua;
+}
+
+.cart-price{
+  height: 16rem;
+  background-color: #333333;
+}
+
+
+
+
+/* popup */
+
+#popupContainer {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+.modal-footer .modal-header{
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.popup {
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  margin: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+/* footer  */
+
+.site-footer {
+  padding: 60px 0;
+  margin-top: 40px;
+}
+
+.widget {
+  margin-bottom: 30px;
+}
+
+.widget h3 {
+  font-size: 18px;
+  color: #333;
+}
+
+.widget p {
+  font-size: 14px;
+  color: #777;
+}
+
+.social {
+  padding: 0;
+  list-style: none;
+}
+
+.social li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.social a {
+  display: block;
+  width: 30px;
+  height: 30px;
+  background-color: #333;
+  text-align: center;
+  line-height: 30px;
+  color: #fff;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.social a:hover {
+  background-color: #555;
+}
+
+.links {
+  padding: 0;
+  list-style: none;
+}
+
+.links li {
+  margin-bottom: 10px;
+}
+
+.links a {
+  font-size: 14px;
+  color: #777;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.links a:hover {
+  color: #333;
+}
+
+.copyright {
+  margin-top: 40px;
+}
+
+.small {
+  font-size: 12px;
+  color: #777;
+}
+
+
+/* featured products */
+
+.featured-products{
+  position: relative;
+  height: 18rem;
+  overflow: hidden;
+}
+
+.title{
+  margin: 0 10px;
+  height: 20%;
+}
+
+.products{
+  position: relative;
+  height: 80%;
+}
+
+.products .product{
+  float: left;
+  margin: 0 10px;
+  width: 15%;
+  height: 100%;
+}
+.products .product-img{
+  width: 100%;
+  height: 80%;
+  background-color: #28a745;
+}
+.product-img .img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.detail{
+  height:13%;
+}
+
+/* forgot password */
+
+
+
+.forgot-password-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.forgot-password-container h2 {
+  color: #333;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.forgot-password-btn {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+
+
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: #333; /* Black background color */
+  color: #fff; /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 2; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.showing {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}

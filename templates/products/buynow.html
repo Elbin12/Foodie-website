@@ -1,0 +1,372 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Buy now:{{ product.product_name }}</title>
+
+    <style>
+        .product-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-image {
+      max-width: 200px;
+      max-height: 200px;
+      margin-right: 20px;
+    }
+
+    .product-details {
+      flex: 1;
+    }
+
+    .checkout-section {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .address-section {
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+    }
+
+    .payment-section{
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #fff;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .coupon-container {
+    max-width: 300px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.coupon-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coupon-name {
+    font-size: 12px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.apply-button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.apply-button:hover {
+    background-color: #45a049;
+}
+
+.address-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .address-item {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="radio"] {
+      display: block;
+      height: 25px;
+      width: 25px;
+    }
+
+    .address-detail {
+      cursor: pointer;
+      padding: 10px;
+      border: 1px solid #ddd;
+      display: block;
+      width: 100%;
+      margin-left: 20px;
+      box-sizing: border-box;
+      background-color: #f9f9f9;
+    }
+
+    input[type="radio"]:checked+label {
+      background-color: #e0e0e0;
+      border: 1px solid #bbb;
+    }
+
+    /* Responsive Styles */
+    @media screen and (max-width: 600px) {
+      label {
+        font-size: 14px;
+      }
+    }
+
+    @media screen and (max-width: 400px) {
+      label {
+        font-size: 12px;
+      }
+    }
+    </style>
+{% endblock title %}
+
+{% block another %}
+
+<div class="container">
+    <div class="row">
+      <div class="col-md-8 col-lg-9 mt-5">
+        {% if product %}
+        {% with product=product is_cart=False %}
+        <div class="product-container">
+          <div class="product-image">
+            <img src="/media/{{product.product_images.first.image}}" alt="Product Image" class="img-fluid">
+          </div>
+          <div class="product-details">
+            <h2 id="product_name_{{product.uid}}">{{product.product_name}}</h2>
+            <input type="text" hidden id="count" value="1">
+            <input type="text" id="uid" hidden value="{{product.uid}}">
+            <div class="d-flex"><p style="font-weight: 500;">Price : ₹ </p><p id="price_{{product.uid}}" style="font-weight: 600;">{{product.price}}</p></div>
+            <div class="d-flex"><p style="font-weight: 500;">quantity : </p><p id="quantity_{{product.uid}}" style="font-weight: 600;">1</p></div>
+            <div class="d-flex"><p style="font-weight: 600;"> {{product.product_description}}</p></div>
+            <div class="d-flex"><p style="font-weight: 500; font-size: medium;">Final price : ₹ </p><p id="final_price_{{product.uid}}" name="final_price" style="font-weight: 600; font-size: medium;"> {{product.price}}</p></div>
+          </div>
+        </div>
+        <div class="align-middle d-flex justify-content-center" style="max-width: 170px;">
+          <div class="d-flex flex-row">
+              <button class="btn btn-link px-2" onclick="Down('{{ product.uid }}')">
+                  <i class="fas fa-minus"></i>
+              </button>
+              <input id="qty" min="1" readonly name="qty" data-uid="{{ product.uid }}" value="1"type="number" class="form-control form-control-sm" style="width: 50px;" />
+              <button class="btn btn-link px-2" onclick="Up('{{ product.uid }}')">
+                  <i class="fas fa-plus"></i>
+              </button>
+          </div>
+        </div>
+        {% endwith %}
+        {% else %}
+        <input type="text" hidden name="count" value="{{len}}" id="count">
+        {% for product in cart_items %}
+        <div id="product_row_{{product.product.uid}}">
+          <div class="product-container">
+            <div class="product-image">
+              <img src="/media/{{product.product.product_images.first.image}}" alt="Product Image" class="img-fluid">
+            </div>
+            <div class="product-details">
+              <h2>{{product.product.product_name}}</h2>
+              <div class="d-flex"><p style="font-weight: 500;">Unit price : ₹ </p><p id="price_{{product.product.uid}}" style="font-weight: 600;">{{product.product.price}}</p></div>
+              <div class="d-flex"><p style="font-weight: 500;">quantity : </p><p id="quantity_{{product.product.uid}}" style="font-weight: 600;">{{product.qty}}</p></div>
+              <div class="d-flex"><p style="font-weight: 600;"> {{product.product.product_description}}</p></div>
+              <div class="d-flex"><p style="font-weight: 500; font-size: medium;">Price : ₹ </p><p id="final_price_{{product.product.uid}}" name="final_price" style="font-weight: 600; font-size: medium;"> {{product.price}}</p></div>
+              <i class="fas fa-trash delete_icon" style="color: rgb(216, 55, 55); cursor: pointer;" onclick="del('{{product.product.uid}}')"></i>
+            </div>
+          </div>
+          <div class="align-middle d-flex justify-content-center" style="max-width: 170px; margin-top: 5px; margin-bottom: 5px;">
+            <div class="d-flex flex-row">
+                <button class="btn btn-link px-2" onclick="Down('{{ product.product.uid }}')">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <input id="qty" min="1" readonly name="qty" data-uid="{{ product.product.uid }}" value="{{product.qty}}"type="number" class="form-control form-control-sm" style="width: 50px;" />
+                <button class="btn btn-link px-2" onclick="Up('{{ product.product.uid }}')">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+          </div>
+          <div style="height: 1px; width: 100%; background-color: #bebebe; margin-bottom: 10px;"></div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <h3 id="cart_zero" value="{{len}}"></h3>
+        <div class="checkout-section">
+          <h3>Shipping Address</h3>
+
+            <div class="container">
+              <form>
+                {% for address in addresses %}
+                <ul class="address-list">
+                  <li class="address-item">
+                    <input type="radio" id="address{{ forloop.counter }}"  value="{{ address.uid }}" name="address"
+                      {% if forloop.first %}checked{% endif %}>
+                    <div class="address-detail" data-uid="{{ address.uid }}">
+                      <h6 id="address_name{{ forloop.counter }}">{{ address.name }}</h6>
+                      <h6 id="address_mob{{ forloop.counter }}">{{ address.mobile_number }}</h6>
+                      <p id="address{{ forloop.counter }}">{{ address.address }} {{ address.locality }},{{ address.city }},{{ address.state }},<span
+                          style="font-size: small; font-weight: 600;">{{ address.pincode }}</span></p>
+                    </div>
+                  </li>
+                </ul>
+                {% endfor %}
+              </form>
+            </div>
+          <button class="btn btn-primary" onclick="hide()" >Continue</button>
+        </div>
+
+        <div class="address-section" id="address-section">
+          <h3>Add Another Address</h3>
+          <div class="form-group d-flex">
+            <i onclick="showaddress()" style="font-size: 20px; margin-top: 3px;" class="fa-solid fa-plus"></i>
+            <p onclick="showaddress()"  style="font-size: medium; cursor: pointer; padding-left: 10px;">ADD A NEW ADDRESS</p>
+          </div>
+
+
+            <div class=" d-flex flex-column m-3" id="showaddress" style="display: none !important;" >
+                <div class="mb-2">
+                    <input type="text" name="name" placeholder="Name" id="add_name">
+                    <span id="add_nameError"></span>
+                    <input type="text" name="mobile" id="add_mobile" placeholder="Mobile number" >
+                    <span id="add_mobileError"></span>
+                </div>
+                <div class="mb-2">
+                    <input type="text" name="pincode" placeholder="add_pincode" id="add_pincode">
+                    <span id="add_pincodeError"></span>
+                    <input type="text" name="locality" id="add_locality" placeholder="Locality">
+                    <span id="add_localityError"></span>
+                </div>
+                <textarea class="mb-2" style="height: 3rem;" name="address" id="add_address" cols="30" rows="10" placeholder="Address" ></textarea>
+                <span id="add_addressError"></span>
+                <div class="mb-2">
+                    <input type="text" name="city" placeholder="City" id="add_city">
+                    <span id="add_cityError"></span>
+                    <select name="state" placeholder="select state"  id="add_state">
+                        <option selected>select state</option>
+                        <option>Kerala</option>
+                    </select>
+                    <span id="add_stateError"></span>
+                </div>
+                <div>
+                    <button class="button" type="button" onclick="add_address_validateForm()">Save</button>
+                    <label class="button" onclick="hideaddress()" style="cursor: pointer;" >Cancel</label>
+                </div>
+            </div> 
+
+          {% for address in addresses %}
+          <div class="address" id="address_{{address.uid}}">
+            <h6>{{address.name}}</h6>  
+            <h6>{{address.mobile_number}}</h6>
+            <p>{{address.address}} {{address.locality}},{{address.city}},{{address.state}},<span style="font-size: small; font-weight: 600;">{{address.pincode}}</span></p>
+                      
+            <a style="cursor: pointer;" onclick="editaddress('{{address.uid}}')">edit</a>
+  
+
+              <div class="d-flex flex-column m-3" id="edit_{{address.uid}}" style="display: none !important;">
+                  <div class="mb-2">
+                      <input type="text" name="name" value="{{address.name}}" id="edit_name_{{address.uid}}">
+                      <span id="edit_name_Error{{address.uid}}"></span>
+                      <input type="text" name="mobile" value="{{address.mobile_number}}" id="edit_mobile_{{address.uid}}">
+                      <span id="edit_mobile_{{address.uid}}Error"></span>
+                  </div>
+                  <div class="mb-2">
+                      <input type="text" name="pincode" value="{{address.pincode}}" id="edit_pincode_{{address.uid}}">
+                      <span id="edit_pincode_{{address.uid}}Error"></span>
+                      <input type="text" name="locality" value="{{address.locality}}" id="edit_locality_{{address.uid}}">
+                      <span id="edit_locality_{{address.uid}}Error"></span>
+                  </div>
+                  <textarea class="mb-2" style="height: 3rem;" name="address" id="edit_address_{{address.uid}}" cols="30" rows="10">{{address.address}}</textarea>
+                  <span id="edit_address_{{address.uid}}Error"></span>
+                  <div class="mb-2">
+                      <input type="text" name="city" value="{{address.city}}" id="edit_city_{{address.uid}}">
+                      <span id="edit_city_{{address.uid}}Error"></span>
+                      <select name="state" placeholder="select state" id="edit_state_{{address.uid}}">
+                          <option selected>{{address.state}}</option>
+                          <option>Kerala</option>
+                      </select>
+                      <span id="edit_state_{{address.uid}}Error"></span>
+                  </div>
+                  <div>
+                      <button class="button" type="button" onclick="edit_address_validateForm('{{address.uid}}')">Save</button>
+                      <label class="button" onclick="canceladdress('{{address.uid}}')" style="cursor: pointer;">Cancel</label>
+                  </div>
+              </div>
+
+          </div>
+          {% endfor %}
+        </div>
+        <div class="payment-section" id="payment-section" style="display: none;">
+          <h3>Select payment method</h3>
+          <label for="address">Select payment:</label>
+          <select name="payment" id="payment">
+            <option  selected>select a method</option>
+            <option >Payment</option>
+            <option >COD</option>
+            <option >Wallet</option>
+          </select>
+          <span id="paymentError"></span>
+        </div>
+        <button class="btn btn-primary" type="submit" id="order" onclick="submitData()" style="display: none;" >Order Item</button>
+      </div>
+      <div class="col-md-4 col-lg-3 mt-5">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Summary</h5>
+            <!-- Add checkout summary content here, e.g., total price, items count, etc. -->
+            {% if cart %}
+            <p>Total Items: <span id="totalItems">{{len}}</span></p>
+            <p>Total Price: ₹ <span id="totalPrice">{{cart.total}}</span></p>
+            <p >Discount Price: ₹ <span id="discountPrice">0</span></p>
+            {% else %}
+            <p>Total Items: <span id="totalItems">1</span></p>
+            <p>Total Price: ₹ <span id="totalPrice">{{product.price}}</span></p>
+            <p>Discount Price: ₹ <span id="discountPrice">0</span></p>
+            {% endif %}
+            <!-- Checkout button -->
+          </div> 
+        </div>
+
+
+        <div class="coupon-container">
+          <h5>Coupons</h5>
+          {% if all_coupons %}
+              {% for coupon_instance in all_coupons %}
+                  <div class="coupon-details">
+                      <p class="coupon-name">{{ coupon_instance.coupon_code }} (₹{{coupon_instance.discount_price}} OFF)</p>
+                      <button class="apply-button" id="coupon_{{coupon_instance.uid}}" onclick="apply_coupon('{{coupon_instance.uid}}')">Apply</button>
+                  </div>
+              {% endfor %}
+          {% else %}
+              <div class="coupon-details">
+                  <p class="coupon-name">You have no coupons</p>
+              </div>
+          {% endif %}
+      </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+<div id="snackbar">Some text some message..</div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <script>alert('{{ message }}')</script>
+        {% endfor %}
+    {% endif %}
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="{% static 'js/account.js' %}" type="text/javascript"></script>
+
+{% endblock another %}

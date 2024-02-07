@@ -1,0 +1,140 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    {% endblock %}
+
+
+    {% block content %}
+
+    <form action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add Coupon</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label" >Coupon code</label>
+                                <input type="text" placeholder="Type here" name="coupon_code" class="form-control" id="coupon_code">
+                            </div>
+                            <div class="mb-4">
+                                <span id="coupon_codeError"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Discount price</label>
+                                <input type="text" name="discount_price" id="discount_price" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <span id="discount_priceError"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Minimum amount</label>
+                                <input type="text" name="min_amount" id="min_amount" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <span id="min_amountError"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">No of coupons</label>
+                                <input type="text" name="no_of_coupons" id="no_of_coupons" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <span id="no_of_couponsError"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">days of expire</label>
+                                <input type="text" name="expire_date" id="expire_date" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <span id="expire_dateError"></span>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div>
+                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
+                    </div>
+                    {% for message in messages %}
+                    <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </form>
+
+    <script>
+        function validateForm() {
+            var coupon_code = document.getElementById('coupon_code').value;
+            var min_amount = document.getElementById('min_amount').value;
+            var discount_price = document.getElementById('discount_price').value;
+            var no_of_coupons = document.getElementById('no_of_coupons').value;
+            var expire_date = document.getElementById('expire_date').value;
+    
+            var coupon_codeError = document.getElementById('coupon_codeError');
+            var min_amountError = document.getElementById('min_amountError');
+            var discount_priceError = document.getElementById('discount_priceError');
+            var no_of_couponsError = document.getElementById('no_of_couponsError');
+            var expire_dateError = document.getElementById('expire_dateError');
+    
+            coupon_codeError.innerHTML = '';
+            min_amountError.innerHTML = '';
+            discount_priceError.innerHTML = '';
+            no_of_couponsError.innerHTML = '';
+            expire_dateError.innerHTML = '';
+    
+            if (coupon_code === "") {
+                coupon_codeError.innerHTML = 'Coupon code is required';
+                return false;
+            }
+
+            if (discount_price === "") {
+                discount_priceError.innerHTML = 'Discount price is required';
+                return false;
+            }
+
+            discount_price = parseFloat(discount_price);
+            if (isNaN(discount_price) || discount_price < 0) {
+                discount_priceError.innerHTML = 'Discount price must be a positive number';
+                return false;
+            }
+    
+            if (min_amount === "") {
+                min_amountError.innerHTML = 'Minimum amount is required';
+                return false;
+            }
+            min_amount = parseFloat(min_amount);
+            if (isNaN(min_amount) || min_amount < 0) {
+                min_amountError.innerHTML = 'Minimum amount must be a positive number';
+                return false;
+            }
+    
+    
+            if (no_of_coupons === "") {
+                no_of_couponsError.innerHTML = 'Number of coupons is required';
+                return false;
+            }
+
+            no_of_coupons = parseFloat(no_of_coupons);
+            if (isNaN(no_of_coupons) || no_of_coupons < 0) {
+                no_of_couponsError.innerHTML = 'Number of coupons must be a positive number';
+                return false;
+            }
+    
+            if (expire_date === "") {
+                expire_dateError.innerHTML = 'Expire date is required';
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+        
+    {% endblock content %}
+     

@@ -1,0 +1,180 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>wallet</title>
+<link rel="stylesheet" href="{% static 'css/new_css.css' %}">
+<style>
+
+
+
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.wallet-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-side {
+    width: 35%;
+}
+
+.right-side {
+    width: 55%;
+}
+
+.balance-box {
+    border: 2px solid #dddddd;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+
+#balance {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2ecc71;
+    margin: 10px 0;
+}
+
+#user-details {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.action-section {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+#transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#transaction-table th,
+#transaction-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+
+</style>
+
+
+{% endblock title%}
+
+{% block another %}
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'account_sidebar.html' %}
+        <div class="col-lg-8 col-md-3 col-sm-12">
+            <div class="card-body">
+                
+                <main>
+                    <div class="wallet-container">
+                        <div class="left-side">
+                            <div id="user-details" class="mb-5">
+                                <h6>{{user.first_name}} {{user.last_name}}</h6>
+                                <h6>{{user}}</h6>
+                            </div>
+                            <div class="balance-box mb-5">
+                                <h5>Your Balance</h2>
+                                <p id="balance">{{wallet.balance}}</p>
+                            </div>
+                            <section class="action-section">
+                                <h5>Add Amount to Wallet</h5>
+                                <div>
+                                    <label for="amount">Amount:</label>
+                                    <input type="number" min="1" id="amount" placeholder="Enter amount">
+                                </div>
+                                <button id="add-amount-button" onclick="payment()">Add Amount</button>
+                            </section>
+                        </div>
+                
+                        <div class="right-side">
+                            <section class="transaction-section">
+                                <h4 class="mb-5">Recent Transactions</h4>
+                                <table id="transaction-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="table-heading">Transaction id</th>
+                                            <th class="table-heading">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for transaction in transactions %}
+                                            <tr>
+                                                <td>{{ transaction.uid }}</td>
+                                                {% with type=transaction.transaction_type %}
+                                                {% if type == 'DEPOSIT' %}
+                                                <td style="color: #2ecc71;">+ {{ transaction.amount }}</td>
+                                                {% else %}
+                                                <td style="color: #cc432e;">- {{ transaction.amount }}</td>
+                                                {% endif %}
+                                                {% endwith %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </section>
+                        </div>
+                    </div>
+                </main>
+
+
+
+            </div> <!-- card-body end// -->
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="{% static 'js/wallet.js' %}" type="text/javascript" ></script>
+
+{% endblock another %}

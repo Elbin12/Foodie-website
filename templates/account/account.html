@@ -1,0 +1,198 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>profile</title>
+<link rel="stylesheet" href="{% static 'css/new_css.css' %}">
+
+{% endblock title%}
+
+{% block another %}
+
+<!-- <div class="container">
+    <div class="row">
+        {% include 'account_sidebar.html' %}
+        <div class="col-lg-8 col-md-8 col-sm-12">
+            <div class="profile-details d-flex flex-column">
+                <h4>Personal Information</h4>
+                <div class="d-flex justify-content-between" style="width: 90%;">
+                    <label for="">username</label>
+                    <p onclick="edit('username')" id="username" style="color: #0d6efd; cursor: pointer; font-size: medium; text-decoration: underline;">Edit</p>
+                </div>
+                <form action="" method="post" onsubmit="return validate()" class="d-flex">
+                    {% csrf_token %}
+                    <input type="text" readonly class="edit_username" name="username" id="user" value="{{profile.user.username}}">
+                    <button id="usernamebutton" type="submit" style="background-color: #0d6efd; height: 50px; margin-top: 0; color: white; border: none; display: none;">save</button>
+                    <span id="usernameError"></span>
+                </form>
+                
+                <div class="d-flex justify-content-between" style="width: 90%;">
+                    <label for="">email</label>
+                    <p onclick="edit('email')" id="email" style="color: #0d6efd; cursor: pointer; font-size: medium; text-decoration: underline;">Edit</p>
+                </div>
+                <form action="" method="post" onsubmit="return validate()" class="d-flex">
+                    {% csrf_token %}
+                    <input type="text" readonly class="edit_email" name="email" id="email_valid" value="{{profile.user.email}}">
+                    <button id="emailbutton" type="submit" style="background-color: #0d6efd; height: 50px; margin-top: 0; color: white; border: none; display: none;">save</button>
+                    <span id="emailError"></span>
+                </form>
+                <div class="d-flex justify-content-between" style="width: 90%;">
+                    <label for="">mobile</label>
+                    <p onclick="edit('mobile')" id="mobile" style="color: #0d6efd; cursor: pointer; font-size: medium; text-decoration: underline;">Edit</p>
+                </div>
+                <form action="" method="post" onsubmit="return validate()"  class="d-flex">
+                    {% csrf_token %}
+                    <input type="text" readonly class="edit_mobile" name="mobile" id="mobile_vaild" value="{{profile.mobile_number}}">
+                    <button id="mobilebutton" type="submit" style="background-color: #0d6efd; height: 50px; margin-top: 0; color: white; border: none; display: none;">save</button>
+                    <span id="mobileError"></span>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'account_sidebar.html' %}
+        <div class="col-lg-8 col-md-8 col-sm-12">
+            <div class="profile-container">
+                <h2>Profile Information</h2>
+            
+                <form action="" method="post" onsubmit="return validate()">
+                    {% csrf_token %}
+                    <!-- First Name -->
+                    <div class="form-group">
+                        <label for="first-name">First Name:</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{user.first_name}}" readonly>
+                        <span id="first_nameError" class="error"></span>
+                    </div>
+                
+                    <!-- Last Name -->
+                    <div class="form-group">
+                        <label for="last-name">Last Name:</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{user.last_name}}" readonly>
+                        <span id="last_nameError" class="error"></span>
+                    </div>
+                
+                    <!-- Gender -->
+
+                    <div id="genderDisplay" class="form-group">
+                        <label class="gender-label">Gender:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="male"  checked disabled>
+                            <label class="form-check-label" for="male">{{ profile.gender }}</label>
+                        </div>
+                    </div>
+
+                    <div id="genderEdit" class="form-group" style="display: none;">
+                        <label class="gender-label">Gender:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" onclick="updateSelectedGender('Male')" name="gender" id="male" value="male">
+                            <label class="form-check-label" for="male" >Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" onclick="updateSelectedGender('Female')" name="gender" id="female" value="female">
+                            <label class="form-check-label" for="female" >Female</label>
+                        </div>
+                        <input type="hidden" id="selectedGender" name="selectedGender" value="{{ profile.gender }}">
+                        <span class="error-message" id="genderError"></span>
+                    </div>
+                    <!-- Mobile Number -->
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number:</label>
+                        <input type="tel" class="form-control" id="mobile" name="mobile" value="{{profile.mobile_number}}" readonly>
+                        <span id="mobileError" class="error"></span>
+                    </div>
+                
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <p>To edit the email, you need to verify the email first</p>
+                        <div class="d-flex">
+                            <input type="email" class="form-control" id="email" name="email" value="{{profile.user.email}}" readonly>
+                            <button id="sentOTP" type="button" onclick="sent()" class="btn" name="sentOTP" style="display: none; font-size: 10px; width: 10%; padding: 0;">sent OTP</button>
+
+                            <input class="form-control" name="OTP" style="display: none; margin-left: 8px;" id="OTP" placeholder="Enter OTP" type="text">
+                            <span id="OTPError"></span>
+                            <button type="button" onclick="sentotp()" class="btn" style="display: none; font-size: 10px; width: 20%; padding: 0;" id="submit"> Submit </button>
+            
+                        </div>
+                        <p id="emailError" style="color: green;" class="error"></p>
+                    </div>
+                
+                    <div class="d-flex">
+                        <button type="submit" class="btn" id="save" style="display: none;">Save Changes</button>
+                        <button type="button" onclick="enableEdit()" id="edit" class="btn">Edit Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+    function validate(){
+        var first_name = document.getElementById('first_name').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var mobile = document.getElementById('mobile').value.trim();
+    var last_name = document.getElementById('last_name').value.trim();
+    var gender = document.querySelector('input[name="gender"]:checked');
+
+
+    var genderError = document.getElementById('genderError');
+    var last_nameError = document.getElementById('last_nameError');
+    var first_nameError = document.getElementById('first_nameError');
+    var emailError = document.getElementById('emailError');
+    var mobileError = document.getElementById('mobileError');
+
+
+
+    // Hide gender display, show gender edit
+    document.getElementById('genderDisplay').style.display = 'none';
+    document.getElementById('genderEdit').style.display = 'block';
+
+
+    genderError.innerHTML = '';
+    last_nameError.innerHTML = '';
+    first_nameError.innerHTML = '';
+    emailError.innerHTML = '';
+    mobileError.innerHTML = '';
+
+    if (first_name === "") {
+        first_nameError.innerHTML = 'First name is required';
+        return false;
+    }
+    var name_match=/[A-Z]/g;
+    if (!first_name.match(name_match)){
+        first_nameError.innerHTML = 'First name only have alphabets';
+        return false;
+    }
+
+    if (!gender) {
+        genderError.innerHTML = 'Gender is required';
+        return false;
+    }
+
+    if (email === "") {
+        emailError.innerHTML = 'Email is required';
+        return false;
+    }
+
+    if (mobile === "") {
+        mobileError.innerHTML = 'Mobile is required';
+        return false;
+    }
+
+    return true;
+}
+</script>
+
+<script src="{% static 'js/account.js' %}" type="text/javascript" ></script>
+
+{% endblock another %}

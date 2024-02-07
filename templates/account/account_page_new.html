@@ -1,0 +1,56 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>example</title>
+<link rel="stylesheet" href="{% static 'css/new_css.css' %}">
+
+
+
+{% endblock title%}
+
+{% block another %}
+
+<main>
+    <div class="row">
+        <div class="col-md-3 sidebar-container">
+            <div class="user-session">
+                <h3>Welcome, User!</h3>
+            </div>
+            <div class="sidebar">
+                <h5>Account</h5>
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-user"></i> <span class="icon-text">Profile Information</span></a></li>
+                    <li><a href="#"><i class="fas fa-address-book"></i> <span class="icon-text">Manage Address</span></a></li>
+                    <li><a href="#"><i class="fas fa-id-card"></i> <span class="icon-text">PAN Card Information</span></a></li>
+                </ul>
+                <h5>Payments</h5>
+                <ul>
+                    <li><a href="#"><i class="fas fa-gift"></i> <span class="icon-text">Gift Cards</span></a></li>
+                    <li><a href="#"><i class="fas fa-credit-card"></i> <span class="icon-text">Saved UPI</span></a></li>
+                    <li><a href="#"><i class="fas fa-credit-card"></i> <span class="icon-text">Saved Cards</span></a></li>
+                </ul>
+                <h5>My Stuff</h5>
+                <ul>
+                    <li><a href="#"><i class="fas fa-gift"></i> <span class="icon-text">My Coupons</span></a></li>
+                    <li><a href="#"><i class="fas fa-star"></i> <span class="icon-text">My Reviews & Ratings</span></a></li>
+                    <li><a href="#"><i class="fas fa-bell"></i> <span class="icon-text">All Notifications</span></a></li>
+                    <li><a href="#"><i class="fas fa-heart"></i> <span class="icon-text">My Wishlist</span></a></li>
+                </ul>
+                <h5>Settings</h5>
+                <ul>
+                    <li><a href="#"><i class="fas fa-cogs"></i> <span class="icon-text">Account Settings</span></a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span class="icon-text">Logout</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="profile-session">
+            <h4>Profile Information</h4>
+            <p>Your profile details go here.</p>
+        </div>
+    </div>
+</main>
+
+<script src="{% static 'js/account.js' %}" type="text/javascript" ></script>
+
+{% endblock another %}

@@ -1,0 +1,292 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-session {
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #f8f9fa; /* Same as the sidebar */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.sidebar {
+    width: 100%; /* Adjust as needed */
+    padding: 20px;
+    background-color: #f8f9fa; /* Grey color */
+    border-radius: 5px;
+}
+
+
+.sidebar h6 {
+    margin-bottom: 20px;
+    color: #495057; /* Dark grey color */
+    font-weight: 520; /* Adjusted font weight to normal */
+    background-color: #e2e3e5; /* Light grey background */
+    padding: 8px; /* Adjust padding as needed */
+    border-radius: 5px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 20px;
+}
+
+.user-session a{
+    text-decoration: none;
+    color: #4a4a4a; /* Grey color */
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #6c757d; /* Grey color */
+}
+
+.sidebar a:hover {
+    color: #495057; /* Dark grey color */
+}
+
+.sidebar .active {
+    background-color: #cce5ff;
+    border-radius: 5px;
+}
+.sidebar a .icon-text {
+    margin-left: 10px; /* Adjust the spacing as needed */
+}
+
+.icon-text{
+    font-size: 13px;
+}
+
+.profile-session {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f8f9fa; /* Same as the sidebar */
+    border-radius: 5px;
+}
+
+.main-content {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.navbar a {
+    color: white;
+    margin-left: 10px;
+}
+
+.navbar a:hover {
+    color: #ccc;
+}
+
+@media (max-width: 767.98px) {
+    .main-content {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+}
+
+
+
+
+
+/* PROFILE INFORMATION */
+
+
+.profile-container {
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #e7a262;
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+h2 {
+    margin-bottom: 40px; /* Add margin to create space below the heading */
+}
+
+
+/* MANAGE ADDRESSSES */
+
+
+.address-detail {
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h4 {
+    margin: 0;
+    color: #007bff;
+}
+
+.border {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 15px;
+}
+
+.add-new {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.add-new i {
+    font-size: 20px;
+    color: #28a745;
+}
+
+.add-new p {
+    font-size: medium;
+}
+
+.add-form .form-group,
+.edit-form .form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    color: #333;
+}
+
+input, textarea,select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+}
+
+.save {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.cancel {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.address {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.address h6 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.address p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.address a {
+    text-decoration: none;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.address a:hover {
+    text-decoration: underline;
+}
+
+.edit-form {
+    margin-top: 10px;
+}
+
+@media (max-width: 576px) {
+    .address-detail {
+        padding: 10px;
+    }
+    input, textarea {
+        font-size: 14px;
+    }
+}

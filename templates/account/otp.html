@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+<title>otp verification</title>
+
+
+<style>
+    body {
+        background-color: #f4f4f4;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .otp-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        text-align: center;
+        width: 400px;
+        height: 258px;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .verify-btn {
+        background-color: #4caf50;
+        color: #fff;
+    }
+
+    .resend-btn {
+        background-color: #3498db;
+        color: #fff;
+        margin-left: 10px;
+    }
+</style>
+
+
+
+{% endblock title%}
+
+{% block content %}
+<!-- <strong>CONFRIM YOUR ACCOUNT</strong> -->
+
+<!-- <p>check the inbox of your email - {{email}} - and enter the otp<p> -->
+
+<!-- <body>
+    <form action="{% url 'account:otp_verification' %}" method="post">
+        {% csrf_token %}
+        Enter the otp : <input type="text" placeholder="enter the otp" name="otp"><br><br>
+        <button type="submit">verify</button>
+        {% for message in messages %}
+            <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+        {% endfor %}
+    </form> -->
+
+    <div class="otp-container">
+        <h2>OTP Verification</h2>
+        <p>check the inbox of your email - {{email}} - and enter the otp</p>
+        <form action="{% url 'account:otp_verification' %}" method="post">
+            {% csrf_token %}
+            <input type="text" placeholder="Enter OTP" id="otpInput" name="otp" maxlength="6" required>
+            {% for message in messages %}
+                <span style="color: rgb(142, 66, 66);" id="error" class="mb-2">{{message}}</span>
+            {% endfor %}
+            <p style="color: rgb(142, 66, 66);" id="error" class="mb-2"></p>
+            <div class="btn-container">
+                <button type="submit" class="btn verify-btn">Verify</button>
+                <button type="button" class="btn resend-btn" onclick="resendOTP('{{email}}')">Resend OTP</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+        
+        function resendOTP(email){
+
+            emailerror=document.getElementById('error')
+
+            fetch("/account/resend/", {
+
+                method: 'post',
+                headers: {
+                // 'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+                },
+                body : JSON.stringify({ 'email':email})
+            })
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                if (data.success){
+                    emailerror.textContent=data.success;
+                }
+            })
+
+        }
+    </script>
+{% endblock content %}

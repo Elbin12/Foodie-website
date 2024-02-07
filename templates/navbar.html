@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>login</title>
+<link rel="stylesheet" href="{% static 'css/home.css' %}" >
+{% endblock title%}
+
+
+
+{% block content %}
+<!-- <div class="container main-container d-flex flex-column" style="min-height: 100vh; display: flex; flex-direction: column;">
+    <nav class=" navbar navbar-expand-lg navbar-light" style="background-color: #eab863;">
+        <a class="navbar-brand" href="#">Foodie</a>
+        <div class="mx-auto"> -->
+            <!-- Search bar with border-radius -->
+            <!-- <form class="form-inline d-flex flex-row">
+                <input class="form-control rounded-pill" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success rounded-pill ml-2 custom-search-btn" style="margin-left: 10px;" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Cart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Wishlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Signup</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Account</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="flex-grow-1" style="flex-grow: 1;"> -->
+        <!-- Middle Content Goes Here 
+    </div>
+
+    <footer class="text-center" style="background-color: #eab863; color: #fff; padding: 20px 0; text-align: center;">
+        <div>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#">Contact Us</a></li>
+                <li class="list-inline-item"><a href="#">About Us</a></li>
+                <li class="list-inline-item"><a href="#">Help</a></li>
+            </ul>
+        </div>
+    </footer>
+</div>-->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
+      <form class="d-flex">
+        <input class=" me-2 search" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success search_btn" type="submit">Search</button>
+      </form>
+      <div>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-icon">
+            <a style="color: rgb(55, 55, 55);" href="{% url 'account:account' %}"><i class="fa-regular fa-user"></i></a>
+            
+          </li>
+          <li class="nav-icon">
+            <a style="color: rgb(55, 55, 55);" href=""><i class="fa-regular fa-heart"></i></a>
+          </li>
+          <li class="nav-icon">
+            <a style="color: rgb(55, 55, 55);" href="{% url 'account:cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
+          </li>
+        </ul>
+      </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              {% if not is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{%url 'account:login' %}">Log In</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{%url 'account:app_logout' %}">Log out</a>
+              </li>
+              {% endif %}
+              <!-- <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li> -->
+            </ul>
+        </div>
+      </div>
+    </div>
+</nav>
+{% block another %}
+{% endblock another %}
+<div class="site-footer bg-light">
+  <div class="container">
+
+    <div class="row justify-content-between">
+      <div class="col-lg-4">
+        <div class="widget">
+          <h3 class="line-top">About</h3>
+          <p class="mb-5">Delectus voluptatum distinctio quos eius excepturi sunt pariatur, aut, doloribus officia ea molestias beatae laudantium, quam odio ipsum veritatis est maiores velit quasi blanditiis et natus accusamus itaque. Veniam quidem debitis odio amet voluptas distinctio dicta placeat! Et pariatur doloremque ea veniam. Separated they live.</p>
+
+        </div>
+        <div class="widget">
+          <h3 class="line-top">Connect with us</h3>
+          <ul class="social list-unstyled mb-5">
+            <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="row">
+          <div class="col-12">
+            <div class="widget">
+              <h3 class="line-top">Navigations</h3>
+            </div>
+          </div>
+          <div class="col-6 col-sm-6 col-md-4">
+            <div class="widget">
+              <ul class="links list-unstyled">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Work</a></li>
+                <li><a href="#">Process</a></li>
+                <li><a href="#">About Us</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-6 col-sm-6 col-md-4">
+            <div class="widget">
+              <ul class="links list-unstyled">
+                <li><a href="#">Press</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="#">Privacy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-6 col-sm-6 col-md-4">
+            <div class="widget">
+              <ul class="links list-unstyled">
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Process</a></li>
+                <li><a href="#">About Us</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %} 

@@ -1,0 +1,155 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Product Details: {{ product.product_name }}</title>
+    <link rel="stylesheet" href="{% static 'css/product.css' %}">
+{% endblock title %}
+
+{% block another %}
+    <!-- <div class="container product-details-container mt-5">
+        <div class="row"> -->
+            <!-- Product Image on the Left -->
+            <!-- <div class="col-md-6">
+                <div class="product-image-container">
+                    <img src="/media/{{ product.product_images.first.image }}" alt="{{ product.product_name }}" class="img-fluid product-image">
+                </div>
+            </div> -->
+            <!-- Product Info on the Right -->
+            <!-- <div class="col-md-6 product-info">
+                <div class="product-details">
+                    <h2>{{ product.product_name }}</h2>
+                    <p class="font-weight-bold">Price: ${{ product.price }}</p>
+                    <p>{{ product.product_description }}</p> -->
+                    <!-- Add to Cart and Buy Now Buttons -->
+                    <!-- <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary mr-2">Add to Cart</button>
+                        <button class="btn btn-success">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Similar Products Section -->
+        <!-- <div class="row mt-5">
+            <div class="col-md-12">
+                <h3>Similar Products</h3>
+                <div class="row"> -->
+                    <!-- Sample Similar Product Card -->
+                    <!-- {% for similar_product in similar_products %}
+                        <div class="col-md-3 mb-4">
+                            <div class="card">
+                                <div class="product-image-container">
+                                    <img src="/media/{{ similar_product.product_images.first.image }}" alt="{{ similar_product.product_name }}" class="card-img-top img-fluid product-image">
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ similar_product.product_name }}</h5>
+                                    <p class="card-text font-weight-bold">Price: ${{ similar_product.price }}</p>
+                                    <button class="btn btn-primary">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="container">
+        <div class="row top">
+            <div class="col-lg-6 col-md-6 border">
+                <div class="image">
+                    <div id="lens"></div>
+                    <img class="img" id="big_{{product.uid}}" onmouseover="passUid('{{product.uid}}')" src="/media/{{product.product_images.first.image}}" alt="">
+                </div>
+                <div class="d-flex other_images">
+                    {% for image in other_images %}
+                    <img id="small_{{image}}"onmouseover="" onclick="showImage('{{image}}', '{{product.uid}}')" src="/media/{{image}}" style="border: none;" alt="">
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 details">
+                <div class="product-details">
+                    <div class="text">
+                        <h2 for="">{{product.product_name}}</h2>
+                    </div>
+                    <div class="">
+                        <h2 for="" id="product_price"> ₹ {{product.price}}</h4>
+                    </div>
+                    <div class="">
+                        <h2 for="">{{product.rating}}</h4>
+                    </div>
+                    <div class="">
+                        <h6 for="">{{product.product_description}}</h6>
+                    </div>
+                    <div class="d-flex">
+                        <div class="btn">
+                            {% if flat %}
+                            <a onclick="add_to_cart('{{product.uid}}')" >Add to cart</a>
+                            {% else %}
+                            <a onclick="notUser('Please Login to access cart')">Add to cart</a>
+                            {% endif %}
+                        </div>
+                        <div class="btn">
+                            {% if flat  %}
+                            <a href="{% url 'products:checkout' product.uid %}">Buy Now</a>
+                            {% else %}
+                            <a onclick="notUser('Please Login to Buy items')">Buy Now</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {% for value in values %}
+                            
+                        {% endfor %}
+                        {% for value in values %}
+                        <input type="radio" name="selectedValue" value="{{ value }}" onclick="changevalue('{{ value }}', '{{product.uid}}')">
+                        <label>{{ value.value }}</label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <h3>Similiar products</h3>
+            <div class="similiar_products">
+                {% for product in products %}
+                <div class="similiar_product">
+                    <div class="product__image">
+                        <!-- Your product image here -->
+                        <img src="/media/{{product.product_images.first.image}}" alt="Product 1">
+                    </div>
+                    <div class="product__info">
+                        <h3 class="product__name">{{product.product_name}}</h3>
+                        <p class="product__price">₹ {{product.price}}</p>
+                    </div>
+                </div>
+
+                <!-- Repeat similar structure for other products -->
+                {% endfor %}
+                
+            </div>
+        </div>
+    </div>
+
+    <div id="snackbar">Some text some message..</div>
+    {% if messages %}
+        {% for message in messages %}
+            <script>alert('{{ message }}')</script>
+        {% endfor %}
+    {% endif %}
+    <script>
+        function notUser(message){
+            var x = document.getElementById("snackbar");
+            x.innerHTML=message
+            x.classList.add("showing");
+            setTimeout(function(){ x.classList.remove("showing"); }, 3000);
+        }
+    </script>
+
+    <script src="{% static 'js/image_zoom.js' %}" type="text/javascript"></script>
+{% endblock another %}
+

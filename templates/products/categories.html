@@ -1,0 +1,30 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>categories</title>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+
+
+{% endblock title%}
+
+{% block another %}
+
+<section class="container featured-products">
+    <h2 class="text-center mb-4">Sub Categories of {{categories.category_name}}</h2>
+    <div class="row">
+        <!-- Sample Product Card -->
+        {% for sub in sub_categories %}
+        <div class="col-md-4">
+            <div class="card product-card">
+                <div class="card-body ">
+                    <h5 class="card-title">{{sub.sub_category_name}}</h5>
+                    <a href=""><button class="btn btn-primary" >View Products</button></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- Add more product cards as needed -->
+    </div>
+</section>
+{% endblock another %}

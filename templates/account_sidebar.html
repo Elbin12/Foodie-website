@@ -1,0 +1,35 @@
+
+<div class="col-md-3 sidebar-container">
+    <div class="user-session">
+        <h5>Welcome, {{user.first_name}}</h5>
+    </div>
+    <div class="user-session">
+        <a href="{% url 'account:my_orders' %}">My orders</a>
+    </div>
+    <div class="sidebar">
+        <h6>Account</h6>
+        <ul>
+            <li class="active"><a href="{% url 'account:account' %}"><i class="fas fa-user"></i> <span class="icon-text">Profile Information</span></a></li>
+            <li><a href="{% url 'account:addresses' %}"><i class="fas fa-address-book"></i> <span class="icon-text">Manage Address</span></a></li>
+            <li><a href="#"><i class="fas fa-id-card"></i> <span class="icon-text">PAN Card Information</span></a></li>
+        </ul>
+        <h6>Payments</h6>
+        <ul>
+            <li><a href="#"><i class="fas fa-gift"></i> <span class="icon-text">Gift Cards</span></a></li>
+            <li><a href="#"><i class="fas fa-credit-card"></i> <span class="icon-text">Saved UPI</span></a></li>
+            <li><a href="{% url 'account:wallet' %}"><i class="fas fa-credit-card"></i> <span class="icon-text">wallet</span></a></li>
+        </ul>
+        <h6>My Stuff</h6>
+        <ul>
+            <li><a href="{% url 'account:coupons' %}"><i class="fas fa-gift"></i> <span class="icon-text">My Coupons</span></a></li>
+            <li><a href="#"><i class="fas fa-star"></i> <span class="icon-text">My Reviews & Ratings</span></a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> <span class="icon-text">All Notifications</span></a></li>
+            <li><a href="#"><i class="fas fa-heart"></i> <span class="icon-text">My Wishlist</span></a></li>
+        </ul>
+        <h6>Settings</h6>
+        <ul>
+            <li><a href="#"><i class="fas fa-cogs"></i> <span class="icon-text">Account Settings</span></a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span class="icon-text">Logout</span></a></li>
+        </ul>
+    </div>
+</div>

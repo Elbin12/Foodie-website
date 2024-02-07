@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+<title>login</title>
+<link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+
+
+{% endblock title%}
+
+{% block content %}
+
+
+<section class="content-main mt-80 mb-80">
+    <div class="card mx-auto card-login">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Sign in</h4>
+            <form method="post" onsubmit="return validateForm()">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input class="form-control" name="username" id="username" placeholder="Username or email" type="text">
+                </div> <!-- form-group// -->
+                <div class="mb-3">
+                    <span id="usernameError"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <input class="form-control" name="password" id="password" placeholder="Password" type="password">
+                </div> <!-- form-group// -->
+                <div class="mb-3">
+                    <span id="passwordError"></span>
+                </div>
+                <div class="mb-3">
+                    <a href="#" class="float-end font-sm text-muted">Forgot password?</a>
+                    <label class="form-check">
+                        <input type="checkbox" class="form-check-input" checked="">
+                        <span class="form-check-label">Remember</span>
+                    </label>
+                </div> <!-- form-group form-check .// -->
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-primary w-100"> Login </button>
+                </div> <!-- form-group// -->
+            </form>
+            {% for message in messages %}
+                <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<script src="{% static 'js/login.js'%}?v=1.1"></script>
+{% endblock content %}

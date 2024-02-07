@@ -1,0 +1,257 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>addresses</title>
+<link rel="stylesheet" href="{% static 'css/new_css.css' %}">
+
+<style>
+
+.card-body {
+    padding: 20px;
+}
+
+.table-responsive {
+    margin-top: 1rem;
+    background-color: #d8e4e4;
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+td b{
+    color:rgb(66, 66, 66);
+
+}
+tr{
+    margin-bottom: 40px;
+}
+
+th {
+    color: hsl(0, 0%, 95%); /*rgb(72, 72, 72) the background color to grey */
+}
+
+
+.badge {
+    font-size: 14px;
+}
+
+.btn-md {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #3498db; /* Change the background color to your desired color */
+    color: #fff; /* Change the text color to white */
+}
+
+.btn-md:hover {
+    background-color: #2980b9; /* Change the background color on hover */
+}
+
+.text-end {
+    text-align: right;
+}
+.itemside .aside, .itemside .left {
+    margin: 20px;
+    position: relative;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+}
+a.itemside {
+    color: initial;
+    text-decoration: none;
+}
+.itemside {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.img-xs {
+    width: 40px;
+    height: 40px;
+}
+.img-xs, .img-sm, .img-md, .img-lg {
+    -o-object-fit: cover;
+    object-fit: cover;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    -webkit-box-flex: 0;
+    -ms-flex-positive: 0;
+    flex-grow: 0;
+}
+.itemside .info {
+    padding-left: 15px;
+    padding-right: 7px;
+}
+.float-end {
+    float: right !important;
+}
+.dlist {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.dlist dd {
+    margin-left: 30px;
+    vertical-align: baseline;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    margin-bottom: 0;
+    text-align: right;
+}
+.dlist dt {
+    width: 150px;
+    font-weight: normal;
+}
+.btn.btn-primary {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+    border: none;
+    background-color: #d69857;
+    border-radius: 4px;
+    text-align: center;
+}
+
+</style>
+
+
+{% endblock title%}
+
+{% block another %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'account_sidebar.html' %}
+        <div class="col-lg-9 col-md-3 col-sm-12">
+            <div class="card-body">
+                <div class="row mb-50 mt-20 order-info-wrap">
+                    <div class="col-md-4">
+                        <article class="icontext align-items-start">
+                            <span class="icon icon-sm rounded-circle bg-primary-light">
+                                <i class="text-primary material-icons md-person"></i>
+                            </span>
+                            <div class="text">
+                                <h6 class="mb-1">Customer</h6>
+                                <p class="mb-1">
+                                    {{order.name}}<br> <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br> {{order.mob}}
+                                </p>
+                            </div>
+                        </article>
+                    </div> <!-- col// -->
+                    <div class="col-md-4">
+                        <article class="icontext align-items-start">
+                            <span class="icon icon-sm rounded-circle bg-primary-light">
+                                <i class="text-primary material-icons md-local_shipping"></i>
+                            </span>
+                            <div class="text">
+                                <h6 class="mb-1">Order info</h6>
+                                <p class="mb-1">
+                                    Shipping: Fargo express <br> Pay method: {{order.payment_method}} <br> Status: {{order.order_status}}
+                                </p>
+                            </div>
+                        </article>
+                    </div> <!-- col// -->
+                    <div class="col-md-4">
+                        <article class="icontext align-items-start">
+                            <span class="icon icon-sm rounded-circle bg-primary-light">
+                                <i class="text-primary material-icons md-place"></i>
+                            </span>
+                            <div class="text">
+                                <h6 class="mb-1">Deliver to</h6>
+                                <p class="mb-1">
+                                     {{order.name}}, {{order.mob}} <br>{{order.address}}
+                                </p>
+                            </div>
+                        </article>
+                    </div> <!-- col// -->
+                </div> <!-- row // -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">Product</th>
+                                        <th width="20%">Unit Price</th>
+                                        <th width="20%">Quantity</th>
+                                        <th width="20%" class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ordered_item in ordered_items %}
+                                    <tr>
+                                        <td>
+                                            <a class="itemside" href="#">
+                                                <div class="left">
+                                                    <img src="/media/{{ordered_item.Ordered_product.product_images.first.image}}" width="40" height="40" class="img-xs" alt="Item">
+                                                </div>
+                                                <div class="info">{{ordered_item.Ordered_product.product_name}}</div>
+                                            </a>
+                                        </td>
+                                        <td> {{ordered_item.Ordered_product.price}} </td>
+                                        <td> {{ordered_item.qty}} </td>
+                                        <td class="text-end">{{ordered_item.price}}</td>
+                                    </tr>
+                                    {% endfor %}                               
+                                    <tr>
+                                        <td colspan="4">
+                                            <article class="float-end">
+                                                <dl class="dlist">
+                                                    <dt>Subtotal:</dt>
+                                                    <dd>{{order.subtotal}}</dd>
+                                                </dl>
+                                                <dl class="dlist">
+                                                    <dt>Coupon discount:</dt>
+                                                    <dd>-{{order.coupon_discount}}</dd>
+                                                </dl>
+                                                <dl class="dlist">
+                                                    <dt>Shipping cost:</dt>
+                                                    <dd>0.00</dd>
+                                                </dl>
+                                                <dl class="dlist">
+                                                    <dt>Grand total:</dt>
+                                                    <dd> <b class="h5">{{order.total_amount}}</b> </dd>
+                                                </dl>
+                                                <dl class="dlist">
+                                                    <dt class="text-muted">Status:</dt>
+                                                    <dd>
+                                                        <span class="badge rounded-pill alert-success text-success">{{order.order_status}}</span>
+                                                    </dd>
+                                                </dl>
+                                            </article>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> <!-- table-responsive// -->
+                        <form action="{% url 'account:cancel_request' order.uid %}" method="post">
+                        {% csrf_token %}
+                        {% if order.order_status != "Cancelled" and order.order_status != "Delivered" %}
+                        <button style="width: 110px; height: 50px;"  class="btn btn-primary">Cancel Order</button>
+                        {% endif %}
+                        </form>
+                    </div> <!-- col// -->
+                </div>
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/account.js' %}" type="text/javascript" ></script>
+
+{% endblock another %}
