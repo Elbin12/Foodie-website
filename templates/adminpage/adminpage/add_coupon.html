@@ -100,8 +100,8 @@
             }
 
             discount_price = parseFloat(discount_price);
-            if (isNaN(discount_price) || discount_price < 0) {
-                discount_priceError.innerHTML = 'Discount price must be a positive number';
+            if (isNaN(discount_price) || discount_price == 0) {
+                discount_priceError.innerHTML = 'Discount price must be greater than zero';
                 return false;
             }
     
@@ -110,11 +110,15 @@
                 return false;
             }
             min_amount = parseFloat(min_amount);
-            if (isNaN(min_amount) || min_amount < 0) {
-                min_amountError.innerHTML = 'Minimum amount must be a positive number';
+            if (isNaN(min_amount) || min_amount == 0) {
+                min_amountError.innerHTML = 'Minimum amount must be greater than zero';
                 return false;
             }
-    
+
+            if (min_amount <= discount_price){
+                min_amountError.innerHTML='Minimum amount be greater than discount amount';
+                return false;
+            }
     
             if (no_of_coupons === "") {
                 no_of_couponsError.innerHTML = 'Number of coupons is required';
@@ -122,8 +126,8 @@
             }
 
             no_of_coupons = parseFloat(no_of_coupons);
-            if (isNaN(no_of_coupons) || no_of_coupons < 0) {
-                no_of_couponsError.innerHTML = 'Number of coupons must be a positive number';
+            if (isNaN(no_of_coupons) || no_of_coupons == 0) {
+                no_of_couponsError.innerHTML = 'Number of coupons must be greater than zero';
                 return false;
             }
     

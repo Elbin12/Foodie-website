@@ -133,28 +133,29 @@
                               {% endwith %}
                               <div class="flex-column ms-4">
                                   <p class="mb-2">{{ product_info.product.product_name }}</p>
+                                  <p style="color: rgb(205, 164, 113);" >{% for i in product_info.val.value.all %} {{i}} {% endfor %}</p>
                               </div>
                           </div>
                       </th>
                       <td class="align-middle">
                           <div class="d-flex flex-row">
-                              <button class="btn btn-link px-2" onclick="Down('{{ product_info.product.uid }}')">
+                              <button class="btn btn-link px-2" onclick="Down('{{ product_info.val.uid }}')">
                                   <i class="fas fa-minus"></i>
                               </button>
-                              <input id="qty" min="1" readonly name="qty" data-uid="{{ product_info.product.uid }}" value="{{ product_info.qty }}"
+                              <input id="qty" min="1" readonly name="qty" data-uid="{{ product_info.val.uid }}" value="{{ product_info.qty }}"
                                   type="number" class="form-control form-control-sm" style="width: 50px;" />
-                              <button class="btn btn-link px-2" onclick="Up('{{ product_info.product.uid }}')">
+                              <button class="btn btn-link px-2" onclick="Up('{{ product_info.val.uid }}')">
                                   <i class="fas fa-plus"></i>
                               </button>
                           </div>
                       </td>
                       <td class="align-middle">
-                          <p class="mb-0" id="price_{{ product_info.product.uid }}" style="font-weight: 500;"
+                          <p class="mb-0" id="price_{{ product_info.val.uid }}" style="font-weight: 500;"
                               value="{{ product_info.product.price }}">{{ product_info.price }}</p>
                           <p class="mb-0" id="total_{{ product_info.product.uid }}" style="font-weight: 500;"></p>
                       </td>
                       <td>
-                        <i class="fas fa-trash" style="color: rgb(216, 55, 55); cursor: pointer; " onclick="del_cart_item('{{product_info.product.uid}}')"></i>
+                        <i class="fas fa-trash" style="color: rgb(216, 55, 55); cursor: pointer; " onclick="del_cart_item('{{product_info.val.uid}}')"></i>
                       </td>
                   </tr>
               {% endfor %}

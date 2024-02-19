@@ -21,6 +21,8 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-2">
+                <form id="sortForm"  action="{% url 'products:shop_page' %}" method="get">
+                {% csrf_token %}
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
@@ -30,18 +32,17 @@
                                 </div>
                                 <div id="collapseOne" class="collapse" data-bs-parent="#accordionExample">
                                     <div class="card-body">
-                                        <div class="shop__sidebar__categories">
-                                            <ul class="nice-scroll d-flex flex-column">
-    
-                                                {% for category in categories %}
-                                                <label>
-                                                    <input type="checkbox" value="{{ category.category_name }}">
-                                                    {{ category.category_name }}
-                                                </label>
-                                                {% endfor %}
-                                                <button type="button" style="margin: 0; padding: 0; width: 25%; font-size: small;" onclick="category()">save</button>
-                                            </ul>
-                                        </div>
+                                            <div class="shop__sidebar__categories">
+                                                <ul class="nice-scroll d-flex flex-column">
+                                                    {% for category in categories %}
+                                                    <label>
+                                                        <input type="checkbox" name="category" class="category-checkbox" id="sortcategory" value="{{ category.category_name }}">
+                                                        {{ category.category_name }}
+                                                    </label>
+                                                    {% endfor %}
+                                                    <button type="submit"  style="margin: 0; padding: 0; width: 25%; font-size: small;" >save</button>
+                                                </ul>
+                                            </div>
                                     </div>
                                 </div>
                             </div>
@@ -73,22 +74,27 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__left">
-                                <p>Showing 1–12 of 126 results</p>
+                                <p>{% if page.paginator.count == 0 %}
+                                    <p>No items found</p>
+                                    {% endif %}</p>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
                                 <p>Sort by Price:</p>
-                                <select onclick="category()" id="sortbyprice">
-                                    <option value="1">Low To High</option>
-                                    <option value="2">High To Low</option>
-                                </select>
+                                    <select id="sortbyprice" name="sortbyprice" onchange="document.getElementById('sortForm').submit()">
+                                        <option value="1">Low To High</option>
+                                        <option value="2">High To Low</option>
+                                    </select>
+                                    <button type="submit" style="display: none;"></button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row product">
-                    {% for product in products %}
+            </form>
+
+                <div id="productListContainer" class="row product">
+                    {% for product in page.object_list %}
                     <div class="" style="width: 20%;" >
                         <div class="product__item">
                             <div class="product__item__pic set-bg" style="background-image: url(/media/{{product.product_images.first.image}});">
@@ -115,11 +121,19 @@
                 <div class="row">
                     <div class="col-lg-10">
                         <div class="product__pagination">
-                            <a class="active" href="#">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <span>...</span>
-                            <a href="#">21</a>
+                            {%if page.has_previous %} {# whether the previous page exists #}
+                                <a href="?page={{page.previous_page_number}}"><</a>
+                            {% endif %}
+                            {% for num_page in page.paginator.page_range %}
+                            {% if page.number == num_page %}
+                            <a class="active" href="?page={{num_page}}">{{num_page}}</a>
+                            {% else %}
+                            <a class="" href="?page={{num_page}}">{{num_page}}</a>
+                            {% endif %}
+                            {% endfor %}
+                            {%if page.has_next %} {# whether the next page exists #}
+                            <a href="?page={{page.next_page_number}}">></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -127,9 +141,8 @@
         </div>
     </div>
 </section>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'js/shop.js' %}" type="text/javascript" ></script>
-
 {% endblock another %}
 
 

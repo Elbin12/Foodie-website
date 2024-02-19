@@ -200,10 +200,11 @@ function Up(uid) {
 
 
     if (document.getElementById('uid')){
-      totalPrice.innerHTML=qtyInput.value*price;
+      totalPrice=qtyInput.value*price;
+      sentproduct(totalPrice, uid);
     }
     else{
-      sent(qtyInput.value,uid);
+      sentcart(qtyInput.value,uid);
     }
 }
 
@@ -221,30 +222,109 @@ function Down(uid) {
       final_price.innerText=qtyInput.value*price;
       quantity.innerText=qtyInput.value;
       if (document.getElementById('uid')){
-        totalPrice.innerHTML=qtyInput.value*price;
+        totalPrice=qtyInput.value*price;
+        sentproduct(totalPrice, uid);
       }
       else{
-        sent(qtyInput.value,uid);
+        sentcart(qtyInput.value,uid);
       }
     }
 }
 
 
-function sent(newQty,uid){
+
+function sentproduct(totalPrice,uid){
+  var discountPrice=document.getElementById('discountPrice');
+
+  var requestBody = {
+    'totalPrice':totalPrice,
+    'uid': uid
+};
+
+
+  if (document.getElementById('selected_coupon')){
+    var selected_coupon=document.getElementById('selected_coupon');
+    coupon_uid = selected_coupon.value;
+    var apply_button=document.getElementById('coupon_'+coupon_uid);
+    console.log(selected_coupon, apply_button)
+
+    requestBody.coupon = selected_coupon.value;
+    console.log(requestBody)
+  }
   fetch("/account/change/", {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken,
         },
-        body: JSON.stringify({'qty': newQty, 'uid': uid})
+        body: JSON.stringify(requestBody)
     })
     .then(response => response.json())
     .then(data => {
       console.log(data);
-      var totalPrice=document.getElementById('totalPrice');
-      totalPrice.innerHTML=data.total;
-      // change(uid, newQty,data.price,data.total);
+      if ('coupon_fail' in data){
+        selected_coupon.remove();
+        var totalPrice=document.getElementById('totalPrice');
+        totalPrice.innerHTML=data.total;
+        discountPrice.innerHTML = 0;
+        apply_button.innerHTML = 'Apply';
+        myFunction(data.coupon_fail)
+      }
+      else{
+        console.log(data);
+        var totalPrice=document.getElementById('totalPrice');
+        totalPrice.innerHTML=data.total;
+      }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+function sentcart(newQty,uid){
+  var discountPrice=document.getElementById('discountPrice');
+
+  var requestBody = {
+    'qty': newQty,
+    'uid': uid
+};
+
+
+  if (document.getElementById('selected_coupon')){
+    var selected_coupon=document.getElementById('selected_coupon');
+    coupon_uid = selected_coupon.value;
+    var apply_button=document.getElementById('coupon_'+coupon_uid);
+    console.log(selected_coupon, apply_button)
+
+    requestBody.coupon = selected_coupon.value;
+    console.log(requestBody)
+  }
+  fetch("/account/change/", {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      if ('coupon_fail' in data){
+        selected_coupon.remove();
+        var totalPrice=document.getElementById('totalPrice');
+        totalPrice.innerHTML=data.total;
+        discountPrice.innerHTML = 0;
+        apply_button.innerHTML = 'Apply';
+        myFunction(data.coupon_fail)
+      }
+      else{
+        console.log(data);
+        var totalPrice=document.getElementById('totalPrice');
+        totalPrice.innerHTML=data.total;
+        // change(uid, newQty,data.price,data.total);
+      }
     })
     .catch(error => {
         console.error('Error:', error);
@@ -461,8 +541,6 @@ function submitData(){
                     headers.append('Content-Type', 'application/json');
                     headers.append('X-CSRFToken', csrftoken);
 
-                    // Now, send the order details to the server
-                    sendOrderToServer(requestBody);
                 },
                 prefill: {
                     name: selectedAddress.name,
@@ -556,19 +634,34 @@ function sendOrderToServer(orderDetails, uid='') {
       .then(response => response.json())
       .then(data => {
           // Handle the server response as needed
-          console.log('Server Response:', data);
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Order placed",
-            showConfirmButton: false,
-            timer: 1500
-        });
-        setTimeout(function () {
-          window.location.href = data.url;
-      }, 1400);
-          if (data.expired) {
+          console.log('n;lbhojfgjkmgl')
+        console.log('Server Response:', data);
+          // Handle the server response as needed
+          if ('url' in data){
+            console.log('Success:', data.url);
+            console.log('Server Response:', data);
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Order placed",
+              showConfirmButton: false,
+              timer: 1500
+            });
+            setTimeout(function () {
+              window.location.href = data.url;
+            }, 1400);
+          }
+          else if ('expired' in data) {
               myFunction(data.expired);
+          }
+          else if ('fail' in data){
+            console.log(data.fail)
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: data.fail,
+              showConfirmButton: true,
+            });
           }
       })
       .catch(error => {
@@ -683,6 +776,7 @@ function del(uid) {
 function apply_coupon(coupon_uid){
   var total=document.getElementById('totalPrice');
   total_amount=total.innerText;
+  console.log(total_amount)
   var discountPrice=document.getElementById('discountPrice');
   var apply_button=document.getElementById('coupon_'+coupon_uid);
   var class_=document.querySelector('.coupon-container');
@@ -941,8 +1035,6 @@ function edit_address_validateForm(uid) {
 
 
 function add_address_from_checkout(){
-  console.log('Inside edit_address function with UID:', uid);
-
   var name=document.getElementById('add_name').value;
   var mobile=document.getElementById('add_mobile').value;
   var pincode=document.getElementById('add_pincode').value;
@@ -1045,4 +1137,173 @@ function add_address_validateForm(){
     add_address_from_checkout()
   }
   
+}
+
+
+
+
+function add_address_validate() {
+  var add_name = document.getElementById('add_name').value;
+  var add_mobile = document.getElementById('add_mobile').value;
+  var add_pincode = document.getElementById('add_pincode').value;
+  var add_address = document.getElementById('add_address').value;
+  var add_city = document.getElementById('add_city').value;
+  var add_state = document.getElementById('add_state').value;
+  var add_locality = document.getElementById('add_locality').value;
+
+  var add_nameError = document.getElementById('add_nameError');
+  var add_mobileError = document.getElementById('add_mobileError');
+  var add_pincodeError = document.getElementById('add_pincodeError');
+  var add_addressError = document.getElementById('add_addressError');
+  var add_cityError = document.getElementById('add_cityError');
+  var add_stateError = document.getElementById('add_stateError');
+  var add_localityError = document.getElementById('add_localityError');
+
+  add_nameError.innerHTML = '';
+  add_mobileError.innerHTML = '';
+  add_pincodeError.innerHTML = '';
+  add_addressError.innerHTML = '';
+  add_cityError.innerHTML = '';
+  add_stateError.innerHTML = '';
+  add_localityError.innerHTML = '';
+
+
+  var alpha = /^[A-Za-z]+$/;
+  if (add_name.trim() === "") {
+      add_nameError.innerHTML = 'Username is required';
+      return false;
+  }
+
+  if ( !add_name.match(alpha)) {
+    add_nameError.innerHTML = 'Username must only have alphabets';
+    return false;
+}
+
+  if (add_mobile.trim() === "") {
+      add_mobileError.innerHTML = 'Mobile is required';
+      return false;
+  }
+  var mobile_match = /^[0-9]+$/;
+    if( !add_mobile.match(mobile_match) ){
+      add_mobileError.innerHTML = 'Mobile number have only numbers';
+        return false;
+    }
+    if (add_mobile.length !== 10){
+      add_mobileError.innerHTML = 'Mobile number have only 10 digits';
+        return false;
+    }
+
+
+  if (add_pincode.trim() === "") {
+      add_pincodeError.innerHTML = 'Pincode is required';
+      return false;
+  }
+
+  if (add_locality.trim() === "") {
+      add_localityError.innerHTML = 'Locality is required';
+      return false;
+  }
+
+  if (add_address.trim() === "") {
+      add_addressError.innerHTML = 'Address is required';
+      return false;
+  }
+
+  if (add_city.trim() === "") {
+      add_cityError.innerHTML = 'City is required';
+      return false;
+  }
+
+  if (add_state.trim() === "") {
+      add_stateError.innerHTML = 'State is required';
+      return false;
+  }
+
+  return true;
+}
+
+
+function edit_address_validate(uid){
+
+  console.log('Function called with UID:', uid);
+  var edit_name = document.getElementById('edit_name_' + uid).value;
+  console.log('edit_name:', edit_name);
+  
+  var edit_mobile = document.getElementById('edit_mobile_' + uid).value;
+  var edit_pincode = document.getElementById('edit_pincode_' + uid).value;
+  var edit_address = document.getElementById('edit_address_' + uid).value;
+  var edit_city = document.getElementById('edit_city_' + uid).value;
+  var edit_state = document.getElementById('edit_state_' + uid).value;
+  var edit_locality = document.getElementById('edit_locality_' + uid).value;
+
+  var edit_nameError = document.getElementById('edit_name_Error' + uid);
+  var edit_mobileError = document.getElementById('edit_mobile_' + uid + 'Error');
+  var edit_pincodeError = document.getElementById('edit_pincode_' + uid + 'Error');
+  var edit_addressError = document.getElementById('edit_address_' + uid + 'Error');
+  var edit_cityError = document.getElementById('edit_city_' + uid + 'Error');
+  var edit_stateError = document.getElementById('edit_state_' + uid + 'Error');
+  var edit_localityError = document.getElementById('edit_locality_' + uid + 'Error');
+
+  edit_nameError.innerHTML = '';
+  edit_mobileError.innerHTML = '';
+  edit_pincodeError.innerHTML = '';
+  edit_addressError.innerHTML = '';
+  edit_cityError.innerHTML = '';
+  edit_stateError.innerHTML = '';
+  edit_localityError.innerHTML = '';
+
+  var alpha = /^[A-Za-z]+$/;
+  if (edit_name.trim() === "") {
+      edit_nameError.innerHTML = 'Username is required';
+      return false;
+  }
+
+  if ( !edit_name.match(alpha)) {
+    edit_nameError.innerHTML = 'Username must have only alphabets';
+    return false;
+}
+
+  if (edit_mobile.trim() === "") {
+      edit_mobileError.innerHTML = 'Mobile number is required';
+      return false;
+  }
+
+  var mobile_match = /^[0-9]+$/;
+    if( !edit_mobile.match(mobile_match) ){
+      edit_mobileError.innerHTML = 'Mobile number have only numbers';
+        return false;
+    }
+    if (edit_mobile.length !== 10){
+      edit_mobileError.innerHTML = 'Mobile number have only 10 digits';
+        return false;
+    }
+
+  if (edit_pincode.trim() === "") {
+      edit_pincodeError.innerHTML = 'Pincode is required';
+      return false;
+  }
+
+  if (edit_address.trim() === "") {
+      edit_addressError.innerHTML = 'Address is required';
+      return false;
+  }
+
+  if (edit_city.trim() === "") {
+      edit_cityError.innerHTML = 'City is required';
+      return false;
+  }
+
+  if (edit_state.trim() === "") {
+      edit_stateError.innerHTML = 'State is required';
+      return false;
+  }
+
+  if (edit_locality.trim() === "") {
+      edit_localityError.innerHTML = 'Locality is required';
+      return false;
+  }
+  else{
+    edit_address_from_checkout(uid)
+  }
+
 }

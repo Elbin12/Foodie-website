@@ -1,0 +1,33 @@
+body{
+    font-family: PDF;
+}
+
+.container-1 {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.address {
+    margin-bottom: 20px;
+}
+.order-details {
+    margin-top: 40px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #f0f0f0;
+}

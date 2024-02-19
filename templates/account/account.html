@@ -188,6 +188,15 @@
         mobileError.innerHTML = 'Mobile is required';
         return false;
     }
+    var mobile_match = /^[0-9]+$/;
+    if( !mobile.match(mobile_match) ){
+        mobileError.innerHTML = 'Mobile number have only numbers';
+        return false;
+    }
+    if (mobile.length !== 10){
+        mobileError.innerHTML = 'Mobile number have only 10 digits';
+        return false;
+    }
 
     return true;
 }

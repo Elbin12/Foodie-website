@@ -4,7 +4,7 @@ from base.models import BaseModel
 from django.core.validators import RegexValidator
 import secrets
 from adminpage.adminpage.models import *
-from products.models import Product
+from products.models import *
 from django.db.models import Sum
 from decimal import Decimal
 from datetime import timedelta,datetime
@@ -73,13 +73,14 @@ class Cart(BaseModel):
 class Cart_item(BaseModel):
     cart=models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
     product=models.ForeignKey(Product, on_delete=models.CASCADE, related_name='cart_items')
+    product_attribute=models.ForeignKey(ProductAttribute, on_delete=models.CASCADE, related_name='cart_items', default=True)
     qty=models.IntegerField(default=1)
     price=models.IntegerField(null=True, blank=True)
     is_added=models.BooleanField(default=False)
 
     def save(self , *args, **kwargs):
         decimal_qty=Decimal(self.qty)
-        decimal_product_price=Decimal(self.product.price)
+        decimal_product_price=Decimal(self.product_attribute.new_price)
         decimal_price=decimal_qty*decimal_product_price
         self.price=int(decimal_price)
         super(Cart_item, self).save(*args, **kwargs)
@@ -113,14 +114,10 @@ class Ordered_item(BaseModel):
     qty=models.IntegerField(default=1) 
     unit_price=models.IntegerField(null=True)
     price = models.IntegerField()
-    image=models.ImageField(upload_to="ordered_item", null=True)
+    image=models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ordered_items', null=True)
+    product_variants = models.JSONField(null=True)
 
     def save(self, *args, **kwargs):
-        print(f"Media root: {settings.MEDIA_ROOT}")
-        print(f"Image path: {self.image.path}")
-        print(f"Image URL: {self.image.url}")
-        image_name = basename(self.image.name)
-        self.image.name = image_name
         decimal_qty = Decimal(self.qty)
         decimal_product_price = Decimal(self.unit_price)
         decimal_price = decimal_qty * decimal_product_price
@@ -153,3 +150,8 @@ class Transaction(BaseModel):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='transactions')
     amount = models.IntegerField()
     transaction_type = models.CharField(choices=Type.choices, null=True)
+
+
+class Wishlist(BaseModel):
+    user=models.ForeignKey(User,on_delete=models.CASCADE, related_name='wishlist')
+    products = models.ManyToManyField(ProductAttribute, related_name='wishlists', blank=True)

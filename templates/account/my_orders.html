@@ -177,10 +177,15 @@ th {
                         <div class="ordered_item">
                             <div class="d-flex flex-row">
                                 <div class="img">
-                                    <img src="{{ordered_item.image.url}}" style="width: 100%;" alt="">
+                                    <img src="{{ordered_item.image.product_images.first.image.url }}" style="width: 100%;" alt="">
                                 </div>
                                 <div class="detail ">
                                     <h6>{{ordered_item.ordered_product_name}}</h6>
+                                    <P class="mb-1" style="font-size: small; color: rgb(191, 148, 94);">
+                                        {% for value in ordered_item.product_variants %}
+                                        {{ value }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </P>
                                     <h6>₹{{ordered_item.unit_price}}</h6>
                                 </div>
                             </div>

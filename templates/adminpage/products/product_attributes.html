@@ -1,0 +1,127 @@
+
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    {% endblock %}
+
+
+    {% block content %}
+
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Products attributes</h2>
+            </div>
+            <div>
+                <a href="{% url 'product:add_product_attributes' %}" class="btn btn-primary btn-sm rounded">Create new</a>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row align-items-center">
+                    <div class="col col-check flex-grow-0">
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="checkbox" value="">
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                        <select class="form-select">
+                            <option selected>All category</option>
+                            <option>Electronics</option>
+                            <option>Clothes</option>
+                            <option>Automobile</option>
+                        </select>
+                    </div> -->
+                    <div class="col-md-2 col-6">
+                        <input type="date" value="02.05.2021" class="form-control">
+                    </div>
+                    <div class="col-md-2 col-6">
+                        <select class="form-select">
+                            <option selected>Status</option>
+                            <option>Active</option>
+                            <option>Disabled</option>
+                            <option>Show all</option>
+                        </select>
+                    </div>
+                </div>
+            </header> <!-- card-header end// -->
+            <div class="card-body">
+                <article class="itemlist">
+                    {% for product_attribute in page.object_list %}
+                    <div class="row align-items-center">
+                        <div class="col col-check flex-grow-0">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
+                            <a class="itemside" href="#">
+                                <div class="left">
+                                    <img src="{{product_attribute.product.product_images.first.image.url}}" class="img-sm img-thumbnail" alt="Item">
+                                </div>
+                                <div class="info">
+                                    <h6 class="mb-0">{{product_attribute.product.product_name}}</h6>
+                                    <div class="d-flex">
+                                        {% for value in product_attribute.value.all %}
+                                    <p style="color: rgb(193, 153, 104);">{{value}} ,</p>
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 col-4 col-price"> <span>{{product_attribute.new_price}}</span> </div>
+                        <div class="col-lg-2 col-sm-2 col-4 col-status">
+                            <span class="badge rounded-pill alert-success">{{product_attribute.product.Category}}</span>
+                        </div>
+                        <div class="col-lg-1 col-sm-2 col-4 col-date">
+                            <span>{{product.created_at}}</span>
+                        </div>
+                        <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+                            <a href="{% url 'product:edit_product_attribute' product_attribute.uid %}" class="btn btn-sm font-sm rounded btn-brand">
+                                <i class="material-icons md-edit"></i> Edit
+                            </a>
+                        </div>
+                    </div> <!-- row .// -->
+                    {% endfor %}
+                </article> <!-- itemlist  .// -->
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+        <div class="pagination-area mt-30 mb-50">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                    {%if page.has_previous %} {# whether the previous page exists #}
+                    <li class="page-item"><a class="page-link" href="?page={{page.previous_page_number}}"><i class="material-icons md-chevron_left"></i></a></li>
+                    {% endif %}
+                    {% for num_page in page.paginator.page_range %}
+                            {% if page.number == num_page %}
+                    <li class="page-item active"><a class="page-link" href="?page={{num_page}}">{{num_page}}</a></li>
+                    {% else %}
+                    <li class="page-item "><a class="page-link" href="?page={{num_page}}">{{num_page}}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {%if page.has_next %} {# whether the next page exists #}
+                    <li class="page-item"><a class="page-link" href="?page={{page.next_page_number}}"><i class="material-icons md-chevron_right"></i></a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </section>
+    {%if page.has_previous %} {# whether the previous page exists #}
+                                <a href="?page={{page.previous_page_number}}"><</a>
+                            {% endif %}
+                            {% for num_page in page.paginator.page_range %}
+                            {% if page.number == num_page %}
+                            <a class="active" href="?page={{num_page}}">{{num_page}}</a>
+                            {% else %}
+                            <a class="" href="?page={{num_page}}">{{num_page}}</a>
+                            {% endif %}
+                            {% endfor %}
+                            {%if page.has_next %} {# whether the next page exists #}
+                            <a href="?page={{page.next_page_number}}">></a>
+                            {% endif %}
+        
+    {% endblock content %}

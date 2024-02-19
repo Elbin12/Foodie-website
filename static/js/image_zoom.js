@@ -103,13 +103,21 @@ function showImage(uid,product){
 
 
 function add_to_cart(uid){
+    values=document.querySelectorAll('.values-select');
+    selectedValues=[]
+    values.forEach(function(value){
+        var selectedKey = value.getAttribute('data-key');
+        var selectedValue = value.value;
+        selectedValues.push(selectedValue);
+    })
+    console.log(selectedValues)
     fetch('/account/add_to_cart/',{
         method: 'post', // Assuming your backend handles DELETE requests for deletion
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrftoken,
         },
-        body: JSON.stringify({ 'uid': uid }),
+        body: JSON.stringify({ 'uid': uid, 'selected_values':selectedValues }),
     })
     .then(response => response.json())
     .then(data =>{

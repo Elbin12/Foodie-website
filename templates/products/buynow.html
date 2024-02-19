@@ -135,29 +135,32 @@
 <div class="container">
     <div class="row">
       <div class="col-md-8 col-lg-9 mt-5">
-        {% if product %}
+        {% if product_attribute %}
         {% with product=product is_cart=False %}
         <div class="product-container">
           <div class="product-image">
-            <img src="/media/{{product.product_images.first.image}}" alt="Product Image" class="img-fluid">
+            <img src="/media/{{product_attribute.product.product_images.first.image}}" alt="Product Image" class="img-fluid">
           </div>
           <div class="product-details">
-            <h2 id="product_name_{{product.uid}}">{{product.product_name}}</h2>
+            <h2 id="product_name_{{product_attribute.uid}}">{{product_attribute.product.product_name}} - {% for value in product_attribute.value.all %}
+              <span style="color: rgb(185, 142, 86);">{{value}},</span>
+              {% endfor %}
+            </h2>
             <input type="text" hidden id="count" value="1">
-            <input type="text" id="uid" hidden value="{{product.uid}}">
-            <div class="d-flex"><p style="font-weight: 500;">Price : ₹ </p><p id="price_{{product.uid}}" style="font-weight: 600;">{{product.price}}</p></div>
-            <div class="d-flex"><p style="font-weight: 500;">quantity : </p><p id="quantity_{{product.uid}}" style="font-weight: 600;">1</p></div>
-            <div class="d-flex"><p style="font-weight: 600;"> {{product.product_description}}</p></div>
-            <div class="d-flex"><p style="font-weight: 500; font-size: medium;">Final price : ₹ </p><p id="final_price_{{product.uid}}" name="final_price" style="font-weight: 600; font-size: medium;"> {{product.price}}</p></div>
+            <input type="text" id="uid" hidden value="{{product_attribute.uid}}">
+            <div class="d-flex"><p style="font-weight: 500;">Price : ₹ </p><p id="price_{{product_attribute.uid}}" style="font-weight: 600;">{{product_attribute.new_price}}</p></div>
+            <div class="d-flex"><p style="font-weight: 500;">quantity : </p><p id="quantity_{{product_attribute.uid}}" style="font-weight: 600;">1</p></div>
+            <div class="d-flex"><p style="font-weight: 600;"> {{product_attribute.product.product_description}}</p></div>
+            <div class="d-flex"><p style="font-weight: 500; font-size: medium;">Final price : ₹ </p><p id="final_price_{{product_attribute.uid}}" name="final_price" style="font-weight: 600; font-size: medium;"> {{product_attribute.new_price}}</p></div>
           </div>
         </div>
         <div class="align-middle d-flex justify-content-center" style="max-width: 170px;">
           <div class="d-flex flex-row">
-              <button class="btn btn-link px-2" onclick="Down('{{ product.uid }}')">
+              <button class="btn btn-link px-2" onclick="Down('{{ product_attribute.uid }}')">
                   <i class="fas fa-minus"></i>
               </button>
-              <input id="qty" min="1" readonly name="qty" data-uid="{{ product.uid }}" value="1"type="number" class="form-control form-control-sm" style="width: 50px;" />
-              <button class="btn btn-link px-2" onclick="Up('{{ product.uid }}')">
+              <input id="qty" min="1" readonly name="qty" data-uid="{{ product_attribute.uid }}" value="1"type="number" class="form-control form-control-sm" style="width: 50px;" />
+              <button class="btn btn-link px-2" onclick="Up('{{ product_attribute.uid }}')">
                   <i class="fas fa-plus"></i>
               </button>
           </div>
@@ -166,27 +169,28 @@
         {% else %}
         <input type="text" hidden name="count" value="{{len}}" id="count">
         {% for product in cart_items %}
-        <div id="product_row_{{product.product.uid}}">
+        <div id="product_row_{{product.product_attribute.uid}}">
           <div class="product-container">
             <div class="product-image">
               <img src="/media/{{product.product.product_images.first.image}}" alt="Product Image" class="img-fluid">
             </div>
             <div class="product-details">
               <h2>{{product.product.product_name}}</h2>
-              <div class="d-flex"><p style="font-weight: 500;">Unit price : ₹ </p><p id="price_{{product.product.uid}}" style="font-weight: 600;">{{product.product.price}}</p></div>
-              <div class="d-flex"><p style="font-weight: 500;">quantity : </p><p id="quantity_{{product.product.uid}}" style="font-weight: 600;">{{product.qty}}</p></div>
+              <h6 style="color: rgb(157, 125, 84);">{% for i in product.product_attribute.value.all %} {{i}} {% endfor %}</h6>
+              <div class="d-flex"><p style="font-weight: 500;">Unit price : ₹ </p><p id="price_{{product.product_attribute.uid}}" style="font-weight: 600;">{{product.product_attribute.new_price}}</p></div>
+              <div class="d-flex"><p style="font-weight: 500;">quantity : </p><p id="quantity_{{product.product_attribute.uid}}" style="font-weight: 600;">{{product.qty}}</p></div>
               <div class="d-flex"><p style="font-weight: 600;"> {{product.product.product_description}}</p></div>
-              <div class="d-flex"><p style="font-weight: 500; font-size: medium;">Price : ₹ </p><p id="final_price_{{product.product.uid}}" name="final_price" style="font-weight: 600; font-size: medium;"> {{product.price}}</p></div>
-              <i class="fas fa-trash delete_icon" style="color: rgb(216, 55, 55); cursor: pointer;" onclick="del('{{product.product.uid}}')"></i>
+              <div class="d-flex"><p style="font-weight: 500; font-size: medium;">Price : ₹ </p><p id="final_price_{{product.product_attribute.uid}}" name="final_price" style="font-weight: 600; font-size: medium;"> {{product.price}}</p></div>
+              <i class="fas fa-trash delete_icon" style="color: rgb(216, 55, 55); cursor: pointer;" onclick="del('{{product.product_attribute.uid}}')"></i>
             </div>
           </div>
           <div class="align-middle d-flex justify-content-center" style="max-width: 170px; margin-top: 5px; margin-bottom: 5px;">
             <div class="d-flex flex-row">
-                <button class="btn btn-link px-2" onclick="Down('{{ product.product.uid }}')">
+                <button class="btn btn-link px-2" onclick="Down('{{ product.product_attribute.uid }}')">
                     <i class="fas fa-minus"></i>
                 </button>
-                <input id="qty" min="1" readonly name="qty" data-uid="{{ product.product.uid }}" value="{{product.qty}}"type="number" class="form-control form-control-sm" style="width: 50px;" />
-                <button class="btn btn-link px-2" onclick="Up('{{ product.product.uid }}')">
+                <input id="qty" min="1" readonly name="qty" data-uid="{{ product.product_attribute.uid }}" value="{{product.qty}}"type="number" class="form-control form-control-sm" style="width: 50px;" />
+                <button class="btn btn-link px-2" onclick="Up('{{ product.product_attribute.uid }}')">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
@@ -325,7 +329,7 @@
             <p >Discount Price: ₹ <span id="discountPrice">0</span></p>
             {% else %}
             <p>Total Items: <span id="totalItems">1</span></p>
-            <p>Total Price: ₹ <span id="totalPrice">{{product.price}}</span></p>
+            <p>Total Price: ₹ <span id="totalPrice">{{product_attribute.new_price}}</span></p>
             <p>Discount Price: ₹ <span id="discountPrice">0</span></p>
             {% endif %}
             <!-- Checkout button -->

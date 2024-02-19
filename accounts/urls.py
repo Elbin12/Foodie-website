@@ -29,4 +29,6 @@ urlpatterns = [
     path('wallet/' ,views.wallet, name='wallet'),
     path('paymenthandler/<amount>' ,views.paymenthandler, name='paymenthandler'),
     path('check_otp/', views.check_otp, name='check_otp'),
+    path('wishlist/', views.wishlist, name='wishlist'),
+    path('invoice/<uid>', views.invoice, name='invoice')
 ]

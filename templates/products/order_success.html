@@ -12,13 +12,17 @@
 
 
 <div class="d-flex">
-    <div class="order-container  col-lg-8">
+    <div class="order-container  col-lg-8 col-md-12">
         {% for ordered_item in order.ordered_items.all %}
         <div class="item">
             <div class="product-details d-flex flex-row">
-                <img class="product-image" src="{{ordered_item.image.url}}" alt="Product">
-                <p class="d-flex align-items-center" style="font-size: medium; margin-left: 20px; ">{{ordered_item.ordered_product_name}}</p>
-                <p class="d-flex align-items-center" style="font-size: medium; margin-left: 20px;">{{ordered_item.unit_price}}</p>
+                <img class="product-image" src="{{ordered_item.image.product_images.first.image.url }}" alt="Product">
+                <p class="d-flex align-items-center" style="font-size: medium; margin-left: 20px; ">{{ordered_item.ordered_product_name}} <br>
+                        {% for value in ordered_item.product_variants %}
+                    {{ value }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p class="d-flex align-items-center" style="font-size: medium; margin-left: 60px;">{{ordered_item.unit_price}}</p>
                 <div class="d-flex  " style="font-size: medium; color: green; margin-left: 20px; margin-left: auto;">
                     <p style="font-size: medium;">Delivery in 15 minutes</p>
                 </div>
@@ -34,7 +38,7 @@
         </div>
     </div>
 
-    <div class="order-summary-container col-lg-3">
+    <div class="order-summary-container col-lg-3 col-md-12">
         <div id="tick-mark">&#10004;</div>
         <div id="order-success">Order Successful!</div>
     

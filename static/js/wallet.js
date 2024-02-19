@@ -39,17 +39,14 @@ function payment(){
                 name: "Dj Razorpay",
                 order_id: data.razorpay_order_id,
                 callback_url: data.callback_url,
-                handler: function (response) {
-                    // Handle Razorpay response
-                    console.log('Razorpay Payment ID:', response.razorpay_payment_id);
-                    window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
-                    const headers = new Headers();
-                    headers.append('Content-Type', 'application/json');
-                    headers.append('X-CSRFToken', csrftoken);
-
-                    // Now, send the order details to the server
-                    sendOrderToServer(requestBody);
-                },
+                // handler: function (response) {
+                //     // Handle Razorpay response
+                //     console.log('Razorpay Payment ID:', response.razorpay_payment_id);
+                //     window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
+                //     const headers = new Headers();
+                //     headers.append('Content-Type', 'application/json');
+                //     headers.append('X-CSRFToken', csrftoken);
+                // },
                 theme: {
                     color: '#3399cc',
                 },
@@ -59,37 +56,5 @@ function payment(){
         })
         .catch(error => {
             console.error('Error fetching Razorpay order details:', error);
-        });
-}
-
-function sendOrderToServer(){
-
-    fetch('/products/checkout/', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
-        },
-        body: JSON.stringify(orderDetails),
-    })
-        .then(response => response.json())
-        .then(data => {
-            // Handle the server response as needed
-            console.log('Server Response:', data);
-            if (data.success) {
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Order placed",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }
-            if (data.expired) {
-                myFunction(data.expired);
-            }
-        })
-        .catch(error => {
-            console.error('Error processing order on the server:', error);
         });
 }

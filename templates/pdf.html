@@ -1,0 +1,119 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title %}
+<title>Invoice</title>
+<style>
+    body{
+    font-family: PDF;
+}
+
+.container-1 {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.address {
+    margin-bottom: 20px;
+}
+.order-details {
+    margin-top: 40px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #f0f0f0;
+}
+</style>
+
+{% endblock title%}
+
+{% block another %}
+
+<div class="container-1 mt-4">
+    <h1 style="color: rgb(96, 166, 192);">Invoice</h1>
+    <div class="address">
+        <p><strong >User Address:</strong></p>
+        <p style="font-weight: bold;">{{order.name}}</p>
+        <p style="font-weight: 500;">{{order.mob}}</p>
+        <p>{{order.address}}</p>
+    </div>
+    <div class="site-name">
+        <p><strong>Site Name:</strong> Foodie</p>
+    </div>
+    <div class="invoice-id">
+        <p><strong>Invoice ID:</strong> {{order.uid}}</p>
+    </div>
+    <div class="order-details">
+        <h2>Order Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.ordered_items.all %}
+                <tr>
+                    <td>{{item.ordered_product_name}}</td>
+                    <td>{{item.qty}}</td>
+                    <td>{{item.unit_price}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div>
+            <p>Subtotal : </p>
+            <p>Coupon applied : </p>
+            <p>Grand total : </p>
+        </div>
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit">print</button>
+    </form>
+</div>
+
+
+
+
+{% endblock another %}
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    
+</head>
+<body>
+    
+</body>
+</html>

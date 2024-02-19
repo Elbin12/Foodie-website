@@ -44,11 +44,11 @@
                         <span class="text">Products</span>
                     </a>
                 </li>
-                <!-- <li class="menu-item has-submenu {% if 'product' in request.path %}active{% endif %}">
-                    <a class="menu" href="{% url 'product:products' %}"> <i class="icon material-icons md-shopping_bag"></i>
+                <li class="menu-item has-submenu {% if 'product' in request.path %}active{% endif %}">
+                    <a class="menu" href="{% url 'product:product_attributes' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Product attributes</span>
                     </a>
-                </li> -->
+                </li>
                 <li class="menu-item has-submenu {% if 'category' in request.path %}active{% endif %}">
                     <a class="menu" href="{% url 'category:add_category' %}">
                         <i class="icon material-icons md-add_box"></i>

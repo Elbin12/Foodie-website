@@ -28,17 +28,7 @@
                             <div class="mb-4">
                                 <span id="product_nameError"></span>
                             </div>
-                            <div class="row gx-3">
-                                {% for attribute in attributes %}
-                                <label for="product_color" class="form-label">Select {{attribute.name}}</label>
-                                <div class="col-md-4  mb-3 d-flex">
-                                    {% for value in attribute.attribute_values.all %}
-                                    <input type="checkbox" name="selected_{{attribute}}" value="{{value}}">
-                                    <p style="margin-bottom: 0; margin-right: 10px;">{{value}}</p>
-                                    {% endfor %}
-                                </div>
-                                {% endfor %}
-                            </div>
+                            
                             <div class="mb-4">
                                 <label for="product_brand" class="form-label">Add Category</label>
                                 <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">

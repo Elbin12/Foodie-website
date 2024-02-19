@@ -196,13 +196,20 @@ a.itemside {
                                     <tr>
                                         <td>
                                             <a class="itemside" href="#">
-                                                <div class="left">
-                                                    <img src="/media/{{ordered_item.Ordered_product.product_images.first.image}}" width="40" height="40" class="img-xs" alt="Item">
+                                                <div class="">
+                                                    <img src="{{ ordered_item.image.product_images.first.image.url  }}" width="40" height="40" class="img-xs" alt="Item">
                                                 </div>
-                                                <div class="info">{{ordered_item.Ordered_product.product_name}}</div>
+                                                <div class="info">{{ordered_item.ordered_product_name}}
+                                                    <p style="font-size: small; color: rgb(191, 148, 94);">
+                                                        {% for value in ordered_item.product_variants %}
+                                                        {{ value }}{% if not forloop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                    </p>
+                                                </div>
+                                                
                                             </a>
                                         </td>
-                                        <td> {{ordered_item.Ordered_product.price}} </td>
+                                        <td> {{ordered_item.unit_price}} </td>
                                         <td> {{ordered_item.qty}} </td>
                                         <td class="text-end">{{ordered_item.price}}</td>
                                     </tr>
@@ -216,11 +223,11 @@ a.itemside {
                                                 </dl>
                                                 <dl class="dlist">
                                                     <dt>Coupon discount:</dt>
+                                                    {% if order.coupon_discount %}
                                                     <dd>-{{order.coupon_discount}}</dd>
-                                                </dl>
-                                                <dl class="dlist">
-                                                    <dt>Shipping cost:</dt>
+                                                    {% else %}
                                                     <dd>0.00</dd>
+                                                    {% endif %}
                                                 </dl>
                                                 <dl class="dlist">
                                                     <dt>Grand total:</dt>
@@ -243,6 +250,7 @@ a.itemside {
                         {% if order.order_status != "Cancelled" and order.order_status != "Delivered" %}
                         <button style="width: 110px; height: 50px;"  class="btn btn-primary">Cancel Order</button>
                         {% endif %}
+                        <button type="button" > <a href="{% url 'account:invoice' order.uid %}">Invoice</a></button>
                         </form>
                     </div> <!-- col// -->
                 </div>

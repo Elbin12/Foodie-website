@@ -17,3 +17,5 @@ admin.site.register(Payment)
 admin.site.register(Wallet)
 
 admin.site.register(Transaction)
+
+admin.site.register(Wishlist)

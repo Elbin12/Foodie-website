@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.cache import cache_control
 from django.http import JsonResponse
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 
@@ -44,14 +45,14 @@ def add_product(request):
         # print(attribute_values)
 
 
-        selected_values = {}
-        for i in attributes:
-            checkbox_name = f'selected_{i.name}'
-            if checkbox_name in request.POST:
-                values=request.POST.getlist(checkbox_name)
-                selected_values[i.name] = values
+        # selected_values = {}
+        # for i in attributes:
+        #     checkbox_name = f'selected_{i.name}'
+        #     if checkbox_name in request.POST:
+        #         values=request.POST.getlist(checkbox_name)
+        #         selected_values[i.name] = values
 
-        print(selected_values)
+        # print(selected_values)
                 
 
         category_instance=Category.objects.get(category_name=category)
@@ -71,28 +72,28 @@ def add_product(request):
         # for values in selected_values.items():
         #     product_attribute=ProductAttribute.objects.create(product=product)
             
-        for key, values in selected_values.items():
-            for value in values:
-                product_attribute = ProductAttribute.objects.create(product=product)
-                print(value, 'agarsah')
+        # for key, values in selected_values.items():
+        #     for value in values:
+        #         product_attribute = ProductAttribute.objects.create(product=product)
+        #         print(value, 'agarsah')
 
-                attribute = Attributes.objects.get(name=key)
-                v = Attribute_values.objects.get(attribute=attribute, value=value)
-                product_attribute.value.add(v)
+        #         attribute = Attributes.objects.get(name=key)
+        #         v = Attribute_values.objects.get(attribute=attribute, value=value)
+        #         product_attribute.value.add(v)
 
-                if value == 'Full':
-                    print('full')
-                    product_attribute.new_price = product.price
-                elif value == 'quarter':
-                    print('quarter')
-                    product_attribute.new_price = int(product.price) / 4
-                else:
-                    print('half')
-                    product_attribute.new_price = int(product.price) / 2
+        #         if value == 'Full':
+        #             print('full')
+        #             product_attribute.new_price = product.price
+        #         elif value == 'quarter':
+        #             print('quarter')
+        #             product_attribute.new_price = int(product.price) / 4
+        #         else:
+        #             print('half')
+        #             product_attribute.new_price = int(product.price) / 2
 
-                print(product_attribute.new_price)
+        #         print(product_attribute.new_price)
 
-                product_attribute.save()
+        #         product_attribute.save()
 
         
         # product_attribute=ProductAttribute.objects.create(product=product)
@@ -199,3 +200,91 @@ def get_sub_categories(request):
     return JsonResponse(data)
 
 
+def add_product_attributes(request):
+    attributes=Attributes.objects.all()
+    products=Product.objects.all()
+    context={'attributes':attributes, 'products':products}
+    if request.method=='POST':
+        values=request.POST.getlist('values')
+        product=request.POST.get('product')
+        price=request.POST.get('price')
+        print(product)
+        print(values)
+        pro=Product.objects.get(product_name=product)
+        new=[]
+        unique_values = set()
+        
+        for value in values:
+            val = Attribute_values.objects.get(value=value)
+            if val in unique_values:
+                messages.warning(request, 'Cannot add same attributes.')
+                return redirect('product:add_product_attributes')
+            elif val.attribute in unique_values:
+                messages.warning(request, 'Cannot add same attributes.')
+                return redirect('product:add_product_attributes')
+            else:
+                unique_values.add(val)
+                unique_values.add(val.attribute)
+                new.append(val)
+                print(new)
+            product_attribute_exists=ProductAttribute.objects.filter(product=pro,value=val)
+            print(product_attribute_exists)
+
+        product_attribute=ProductAttribute.objects.create(product=pro, new_price=price)
+        for i in new:
+            product_attribute.value.add(i)
+            product_attribute.save()
+        product_attribute.product.is_listed=True
+        product_attribute.product.save()
+    return render(request, 'adminpage/products/add_product_attributes.html', context)
+
+
+def get_attribute_values(request):
+    print('kmsfhkmobgsmod')
+    if request.method=='POST':
+        name=json.loads(request.body)['attribute']
+        if name=='':
+            data={'values':''}
+        else:
+            attribute=Attributes.objects.get(name=name)
+            values=Attribute_values.objects.filter(attribute=attribute)
+            data={'values':list(values.values())}
+        return JsonResponse(data)
+    
+def get_attributes(request):
+    if request.method=='POST':
+        data = json.loads(request.body)
+        attributes = data.get('attributes', [])
+        excluded_attributes = Attributes.objects.exclude(name__in=attributes)
+        print(excluded_attributes)
+        data={'excluded_attributes':list(excluded_attributes.values())}
+        return JsonResponse(data)
+    
+def product_attributes(request):
+    product_attributes=ProductAttribute.objects.all()
+    page_number = request.GET.get('page')
+    paginator = Paginator(product_attributes, 3)
+    page = paginator.get_page(page_number)
+    context={'page':page}
+    return render(request, 'adminpage/products/product_attributes.html',context)
+
+def edit_product_attribute(request, uid):
+    product_attribute=ProductAttribute.objects.get(uid=uid)
+    if request.method=='POST':
+        values=request.POST.getlist('values')
+        product=request.POST.get('product')
+        price=request.POST.get('price')
+        print(product)
+        print(values)
+
+        product_attribute.value.clear()
+        for value in values:
+            val = Attribute_values.objects.get(value=value)
+            product_attribute.value.add(val)
+
+        product_attribute.new_price=price
+        product_attribute.save()
+        print(product_attribute)
+            
+    context={'product_attribute':product_attribute, 'attributes':Attributes.objects.all()}
+    return render(request, 'adminpage/products/edit_product_attribute.html', context)

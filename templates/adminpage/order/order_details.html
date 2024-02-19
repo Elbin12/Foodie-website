@@ -28,7 +28,7 @@
                     <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                     <form action="" method="post">
                         {% csrf_token %}
-                        {% if order.cancel_request %}
+                        {% if order.order_status == 'Cancelled' %}
                         <h5 style="margin-right: 10px;" class="form-input d-inline-block mb-lg-0 mb-15 mw-200">Order is cancelled</h5>
                         {% else %}
                         <select name="order_status" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">

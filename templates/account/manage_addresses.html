@@ -23,7 +23,7 @@
                         <i onclick="showaddress()" style="font-size: 20px;" class="fa-solid fa-plus"></i>
                         <p onclick="showaddress()"  style="font-size: medium; cursor: pointer;">ADD A NEW ADDRESS</p>
                     </div>
-                    <form action="{% url 'account:addresses' %}" method="post" onsubmit="return add_address_validateForm()">
+                    <form action="{% url 'account:addresses' %}" method="post" onsubmit="return add_address_validate()">
                         {% csrf_token %}
                         <div class=" d-flex flex-column m-3" id="showaddress" style="display: none !important;" >
                             <div class="mb-2">
@@ -64,7 +64,7 @@
                         <a style="cursor: pointer;" onclick="editaddress('{{address.uid}}')">edit</a>
                         <a onclick="del_address('{{address.uid}}')">delete</a>
     
-                        <form action="{% url 'account:edit_address' address.uid %}" method="post" onsubmit="return edit_address_validateForm('{{address.uid}}')">
+                        <form action="{% url 'account:edit_address' address.uid %}" method="post" onsubmit="return edit_address_validate('{{address.uid}}')">
                             {% csrf_token %}
                             <div class="d-flex flex-column m-3" id="edit_{{address.uid}}" style="display: none !important;">
                                 <div class="mb-2">

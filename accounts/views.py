@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.models import User
 from . models import *
-from products.models import Product,ProductImage
+from products.models import *
 from django.contrib import messages
 from .utils import generate_otp, send_otp_email, get_otp_from_session
 from django.views.decorators.cache import cache_control
@@ -10,9 +10,24 @@ from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 import json
 import razorpay
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404
 
+
+from io import BytesIO
+from xhtml2pdf import pisa
+from django.template.loader import get_template
+from django.http import HttpResponse
+from django.template.loader import get_template
+
+
+
+from django.core.files.base import ContentFile
+
+import jinja2
+import pdfkit
 
 # Create your views here.
 
@@ -164,16 +179,22 @@ def add_to_cart(request):
     if request.method=='POST':
         data=json.loads(request.body)
         uid=data['uid']
+        selected=data['selected_values']
+        values=[]
+        for value in selected:
+            val=Attribute_values.objects.get(value=value)
+            values.append(val)
         product=Product.objects.get(uid=uid)
         try:
+            product_attribute=ProductAttribute.objects.filter(product=product).filter(value=values[0]).filter(value=values[1]).first()
             cart=Cart.objects.get(user=request.user)
             print(cart)
-            if Cart_item.objects.filter(cart=cart,product=product).exists():
+            if Cart_item.objects.filter(cart=cart,product_attribute=product_attribute).exists():
                 print('true')
                 data={'exists':'Food item is already in your cart'}
                 return JsonResponse(data)
             else:
-                new=Cart_item.objects.create(cart=cart, product=product)
+                new=Cart_item.objects.create(cart=cart, product=product, product_attribute=product_attribute)
                 print(new)
                 new.is_added=True
                 new.save()
@@ -183,6 +204,9 @@ def add_to_cart(request):
         except Cart.DoesNotExist:
             data={'fail':'Please log in to visit your cart'}
             return JsonResponse(data)
+        except:
+            data={'fail':'Item not in stock'}
+            return JsonResponse(data)
     
 
 def cart(request):
@@ -190,9 +214,11 @@ def cart(request):
         cart=Cart.objects.get(user=request.user)
         cart_items = cart.cart_items.select_related('product').order_by('product__product_name')
         products = [
-            {'product': item.product, 'qty': item.qty, 'price':item.price}
+            {'product': item.product,'val':item.product_attribute, 'qty': item.qty, 'price':item.price}
             for item in cart_items
         ]
+        for i in products:
+            print(i)
         count=products.__len__()
         if not products:
             context={'warning':'Your cart is empty'}
@@ -207,26 +233,62 @@ def cart(request):
 def change(request):
     if request.method=='POST':
         data = json.loads(request.body)
-        qty=data['qty']
-        uid=data['uid']
-        print(uid,qty)
-        product=Product.objects.get(uid=uid)
-        cart=Cart.objects.get(user=request.user)
-        cart_item=Cart_item.objects.get(cart=cart,product=product)
-        cart_item.qty=qty
-        print(cart_item)
-        cart_item.save()
-        cart.save()
-        data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total}
-    return JsonResponse(data)
+
+        if 'qty' in data:
+            qty=data['qty']
+            uid=data['uid']
+            
+
+            print(uid,qty)
+            product=ProductAttribute.objects.get(uid=uid)
+            print(product)
+            cart=Cart.objects.get(user=request.user)
+            cart_item=Cart_item.objects.get(cart=cart,product_attribute=product)
+            cart_item.qty=qty
+            print(cart_item)
+            cart_item.save()
+            cart.save()
+
+            if 'coupon' in data:
+                coupon_uid = data['coupon']
+                coupon = Coupon.objects.get(uid=coupon_uid)
+                print(coupon)
+                if cart.total < coupon.minimum_amount:
+                    data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total,'coupon_fail':'Coupon removed'}
+                    return JsonResponse(data)
+                else:
+                    data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total}
+                    return JsonResponse(data)
+            else:
+                print(cart.total,)
+                data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total}
+                return JsonResponse(data)
+        else:
+            uid=data['uid']
+            total = data['totalPrice']
+            print(uid)
+            product=ProductAttribute.objects.get(uid=uid)
+            if 'coupon' in data:
+                coupon_uid = data['coupon']
+                coupon = Coupon.objects.get(uid=coupon_uid)
+                print(coupon)
+                if total < coupon.minimum_amount:
+                    data={'coupon_fail':'Coupon removed','total':total}
+                    return JsonResponse(data)
+                else:
+                    data={'success':'success', 'total':total}
+                    return JsonResponse(data)
+            else:
+                data={'success':'success','total':total}
+        return JsonResponse(data)
 
 def delete(request):
     if request.method=='POST':
         uid=json.loads(request.body)['uid']
         print(uid)
-        product=Product.objects.get(uid=uid)
+        product=ProductAttribute.objects.get(uid=uid)
         cart=Cart.objects.get(user=request.user)
-        cart_item=Cart_item.objects.filter(product=product)
+        cart_item=Cart_item.objects.filter(product_attribute=product)
         cart_item.delete()
         cart.save()
         l=cart.cart_items.all()
@@ -234,6 +296,8 @@ def delete(request):
         data={'success':'true','len':len,'price':cart.total}
     return JsonResponse(data)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='account:login')
 def account(request):
     try:
         profile=Profile.objects.get(user=request.user)
@@ -253,7 +317,7 @@ def account(request):
         user.first_name=first_name
         user.last_name=last_name
         profile.gender=gender
-        profile.mobile=mobile
+        profile.mobile_number=mobile
         user.save()
         profile.save()
 
@@ -307,7 +371,7 @@ def edit_address(request,uid):
 
         address_instance=Address.objects.get(uid=uid)
         address_instance.name=name 
-        address_instance.mobile_number=mobile 
+        address_instance.mobile_number=mobile
         address_instance.pincode=pincode
         address_instance.locality=locality
         address_instance.address=shipping_address
@@ -384,6 +448,7 @@ def my_orders(request):
 def order_details(request, uid):
     order=Order.objects.get(uid=uid)
     ordered_items=Ordered_item.objects.filter(order_id=order)
+    print(ordered_items)
     context={'order':order, 'ordered_items':ordered_items}
     return render(request, 'account/order_details.html', context)
 
@@ -400,8 +465,9 @@ def cancel_request(request, uid):
 
 
 def coupons(request):
-    coupons = Coupon.objects.all()
-    context={'coupons':coupons}
+    coupons = Coupon.objects.filter(is_expired=False)
+    applied_coupons=Coupon.objects.filter(is_expired=True)
+    context={'coupons':coupons, 'applied_coupons':applied_coupons}
     return render(request, 'account/coupons.html',context)
 
 
@@ -485,3 +551,63 @@ def paymenthandler(request, amount):
 
 
 
+def wishlist(request):
+    wishlist=Wishlist.objects.get(user=request.user)
+    return render(request, 'account/wishlist.html')
+
+def add_to_wishlist(request,uid):
+    product_attribute=ProductAttribute.objects.get(uid=uid)
+    wishlist=get_object_or_404(Wishlist, user=request.user)
+    wishlist.add(product_attribute)
+    wishlist.save()
+    pass
+
+
+
+
+
+def html_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = BytesIO()
+    pdfs = pisa.pisaDocument(
+        src=BytesIO(html.encode('UTF-8')),
+        dest=result,
+        encoding='UTF-8'
+    )
+    pdf_file = result.getvalue()
+    file_data = ContentFile(pdf_file)
+    file_data.name = 'test.pdf'
+    # pdfff = Pdf.objects.create(pdf=file_data)
+    # pdfff.save()
+    # print(pdfff)
+    print(file_data, pdf_file)
+    print(pdfs)
+    if not pdfs.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+def topdf(template_src, context):
+    print('mkkomrhd')
+    template = get_template(template_src)
+    html  = template.render(context)
+    conf = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
+    css_path = r"C:/Users/elbin/Desktop/First project/foodstore/static/css/invoice.css"
+    print('agmakg')
+    pdf = pdfkit.from_string(html, template_src, configuration=conf, css=css_path)
+    print(pdf)
+    return pdf
+
+
+def invoice(request, uid):
+    order=Order.objects.get(uid=uid)
+    context={'order':order}
+    if request.method=='POST':
+        r=html_to_pdf(
+            'pdf.html',
+            context
+        )
+        return r
+
+    return render(request, 'pdf.html', context)

@@ -17,11 +17,12 @@ class Coupon(BaseModel):
     expire_date=models.DateTimeField(default=True)
     
     def save(self, *args, **kwargs):
-
-        
-
-        if self.no_of_coupons==0:
+        print(self.no_of_coupons)
+        if int(self.no_of_coupons) == 0  :
+            print(self.no_of_coupons)
             self.is_expired=True
+        else:
+            self.is_expired=False
         super(Coupon, self).save(*args, **kwargs)
 
     def __str__(self) -> str:

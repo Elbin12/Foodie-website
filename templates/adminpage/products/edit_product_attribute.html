@@ -1,0 +1,367 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    {% endblock %}
+
+
+    {% block content %}
+
+    <form action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit product attributes</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body"  id="attributeContainer">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label" >Food item's name</label>
+                                <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                                    <select class="form-select" name="product" id="product">
+                                        <option  selected></option>
+                                        <option >{{product_attribute.product.product_name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <span id="product_nameError"></span>
+                            </div>
+                            <h6 class="ml-auto"  for="">Add attribute <i class="fa-solid fa-plus" style="cursor: pointer;" onclick="get_attributes()"></i> </h6>
+                            {% for value in product_attribute.value.all %}
+                            <div class="d-flex justify-content-between">
+                                <div style="width: 50%;">
+                                    <div class="mb-4">
+                                        <label for="product_brand" class="form-label">Edit attributes</label>
+                                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="width: 150px;">
+                                            <select class="form-select attribute" name="attribute" onclick="get_attribute(this)" id="attribute">
+                                                <option  selected>{{value.attribute}}</option>
+                                                {% for attribute in attributes %}
+                                                    <option>{{ attribute.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span id="attributeError"></span>
+                                    </div>
+                                </div>
+                                <div style="width: 50%;">
+                                    <div class="mb-4">
+                                        <label for="product_brand" class="form-label">Add values</label>
+                                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3" style="width: 150px;">
+                                            <select class="form-select values-select" name="values" id="values">
+                                                <option  selected>{{value}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <span id="valueError"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            
+                        </div>
+                    </div> <!-- card end// -->
+                    <!-- <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label" >Description</label>
+                                <textarea placeholder="Type here" name="description" id="description" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="mb-4">
+                        <span id="descriptionError"></span>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="ml-auto"  for="">Add Images <i class="fa-solid fa-plus" style="cursor: pointer;" onclick="addimage()"></i> </h6>
+                            <div>
+                                <label class="form-label">Images</label>
+                                <input class="form-control" name="image" id="image" type="file" multiple>
+                                <div id="add-image">
+                                    
+                                </div>
+                            </div>
+                        </div> -->
+                    <!-- </div>
+                    <div class="mb-4">
+                        <span id="imageError"></span>
+                    </div>
+                </div> -->
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                <input type="text" name="price" id="price" placeholder="Type here" class="form-control">
+                            </div>
+                            <div class="mb-4">
+                                <span id="priceError"></span>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div>
+                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
+                    </div>
+                    {% for message in messages %}
+                    <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </form>
+
+    <script>
+        function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+function validateForm(){ 
+    var product_name = document.getElementById('product').value;
+    var price = document.getElementById('price').value;
+    var attribute=document.getElementById('attribute').value;
+    var value=document.querySelectorAll('.values-select');
+    
+    console.log(product_name, value)
+    
+    var attributeError = document.getElementById('attributeError');
+    var valueError = document.getElementById('valueError');
+    var product_nameError = document.getElementById('product_nameError');
+    var priceError = document.getElementById('priceError');
+
+    product_nameError.innerHTML = '';
+    attributeError.innerHTML = '';
+    valueError.innerHTML = '';
+    priceError.innerHTML='';
+
+    if (product_name===""){
+        product_nameError.innerHTML = 'product name is required';
+        return false;
+    }
+    if (attribute===""){
+        attributeError.innerHTML = 'attribute is required';
+        return false;
+    }
+
+    var valuesArray = Array.from(value);
+    console.log(valuesArray.length)
+    value.forEach(function(element) {
+        if (element.value!=='' && element.value !== null && element.value !== undefined) {
+            console.log(element.value,'kkopoo')
+            valuesArray.push(element.value);
+        } 
+        else {
+            valueError.innerHTML = 'value is required';
+            value='';
+        }
+    });
+
+    if (value===""){
+        valueError.innerHTML = 'value is required';
+        return false;
+    }
+
+
+    if (price==="" ){
+        priceError.innerHTML = 'price is required';
+        return false;
+    }
+    price = parseFloat(price);
+
+    if (price<0){
+        priceError.innerHTML = 'Price must be positive';
+        return false;
+    }
+    return true;
+}
+
+
+
+
+
+        function get_attribute(name){
+            var attribute=name.value;
+
+            const parentContainer = name.closest('.d-flex'); // Find the parent container
+            if (!parentContainer) return; // Exit if the parent container is not found
+
+            const valuesSelect = parentContainer.querySelector('.values-select');
+            console.log(valuesSelect)
+
+            fetch('/product/get_attribute_values/', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body : JSON.stringify({'attribute':attribute})
+            })
+            .then(response =>{
+                return response.json()
+            })
+            .then(data =>{
+                console.log(data);
+                show(data, valuesSelect)
+            })
+        }
+
+
+function show(data, valuesSelect){
+let option = '';
+valuesSelect.innerHTML='';
+valuesSelect.innerHTML+='<option value="" selected></option>';
+
+for (let value of data.values){
+    option += `<option>
+    ${value.value}
+    </option>`
+}
+valuesSelect.innerHTML+=option;
+
+}
+
+
+function get_attributes(){
+    attributes=document.querySelectorAll('.attribute');
+    var attributeValues = [];
+    console.log(attributeValues, attributeValues.length)
+    attributes.forEach(function(element) {
+        if (element.value.trim() !== '') {
+            attributeValues.push(element.value);
+        }
+    });
+    console.log(attributeValues, attributeValues.length)
+    var attributeError=document.getElementById('attributeError')
+    attributeError.textContent='';
+    if (attributeValues.length === 0){
+        console.log('okroirhion',attributeValues)
+        var attributeError=document.getElementById('attributeError')
+        attributeError.textContent='Please add one attribute and values';
+    }
+    else{
+        console.log(attributeValues.length,'injoiobi');
+    fetch('/product/get_attributes/', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body : JSON.stringify({'attributes':attributeValues})
+        })
+        .then(response =>{
+            return response.json()
+        })
+        .then(data =>{
+            addattribute(data.excluded_attributes)
+        })
+    }
+}
+
+
+    // Function to add a new attribute and corresponding values dropdowns
+    function addattribute(excluded_attributes) {
+    var container = document.getElementById('attributeContainer');
+    var mainContainer = document.createElement('div');
+    mainContainer.className = 'd-flex justify-content-between';
+
+    // Create first column container
+    var column1 = document.createElement('div');
+    column1.style.width = '50%';
+
+    // Create attribute selection elements
+    var attributeContainer = document.createElement('div');
+    attributeContainer.className = 'mb-4';
+
+    var attributeSelectDiv = document.createElement('div');
+    attributeSelectDiv.className = 'col-md-3 col-12 me-auto mb-md-0 mb-3';
+    attributeSelectDiv.style.width = '150px';
+
+    var attributeSelect = document.createElement('select');
+    attributeSelect.className = 'form-select';
+    attributeSelect.name = 'attribute';
+    attributeSelect.id = 'attribute';
+    attributeSelect.onclick = function() { get_attribute(this); };
+
+    var defaultOption = document.createElement('option');
+    defaultOption.selected = true;
+    defaultOption.textContent = '';
+
+    // Add options from excluded attributes
+    excluded_attributes.forEach(attribute => {
+        var attributeOption = document.createElement('option');
+        attributeOption.textContent = attribute.name;
+        attributeSelect.appendChild(attributeOption);
+    });
+
+    // Add category error span
+    var categoryErrorSpan = document.createElement('span');
+    categoryErrorSpan.id = 'categoryError';
+
+    // Create second column container
+    var column2 = document.createElement('div');
+    column2.style.width = '50%';
+
+    // Create values selection elements
+    var valuesContainer = document.createElement('div');
+    valuesContainer.className = 'mb-4';
+
+    var valuesSelectDiv = document.createElement('div');
+    valuesSelectDiv.className = 'col-md-3 col-12 me-auto mb-md-0 mb-3';
+    valuesSelectDiv.style.width = '150px';
+
+    var valuesSelect = document.createElement('select');
+    valuesSelect.className = 'form-select values-select';
+    valuesSelect.name = 'values';
+    valuesSelect.id = 'values';
+
+    var defaultOption2 = document.createElement('option');
+    defaultOption2.selected = true;
+    defaultOption2.textContent = '';
+
+    // Add sub-category error span
+    var subCategoryErrorSpan = document.createElement('span');
+    subCategoryErrorSpan.id = 'sub_categoryError';
+
+    // Append columns to main container
+    attributeSelect.appendChild(defaultOption);
+    attributeSelectDiv.appendChild(attributeSelect);
+    attributeContainer.appendChild(attributeSelectDiv);
+    column1.appendChild(attributeContainer);
+    column1.appendChild(categoryErrorSpan);
+    valuesSelect.appendChild(defaultOption2);
+    valuesSelectDiv.appendChild(valuesSelect);
+    valuesContainer.appendChild(valuesSelectDiv);
+    column2.appendChild(valuesContainer);
+    column2.appendChild(subCategoryErrorSpan);
+    mainContainer.appendChild(column1);
+    mainContainer.appendChild(column2);
+    container.appendChild(mainContainer);
+}
+
+
+    </script>
+        
+    {% endblock content %}
+    

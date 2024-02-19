@@ -9,6 +9,10 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.http import HttpResponseBadRequest
 from django.core.cache import cache
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.core.files import File as DjangoFile
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 
 # Create your views here.
@@ -25,11 +29,21 @@ def get_product(request,uid):
     category=Category.objects.get(uid=product.Category.uid)
     products=Product.objects.filter(Category=category).exclude(uid=product.uid)
     product_attributes=ProductAttribute.objects.filter(product=product)
-    values_list = []
+    print(product_attributes)
+    d={}
+    for i in product_attributes:
+        pro_attrbute=i
+        break
     for product_attribute in product_attributes:
-        values_list.extend(product_attribute.value.all())
-    print(values_list)
-    context={'product':product, 'other_images':images, 'flat':flat, 'products':products ,'values':values_list}
+        for value in product_attribute.value.all():
+            key = value.attribute
+            if key in d:
+                if value not in d[key]:
+                    d[key].append(value)
+            else:
+                d[key] = [value]
+    print(d)
+    context={'product':product, 'other_images':images, 'flat':flat,'pro_attrbute':pro_attrbute, 'products':products , 'dict':d.items()}
     return render(request, 'products/product.html', context)
 
 def get_value_price(request):
@@ -43,6 +57,42 @@ def get_value_price(request):
 
         data={'new_price':product_attribute.new_price}
         return JsonResponse(data)
+
+def selectvariants(request):
+    if request.method=='POST':
+        data=json.loads(request.body)
+        valueby=data['value']
+        key=data['attribute']
+        selected_values=data['selected_values']
+        product_uid=data['product_uid']
+        product=Product.objects.get(uid=product_uid)
+
+        print(selected_values)
+        selected=[]
+        for key, values in selected_values.items():
+            print(values)
+            val=Attribute_values.objects.get(value=values)
+            selected.append(val.uid)
+        print(selected)
+
+        try:
+            pro_attrbute=ProductAttribute.objects.filter(product=product).filter(value=selected[0]).filter(value=selected[1]).first()
+            print(pro_attrbute.new_price,'gfdf')
+            new=[]
+            product_attributes=ProductAttribute.objects.filter(product=product)
+            print(product_attributes)
+            for product_attribute in product_attributes.all():
+                for value in product_attribute.value.all():
+                    value=Attribute_values.objects.get(value=value)
+                    attribute=Attributes.objects.get(name=value.attribute)
+                    if attribute.name != key:
+                        new.append(value.value)
+            print(new)
+            data={'values':new,'price':f'₹ {pro_attrbute.new_price}', 'pro_attrbute_uid':pro_attrbute.uid}
+            return JsonResponse(data)
+        except:
+            data={'price':'Currently not available.'}
+            return JsonResponse(data) 
 
 
 
@@ -70,15 +120,7 @@ def payment_with_wallet(request,data, uid, discount):
         product_name=data['product_name']
         payment_method=data['payment_method']
 
-        product=Product.objects.get(uid=uid)
-        product_image=product.product_images.first()
-        product_image_file = File(product_image.image.file)
-
-        order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total, payment_method=payment_method)
-        if discount:
-            order.coupon_discount=discount
-            order.save()
-        Ordered_item.objects.create(order_id=order,ordered_product_name=product_name, unit_price=unit_price,qty=quantity, image=product_image_file)
+        product_attribute=ProductAttribute.objects.get(uid=uid)
 
         if wallet.balance > int(discount_price):
             wallet.balance -= int(discount_price)
@@ -86,22 +128,73 @@ def payment_with_wallet(request,data, uid, discount):
         else:
             raise ValueError('Insufficient balance in your wallet')
 
+        order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total, payment_method=payment_method)
+        if discount:
+            order.coupon_discount=discount
+            order.save()
+        ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product_name, unit_price=unit_price,qty=quantity)
+        ordered_item.image=product
+        variants=[]
+        for i in product_attribute.value.all():
+            variants.append(i.value)
+        ordered_item.product_variants=variants
+        ordered_item.save()
+
         Transaction.objects.create(wallet=wallet, amount=discount_price, transaction_type=Transaction.Type.PURCHASED_PRODUCT)
 
+        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
+        data={'success':order.uid}
+        return data
+    else:
+        cart=Cart.objects.get(user=user)
+        cart_items=Cart_item.objects.filter(cart=cart)
+        name=data['name']
+        mob=data['mob']
+        address=data['address']
+        sub_total=data['final_price']
+        payment_method=data['payment_method']
+        discount_price=sub_total
+
+        if wallet.balance > int(discount_price):
+            wallet.balance -= int(discount_price)
+            wallet.save()
+        else:
+            raise ValueError('Insufficient balance in your wallet')
+        
+        order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total,payment_method=payment_method)
+        if discount:
+            order.coupon_discount=discount
+            order.save()
+        for item in cart_items:
+            print(item.product_attribute)
+            product_attribute=ProductAttribute.objects.get(uid=item.product_attribute.uid)
+            print(product_attribute)
+            product=Product.objects.get(uid=item.product.uid)
+            ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=item.qty)
+            ordered_item.image=product
+            variants=[]
+            for i in product_attribute.value.all():
+                variants.append(i.value)
+            ordered_item.product_variants=variants
+            ordered_item.save()
+
+            cart_items.delete()
+            cart.save()
+        
+        Transaction.objects.create(wallet=wallet, amount=discount_price, transaction_type=Transaction.Type.PURCHASED_PRODUCT)
         Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
         data={'success':order.uid}
         return data
 
 
 
-
-
 @login_required(login_url='account:login')
 def checkout(request, uid=None):
+    print(uid)
     user=User.objects.get(username=request.user)
     if uid:
-        product=Product.objects.get(uid=uid)
-        context={'product':product, 'addresses':Address.objects.filter(user=user).order_by('-created_at'), 'all_coupons':Coupon.objects.filter(is_expired=False)}
+        product_attribute=ProductAttribute.objects.get(uid=uid)
+        context={'product_attribute':product_attribute, 'addresses':Address.objects.filter(user=user).order_by('-created_at'), 'all_coupons':Coupon.objects.filter(is_expired=False)}
 
         if request.method=='POST':
             data = json.loads(request.body)
@@ -114,11 +207,11 @@ def checkout(request, uid=None):
             address=data['address']
             product_name=data['product_name']
             payment_method=data['payment_method']
-            print(payment_method, 'ijohgaszgfdf')
-            product_image=product.product_images.first()
-            product_image_file = File(product_image.image.file)
-            print(product_image_file, product_image)
 
+            print(payment_method,product_attribute.product, 'ijohgaszgfdf')
+            print(product_attribute.product.uid)
+
+            product=Product.objects.get(uid=product_attribute.product.uid)
             discount=None
 
             if 'selected_coupon' in data:
@@ -180,7 +273,14 @@ def checkout(request, uid=None):
                 if discount:
                     order.coupon_discount=discount
                     order.save()
-                Ordered_item.objects.create(order_id=order,ordered_product_name=product_name, unit_price=unit_price,qty=quantity, image=product_image_file)
+                ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=quantity)
+                ordered_item.image=product
+                variants=[]
+                for i in product_attribute.value.all():
+                    variants.append(i.value)
+                ordered_item.product_variants=variants
+                    
+                ordered_item.save()
 
                 Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
                 
@@ -204,7 +304,7 @@ def checkout(request, uid=None):
 
             if 'selected_coupon'in data:
                 coupon_uid=data['selected_coupon']
-                discount_price=data['discount']
+                discount_price=cart.total - int(data['discount'])
                 coupon=Coupon.objects.get(uid=coupon_uid)
                 discount=coupon.discount_price
                 if coupon.is_expired==False:
@@ -249,6 +349,16 @@ def checkout(request, uid=None):
                     print('Error creating Razorpay order:', str(e))
                     return JsonResponse({'error': 'Internal Server Error'}, status=500)
                 
+            elif data['payment_method']=='Wallet':
+                print('bibnokl')
+                try:
+                    message=payment_with_wallet(request,data, uid, discount)
+                    print('ijnjnj',message)
+                    print('success',message['success'])
+                    return JsonResponse({'url':'/products/order_success/'+str(message['success'])})
+                except ValueError as e:
+                    return JsonResponse({'fail': str(e)})
+
             else:
                 print('bioul;nlkj')
                 order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total,payment_method=payment_method)
@@ -256,10 +366,15 @@ def checkout(request, uid=None):
                     order.coupon_discount=discount
                     order.save()
                 for item in cart_items:
+                    product_attribute=ProductAttribute.objects.get(uid=item.product_attribute.uid)
                     product=Product.objects.get(uid=item.product.uid)
-                    product_image=product.product_images.first()
-                    product_image_file = File(product_image.image.file)
-                    Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product.price, qty=item.qty, image=product_image_file)
+                    ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=item.qty)
+                    ordered_item.image=product
+                    variants=[]
+                    for i in product_attribute.value.all():
+                        variants.append(i.value)
+                    ordered_item.product_variants=variants
+                    ordered_item.save()
                 cart_items.delete()
                 cart.save()
                 Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
@@ -317,15 +432,20 @@ def paymenthandler(request, amount):
                             payment_method=data['payment_method']
 
                             product=Product.objects.get(uid=product_uid)
-                            product_image=product.product_images.first()
-                            product_image_file = File(product_image.image.file)
 
                             order_user=User.objects.get(id=user)
                             order=Order.objects.create(user=order_user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total, payment_method=payment_method)
                             if discount:
                                 order.coupon_discount=discount
                                 order.save()
-                            Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name, unit_price=unit_price,qty=quantity, image=product_image_file)
+                            ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name, unit_price=unit_price,qty=quantity)
+                            ordered_item.image=product
+                            product_attribute = ProductAttribute.objects.get(product=product)
+                            variants=[]
+                            for i in product_attribute.value.all():
+                                variants.append(i.value)
+                            ordered_item.product_variants=variants
+                            ordered_item.save()
                 
                             print(sub_total, address)
                         else:
@@ -351,10 +471,17 @@ def paymenthandler(request, amount):
                                 order.save()
 
                             for item in cart_items:
+                                product_attribute=ProductAttribute.objects.get(uid=item.product_attribute.uid)
                                 product=Product.objects.get(uid=item.product.uid)
-                                product_image=product.product_images.first()
-                                product_image_file = File(product_image.image.file)
-                                Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product.price, qty=item.qty, image=product_image_file)
+
+                                ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=item.qty)
+                                ordered_item.image=product
+                                variants=[]
+                                for i in product_attribute.value.all():
+                                    variants.append(i.value)
+                                ordered_item.product_variants=variants
+                                ordered_item.save()
+
                             cart_items.delete()
                             cart.save()
                 
@@ -363,18 +490,16 @@ def paymenthandler(request, amount):
                     Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.PAYMENT, is_paid=True, razorpay_order_id=razorpay_order_id, rarzorpay_payment_id=payment_id, razorpay_payment_signature=signature, amount=discount_price)
                     razorpay_client.payment.capture(payment_id, amount)
                     print('payment captured',order.uid)
- 
+
                     return redirect('products:order_success',order.uid)
                 except:
                     print('failed')
-
                     return render(request, 'paymentfail.html')
             else:
                 print('fail')
                 return render(request, 'paymentfail.html')
         except:
-
-            return HttpResponseBadRequest()
+            return redirect('products:cart_checkout')
     else:
         return redirect('account:login')
 
@@ -388,65 +513,95 @@ def order_success(request, uid):
     return render(request, 'products/order_success.html', context)
 
 def shop_page(request):
-    context={'products':Product.objects.filter(is_listed=True).order_by('price'), 'categories':Category.objects.all()}
-    if request.method=='POST':
-        data=json.loads(request.body)
-        categories=data['categories']
-        sortbyprice=data['sortbyprice']
-        print(categories)
-        if categories:
-            new = []
-            for category in categories:
-                cat=Category.objects.get(category_name=category)
-                products=Product.objects.filter(Category=cat).order_by('price')
-                print(cat)
-                for product in products:
-                    image = ProductImage.objects.filter(product=product).first()
+    products = Product.objects.filter(is_listed=True)
 
-                    product_info = {
-                        'name': product.product_name,
-                        'price': product.price,
-                        'image':image.image.url
-                    }
-                    new.append({'product': product_info,})
-            print(products, new)
-            if sortbyprice=='1':
-                new_sorted = sorted(new, key=lambda x: x['product']['price'])
-            else:
-                new_sorted = sorted(new, key=lambda x: x['product']['price'], reverse=True)
-            data={'products':new_sorted}
-            return JsonResponse(data)
-        else:
-            if sortbyprice=='1':
-                products=Product.objects.filter(is_listed=True).order_by('price')
-            else:
-                products=Product.objects.filter(is_listed=True).order_by('-price')
-            new=[]
-            for product in products:
-                image = ProductImage.objects.filter(product=product).first()
+    if request.method=='GET':
+        filter_value = request.GET.getlist('category')
+        sort_value = request.GET.get('sortbyprice')
 
-                product_info = {
-                    'name': product.product_name,
-                    'price': product.price,
-                    'image':image.image.url
-                }
-                new.append({'product': product_info})
-            data={'products':new}
-            return JsonResponse(data)
+    print(filter_value, sort_value)
+
+    if filter_value:
+        products= products.filter(Category__category_name__in=filter_value)
+    if sort_value:
+        if sort_value == '1':
+            print('1')
+            products = products.order_by('price')
+        elif sort_value == '2':
+            products = products.order_by('-price')
+
+    page_number = request.GET.get('page')
+    paginator = Paginator(products, 3)
+    page = paginator.get_page(page_number)
+
+    context = {'page': page, 'categories': Category.objects.all()}
     return render(request, 'shop.html', context)
+
+
+# if request.method=='POST':
+#         data=json.loads(request.body)
+#         print(request.body)
+#         categories=data['categories']
+#         sortbyprice=data['sortbyprice']
+#         print(categories)
+#         if categories:
+#             new = []
+#             for category in categories:
+#                 cat=Category.objects.get(category_name=category)
+#                 products=Product.objects.filter(Category=cat).order_by('price')
+#                 print(cat)
+#                 for product in products:
+#                     image = ProductImage.objects.filter(product=product).first()
+
+#                     product_info = {
+#                         'name': product.product_name,
+#                         'price': product.price,
+#                         'image':image.image.url
+#                     }
+#                     new.append({'product': product_info,})
+#             print(products, new)
+#             if sortbyprice=='1':
+#                 new_sorted = sorted(new, key=lambda x: x['product']['price'])
+#             else:
+#                 new_sorted = sorted(new, key=lambda x: x['product']['price'], reverse=True)
+#             data={'products':new_sorted}
+#             return JsonResponse(data)
+#         else:
+#             if sortbyprice=='1':
+#                 products=Product.objects.filter(is_listed=True).order_by('price')
+#                 if search:
+#                     products=products_by_search.order_by('price')
+#             else:
+#                 products=Product.objects.filter(is_listed=True).order_by('-price')
+#                 if search:
+#                     products=products_by_search.order_by('price')
+#             new=[]
+#             for product in products:
+#                 image = ProductImage.objects.filter(product=product).first()
+
+#                 product_info = {
+#                     'name': product.product_name,
+#                     'price': product.price,
+#                     'image':image.image.url
+#                 }
+#                 new.append({'product': product_info})
+#             data={'products':new}
+#             return JsonResponse(data)
 
 
 def apply_coupon(request):
     if request.method=='POST':
         data=json.loads(request.body)
+        print(request.body)
         coupon_uid=data['coupon_uid']
         total=data['total']
         coupon=Coupon.objects.get(uid=coupon_uid,)
-        if coupon.is_expired==True:
+        print(total,coupon.minimum_amount)
+        if coupon.is_expired==True or coupon.no_of_coupons==0:
             data = {'fail':'Coupon Expired'}
             return JsonResponse(data)
         elif int(total)>=coupon.minimum_amount:
-            discount=int(total)-coupon.discount_price
+            discount=coupon.discount_price
             data={'success':'coupon applied', 'discount':discount}
             return JsonResponse(data)
         else:

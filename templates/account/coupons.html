@@ -111,18 +111,18 @@ p {
 
             {% if applied_coupons %}
             <div class="coupons">
-                <h4 class="mb-4">Applied Coupons</h4>
+                <h4 class="mb-4">Expired Coupons</h4>
             {% for coupon in applied_coupons %}
             <div class="row coupon-card">
                 <div class="col-md-8">
                     <div class="coupon-details">
-                        <div class="coupon-title">{{coupon.coupon.coupon_code}}</div>
-                        <div class="coupon-description-text">Get extra <span style="font-weight: bold;">₹ {{coupon.coupon.discount_price}} off</span> on purchasing products above ₹{{coupon.coupon.minimum_amount}} (price inclusive of cashback/coupon)</div>
+                        <div class="coupon-title">{{coupon.coupon_code}}</div>
+                        <div class="coupon-description-text">Get extra <span style="font-weight: bold;">₹ {{coupon.discount_price}} off</span> on purchasing products above ₹{{coupon.minimum_amount}} (price inclusive of cashback/coupon)</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="coupon-validity">
-                        <span>Applied</span>
+                        <span>Expired</span>
                     </div>
                     <div class="view-tc">
                         <span class="terms-condition">View T&amp;C</span>

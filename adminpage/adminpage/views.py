@@ -51,7 +51,11 @@ def admin_logout(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def home(request):
-    return render(request,'adminpage/adminpage/home.html')
+    orders=Order.objects.filter(order_status=Order.OrderStatus.DELIVERED)
+    revenue = Order.objects.filter(order_status=Order.OrderStatus.DELIVERED).aggregate(total_revenue=Sum('total_amount'))['total_revenue'] or 0
+    print(revenue)
+    context={'revenue':revenue, 'count':orders.__len__}
+    return render(request,'adminpage/adminpage/home.html', context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='adminpage:custom_login')
@@ -80,7 +84,7 @@ def block_user(request, id):
 def user_details(request,id):
     user=User.objects.get(id=id)
     profile=Profile.objects.get(user=user)
-    orders=Order.objects.filter(user=user)
+    orders=Order.objects.filter(user=user).exclude(order_status=Order.OrderStatus.CANCELLED_BY_ADMIN).exclude(order_status=Order.OrderStatus.CANCELLED)
     context={'profile':profile, 'orders':orders}
     return render(request, 'adminpage/adminpage/user_details.html',context)
 

@@ -30,7 +30,7 @@ class Sub_category(BaseModel):
 
     def __str__(self) -> str:
         return self.sub_category_name
-    
+
 class Attributes(BaseModel):
     name=models.CharField(max_length=50)
 
@@ -50,7 +50,7 @@ class Product(BaseModel):
     product_name=models.CharField(max_length=100)
     slug = models.SlugField(unique=True, null=True, blank=True)
     Category = models.ForeignKey(Category, on_delete =models.CASCADE, related_name = "products")
-    is_listed=models.BooleanField(default=True)
+    is_listed=models.BooleanField(default=False)
     is_category_listed=models.BooleanField(default=True)
     Sub_category=models.ForeignKey(Sub_category, on_delete=models.CASCADE,null=True, related_name='sub_category')
     price = models.IntegerField()
@@ -66,13 +66,13 @@ class Product(BaseModel):
         return self.product_name
 
 class ProductAttribute(BaseModel):
-    # product_name=models.CharField(max_length=200)
     product=models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_attributes')
     value=models.ManyToManyField(Attribute_values, related_name='product_attributes')
     new_price=models.IntegerField(null=True)        
 
     def __str__(self) -> str:
-        return self.product.product_name
+        values_str = ', '.join(str(value) for value in self.value.all())
+        return f"{self.product.product_name} {values_str}"
 
 class ProductImage(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="product_images")

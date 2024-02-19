@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('accounts', '0021_alter_address_locality'),
-        ('products', '0012_remove_product_attributes_and_more'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

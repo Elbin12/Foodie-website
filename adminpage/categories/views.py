@@ -71,7 +71,7 @@ def add_sub_category(request,uid):
             return redirect('category:add_sub_category',uid)
         else:
             Sub_category.objects.create(category=category_instance,sub_category_name=sub_category)
-            return redirect('adminpage:add_sub_category',uid)
+            return redirect('category:add_sub_category',uid)
     return render(request, 'adminpage/categories/add_sub_category.html',context)
 
 
