@@ -1,0 +1,76 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    {% endblock %}
+
+
+    {% block content %}
+
+    <form action="" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Attribute</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label" >Attribute name</label>
+                                <input type="text" placeholder="Type here" value="{{attribute.name}}" name="attribute" class="form-control" id="product_name">
+                            </div>
+                            <div class="mb-4">
+                                <span id="product_nameError"></span>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label" >slug</label>
+                                <input type="text" placeholder="Type here" name="title" class="form-control" id="product_name">
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label" >Description</label>
+                                <textarea placeholder="Type here" name="description" id="description" class="form-control" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="mb-4">
+                        <span id="descriptionError"></span>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Images</label>
+                                <input class="form-control"   name="image" id="image" type="file">
+                                <img src="/media/{{category.category_image}}" id="image" class="img-sm img-thumbnail" alt="Item">
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="mb-4">
+                        <span id="imageError"></span>
+                    </div>
+                    <div>
+                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
+                    </div>
+                    {% for message in messages %}
+                    <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </form>
+
+    
+    <script src="{% static 'assets/js/add_product.js' %}" type="text/javascript"></script>
+    {% endblock content %}
+    

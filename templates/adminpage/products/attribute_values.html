@@ -1,0 +1,102 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    {% endblock %}
+
+
+    {% block content %}        
+        <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Attribute values for {{attribute.name}}</h2>
+                    <p>Add, edit or delete a attribute value </p>
+                </div>
+                <div>
+                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <form method="post" onsubmit="return validate()">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Attribute value</label>
+                                    <input type="text" placeholder="Type here" name="value" class="form-control" id="sub_category" />
+                                </div>
+                                <div class="mb-4">
+                                    <span id="sub_categoryError"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_slug" class="form-label">Slug</label>
+                                    <input type="text" placeholder="Type here" name="slug" class="form-control"/>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_slug" class="form-label">Attribute</label>
+                                    <input type="text" placeholder="Type here" name="category" readonly value="{{attribute.name}}" class="form-control" id="category" />
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-primary" type="submit">Create Attribute value</button>
+                                </div>
+                                {% for message in messages %}
+                                <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
+                                {% endfor %}
+                            </form>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </th>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Slug</th>
+                                            <th class="text-end">Action</th>
+                                        </tr>
+                                    </thead>
+                                    {% for value in values %}
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </td>
+                                            <td>{{value.uid}}</td>
+                                            <td><b>{{value.value}}</b></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end">
+                                                <div class="dropdown">
+                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="{% url 'product:edit_attribute_value' value.uid %}">Edit info</a>
+                                                        <a class="dropdown-item text-danger" href="">Delete</a>
+                                                    </div>
+                                                </div> <!-- dropdown //end -->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+
+    
+    <script src="{% static 'assets/js/add_sub_category.js' %}" type="text/javascript"></script>
+    {% endblock content %}
+    

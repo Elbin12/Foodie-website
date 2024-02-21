@@ -33,6 +33,7 @@ class Sub_category(BaseModel):
 
 class Attributes(BaseModel):
     name=models.CharField(max_length=50)
+    is_listed = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return self.name
@@ -40,6 +41,7 @@ class Attributes(BaseModel):
 class Attribute_values(BaseModel):
     attribute=models.ForeignKey(Attributes, on_delete=models.CASCADE, related_name='attribute_values')
     value=models.CharField(max_length=50)
+    is_listed = models.BooleanField(default=True)
 
 
     def __str__(self) -> str:

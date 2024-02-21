@@ -3,6 +3,8 @@ from base.models import BaseModel
 from django.core.validators import MinValueValidator
 from datetime import timedelta
 from django.utils import timezone
+from datetime import datetime
+
 
 
 # Create your models here.
@@ -21,8 +23,6 @@ class Coupon(BaseModel):
         if int(self.no_of_coupons) == 0  :
             print(self.no_of_coupons)
             self.is_expired=True
-        else:
-            self.is_expired=False
         super(Coupon, self).save(*args, **kwargs)
 
     def __str__(self) -> str:

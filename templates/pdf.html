@@ -4,9 +4,6 @@
 {% block title %}
 <title>Invoice</title>
 <style>
-    body{
-    font-family: PDF;
-}
 
 .container-1 {
     max-width: 800px;
@@ -43,7 +40,9 @@ th {
 
 {% block another %}
 
+
 <div class="container-1 mt-4">
+<div  id="content">
     <h1 style="color: rgb(96, 166, 192);">Invoice</h1>
     <div class="address">
         <p><strong >User Address:</strong></p>
@@ -70,50 +69,61 @@ th {
             <tbody>
                 {% for item in order.ordered_items.all %}
                 <tr>
-                    <td>{{item.ordered_product_name}}</td>
+                    <td>
+                        {{item.ordered_product_name}} <br>
+                        <span style="color: rgb(175, 144, 103); font-size: small;">
+                            {% for variant in item.product_variants %}
+                                {{variant}}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+
+                    </td>
                     <td>{{item.qty}}</td>
                     <td>{{item.unit_price}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <div>
-            <p>Subtotal : </p>
-            <p>Coupon applied : </p>
-            <p>Grand total : </p>
+        <div class="mt-3">
+            <h6>Subtotal : {{order.subtotal}} </h6>
+            {% if order.coupon_discount %}
+                <h6>Coupon discount : {{order.coupon_discount}}</h6>
+            {% else %}
+            <h6>Coupon discount : 0.00</h6>
+            {% endif %}
+            <h6>Grand total : {{order.total_amount}}</h6>
         </div>
     </div>
-    <form action="" method="post">
-        {% csrf_token %}
-        <button type="submit">print</button>
-    </form>
+</div>
+        <button type="button" class="btn" style="background-color: rgb(199, 161, 115); color: #fff;" onclick="generate_pdf('{{order.uid}}')">print</button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-
+<script>
+    function generate_pdf(uid){
+        const { jsPDF } = window.jspdf;
+ 
+            let doc = new jsPDF();
+            let pdfjs = document.getElementById('content');
+ 
+            doc.html(pdfjs, {
+                callback: function(doc) {
+                    doc.save("invoice_"+uid+".pdf");
+                },
+                x: 12,
+                y: 12,
+    width: 170, //target width in the PDF document
+    windowWidth: 650 //window width in CSS pixels
+});
+    }
+    
+</script>
 
 {% endblock another %}
 
 
 
 
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
-    
-</head>
-<body>
-    
-</body>
-</html>

@@ -54,7 +54,7 @@ def home(request):
     orders=Order.objects.filter(order_status=Order.OrderStatus.DELIVERED)
     revenue = Order.objects.filter(order_status=Order.OrderStatus.DELIVERED).aggregate(total_revenue=Sum('total_amount'))['total_revenue'] or 0
     print(revenue)
-    context={'revenue':revenue, 'count':orders.__len__}
+    context={'revenue':revenue, 'count':orders.__len__, 'orders':Order.objects.all().order_by('-created_at')}
     return render(request,'adminpage/adminpage/home.html', context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -124,6 +124,14 @@ def order_details(request, uid):
         status=request.POST.get('order_status')
         order.order_status=status
         order.save()
+        if (status == 'Cancelled' or status == 'Cancelled by admin') and order.payment_method != 'COD':
+            print(status)
+            user = User.objects.get(username = order.user)
+            wallet = Wallet.objects.get(user = user)
+            Transaction.objects.create(wallet = wallet, amount = order.total_amount ,transaction_type = Transaction.Type.DEPOSIT)
+            wallet.balance+=order.total_amount
+            wallet.save()
+        
         return redirect('adminpage:orders')
     context={'order':order, 'order_statuses':order_statuses, 'ordered_items':ordered_items}
     return render(request, 'adminpage/order/order_details.html', context)
@@ -145,7 +153,7 @@ def approve_cancel_request(request,uid):
 
 
 def coupons(request):
-    context={'all_coupons':Coupon.objects.all()}
+    context={'all_coupons':Coupon.objects.all().order_by('coupon_code')}
     return render(request, 'adminpage/adminpage/coupons.html', context)
 
 
@@ -183,3 +191,12 @@ def edit_coupon(request, uid):
         
         return redirect('adminpage:coupons')
     return render(request, 'adminpage/adminpage/edit_coupon.html', context)
+
+
+def activate_coupon(request, uid):
+    coupon=Coupon.objects.get(uid=uid)
+    coupon.is_expired= not coupon.is_expired
+    print(coupon.is_expired, coupon, 'ijodf')
+    coupon.save()
+    print(coupon.is_expired, coupon, 'ijodf')
+    return redirect('adminpage:coupons')

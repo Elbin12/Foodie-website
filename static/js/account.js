@@ -395,6 +395,7 @@ function submitData(){
 
   if (!selectedAddress) {
     console.error('No address selected');
+    window.alert('No address selected');
     return;
   }
 
@@ -445,43 +446,61 @@ function submitData(){
     })
         .then(response => response.json())
         .then(data => {
-            // Initialize Razorpay and open the checkout dialog
+          console.log(data)
+            if ('expired' in data){
+              myFunction(data.expired)
+            }
+            else{
+              // Initialize Razorpay and open the checkout dialog
             var rzp1 = new Razorpay({
-                key: data.razorpay_merchant_key,
-                amount: data.razorpay_amount,
-                currency: data.currency,
-                name: "Dj Razorpay",
-                order_id: data.razorpay_order_id,
-                callback_url: data.callback_url,
-                handler: function (response) {
-                    // Handle Razorpay response
-                    console.log('Razorpay Payment ID:', response.razorpay_payment_id);
-                    window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
-                    const headers = new Headers();
-                    headers.append('Content-Type', 'application/json');
-                    headers.append('X-CSRFToken', csrftoken);
+              key: data.razorpay_merchant_key,
+              amount: data.razorpay_amount,
+              currency: data.currency,
+              name: "Foodie ",
+              order_id: data.razorpay_order_id,
+              callback_url: data.callback_url,
+              handler: function (response) {
+                  // Handle Razorpay response
+                  console.log('Razorpay Payment ID:', response.razorpay_payment_id);
+                  window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
+                  const headers = new Headers();
+                  headers.append('Content-Type', 'application/json');
+                  headers.append('X-CSRFToken', csrftoken);
 
-                    // Now, send the order details to the server
-                    sendOrderToServer(requestBody);
-                },
-                prefill: {
-                    name: selectedAddress.name,
-                    contact: selectedAddress.mobile_number,
-                },
-                notes: {
-                    address: selectedAddress.address,
-                },
-                theme: {
-                    color: '#3399cc',
-                },
-            });
+                  // Now, send the order details to the server
+                  sendOrderToServer(requestBody);
+              },
+              prefill: {
+                  name: selectedAddress.name,
+                  contact: selectedAddress.mobile_number,
+              },
+              notes: {
+                  address: selectedAddress.address,
+              },
+              theme: {
+                  color: '#3399cc',
+              },
+          });
 
-            rzp1.open();
+          rzp1.open();
+            }
         })
         .catch(error => {
             console.error('Error fetching Razorpay order details:', error);
         });
-} else {
+} 
+else if( final_price > 1000 ){
+  console.log("Products with above Rs. 1000 can't be purchased with Cash On Delivery. Please choose another method.")
+  Swal.fire({
+    position: "center",
+    icon: "error",
+    title: "Products with above Rs. 1000 can't be purchased with Cash On Delivery. Please choose another method.",
+    showConfirmButton: false,
+    timer: 1500
+  });
+
+}
+else {
     // Handle other payment methods or send order details directly
     sendOrderToServer(requestBody, uid);
 }
@@ -559,7 +578,20 @@ function submitData(){
         .catch(error => {
             console.error('Error fetching Razorpay order details:', error);
         });
-} else {
+}
+else if( final_price > 1000 ){
+  console.log("Products with above Rs. 1000 can't be purchased with Cash On Delivery. Please choose another method.")
+  Swal.fire({
+    position: "center",
+    icon: "error",
+    title: "Products with above Rs. 1000 can't be purchased with Cash On Delivery. Please choose another method.",
+    showConfirmButton: false,
+    timer: 1500
+  });
+
+}
+
+ else {
     // Handle other payment methods or send order details directly
     sendOrderToServer(requestBody);
 }

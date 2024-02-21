@@ -4,6 +4,170 @@
 {% block title %}
 <title>login</title>
 <link rel="stylesheet" href="{% static 'css/home.css' %}" >
+
+<style>
+
+.nav {
+      display: flex;
+      flex-wrap: wrap;
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 0.5rem 1rem;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus {
+      text-decoration: none;
+    }
+
+    .nav-link.disabled {
+      color: #6c757d;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .custom-navbar {
+  position: fixed ; /* Fixed position */
+  top: 0; /* Position at the top */
+  width: 100%; /* Full width */
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+    .navbar {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1rem; /* Increased padding for expanded navbar */
+      transition: all 0.3s ease; /* Smooth transition */
+      height: 0;
+    }
+
+    .navbar > .container,
+    .navbar > .container-fluid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-brand {
+      display: inline-block;
+      padding-top: 0.3125rem;
+      padding-bottom: 0.3125rem;
+      margin-right: 1rem;
+      font-size: 1.25rem;
+      line-height: inherit;
+      white-space: nowrap;
+    }
+
+    .navbar-brand:hover,
+    .navbar-brand:focus {
+      text-decoration: none;
+    }
+
+    .navbar-nav {
+      display: flex;
+      flex-direction: column;
+      padding-left: 0;
+      margin-bottom: 0;
+      list-style: none;
+    }
+
+    .navbar-nav .nav-link {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .navbar-collapse {
+      flex-basis: 100%;
+      align-items: center;
+    }
+
+    .navbar-toggler {
+      padding: 0.25rem 0.75rem;
+      font-size: 1.25rem;
+      line-height: 1;
+      background-color: transparent;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+    }
+
+    .navbar-toggler:hover,
+    .navbar-toggler:focus {
+      text-decoration: none;
+    }
+
+    .navbar-toggler-icon {
+      width: 1.5em;
+      height: 1.5em;
+      vertical-align: middle;
+      content: "";
+      background: no-repeat center center;
+      background-size: 100% 100%;
+    }
+
+    .expanded .navbar {
+      padding: 1.5rem 1rem; /* Adjusted padding for expanded navbar */
+    }
+
+    @media (max-width: 575.98px) {
+      .navbar-expand-sm > .container,
+      .navbar-expand-sm > .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+      }
+    }
+
+    @media (min-width: 576px) {
+      .navbar-expand-sm {
+        flex-direction: row;
+      }
+      .navbar-expand-sm .navbar-nav {
+        flex-direction: row;
+      }
+      .navbar-expand-sm .navbar-collapse {
+        display: flex !important;
+      }
+      .navbar-expand-sm .navbar-toggler {
+        display: none;
+      }
+    }
+
+
+    @media (min-width: 992px){
+.navbar-expand-lg {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    background: #000000 !important;
+    position: relative;
+    top: 0;
+    padding: 10px 15px;
+}
+    }
+
+
+
+    #ftco-navbar{
+      background: transparent !important;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    padding: 0;
+    }
+
+
+
+
+</style>
 {% endblock title%}
 
 
@@ -58,7 +222,7 @@
     </footer>
 </div>-->
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
       <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
       <form class="d-flex" method="post" action="{% url 'products:shop_page' %}">
@@ -95,7 +259,7 @@
                 <a class="nav-link active" aria-current="page" href="{%url 'account:app_logout' %}">Log out</a>
               </li>
               {% endif %}
-              <!-- <li class="nav-item dropdown">
+              <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Dropdown
                 </a>
@@ -105,11 +269,31 @@
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="#">Something else here</a></li>
                 </ul>
-              </li> -->
+              </li> 
             </ul>
         </div>
       </div>
     </div>
+</nav> -->
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar" id="ftco-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="ftco-nav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a href="{% url 'products:shop_page' %}" class="nav-link">Shop</a></li>
+        <li class="nav-item"><a href="{% url 'account:account' %}" class="nav-link">Account</a></li>
+        <li class="nav-item"><a href="{% url 'account:cart' %}" class="nav-link">Wishlist</a></li>
+        <li class="nav-item"><a href="{% url 'account:cart' %}" class="nav-link">Cart</a></li>
+        <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
+      </ul>
+    </div>
+  </div>
 </nav>
 {% block another %}
 {% endblock another %}
@@ -178,4 +362,11 @@
     </div>
   </div>
 </div>
+
+<script>
+  // JavaScript to toggle the "expanded" class when the navbar is toggled
+  document.querySelector('.navbar-toggler').addEventListener('click', function() {
+    document.querySelector('.navbar').classList.toggle('expanded');
+  });
+</script>
 {% endblock content %} 

@@ -110,7 +110,7 @@ class Order(BaseModel):
 
 class Ordered_item(BaseModel):
     order_id=models.ForeignKey(Order, on_delete=models.CASCADE, related_name='ordered_items')
-    ordered_product_name=models.CharField(max_length=100, null=True)
+    ordered_product_name=models.CharField(max_length=255, null=True)
     qty=models.IntegerField(default=1) 
     unit_price=models.IntegerField(null=True)
     price = models.IntegerField()

@@ -28,7 +28,7 @@
                     <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                     <form action="" method="post">
                         {% csrf_token %}
-                        {% if order.order_status == 'Cancelled' %}
+                        {% if order.order_status == 'Cancelled' or order.order_status == 'Cancelled by admin'  %}
                         <h5 style="margin-right: 10px;" class="form-input d-inline-block mb-lg-0 mb-15 mw-200">Order is cancelled</h5>
                         {% else %}
                         <select name="order_status" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
@@ -37,8 +37,8 @@
                             <option value="{{status}}" >{{status}}</option>
                             {% endfor %}
                         </select>
-                        {% endif %}
                         <button type="submit" class="btn btn-primary">Save</button>
+                        {% endif %}
                     </form>
                         <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
                     </div>
@@ -54,7 +54,7 @@
                             <div class="text">
                                 <h6 class="mb-1">Customer</h6>
                                 <p class="mb-1">
-                                    {{address.name}}<br> <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br> {{address.mobile_number}}
+                                    {{order.name}}<br> <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br> {{order.mob}}
                                 </p>
                             </div>
                         </article>

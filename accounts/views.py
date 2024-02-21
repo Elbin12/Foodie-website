@@ -517,33 +517,37 @@ def paymenthandler(request, amount):
     print(serialized_data)
     if request.method == "POST":
         # get the required parameters from post request.
-        payment_id = request.POST.get('razorpay_payment_id', '')
-        razorpay_order_id = request.POST.get('razorpay_order_id', '')
-        signature = request.POST.get('razorpay_signature', '')
-        params_dict = {
-            'razorpay_order_id': razorpay_order_id,
-            'razorpay_payment_id': payment_id,
-            'razorpay_signature': signature
-        }
+        try:
+            payment_id = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature = request.POST.get('razorpay_signature', '')
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
 
-        data = json.loads(serialized_data)
-        user=data['user']
- 
-        # verify the payment signature.
-        result = razorpay_client.utility.verify_payment_signature(params_dict)
-        if result is not None:
-            try:
-                amount = int(Decimal(amount) * 100)
-                razorpay_client.payment.capture(payment_id, amount)
-                wallet=Wallet.objects.get(user=user)
-                wallet.balance+=amount/100
-                Transaction.objects.create(wallet=wallet, amount=amount/100, transaction_type=Transaction.Type.DEPOSIT)
-                wallet.save()
-                return redirect('account:wallet')
-            except:
-                print('failed')
-                # if there is an error while capturing payment.
-                return render(request, 'paymentfail.html')
+            data = json.loads(serialized_data)
+            user=data['user']
+    
+            # verify the payment signature.
+            result = razorpay_client.utility.verify_payment_signature(params_dict)
+            if result is not None:
+                try:
+                    amount = int(Decimal(amount) * 100)
+                    razorpay_client.payment.capture(payment_id, amount)
+                    wallet=Wallet.objects.get(user=user)
+                    wallet.balance+=amount/100
+                    Transaction.objects.create(wallet=wallet, amount=amount/100, transaction_type=Transaction.Type.DEPOSIT)
+                    wallet.save()
+                    return redirect('account:wallet')
+                except:
+                    print('failed')
+                    # if there is an error while capturing payment.
+                    return render(request, 'paymentfail.html')
+        except:
+            return redirect('account:wallet')
+            
     else:
         print('fail')
         # if signature verification fails.

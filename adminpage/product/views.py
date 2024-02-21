@@ -253,6 +253,7 @@ def get_attribute_values(request):
     
 def get_attributes(request):
     if request.method=='POST':
+        print('bubobui')
         data = json.loads(request.body)
         attributes = data.get('attributes', [])
         excluded_attributes = Attributes.objects.exclude(name__in=attributes)
@@ -288,3 +289,58 @@ def edit_product_attribute(request, uid):
             
     context={'product_attribute':product_attribute, 'attributes':Attributes.objects.all()}
     return render(request, 'adminpage/products/edit_product_attribute.html', context)
+
+
+
+def add_attribute(request):
+    if request.method == 'POST':
+        attribute = request.POST.get('attribute')
+        if Attributes.objects.filter(name=attribute).exists():
+            messages.warning(request, f"Attribute with name '{attribute}' already exists.")
+            return redirect('product:add_attribute')
+        Attributes.objects.create(name=attribute)
+    context = {'attributes':Attributes.objects.all().order_by('name')}
+    return render(request,'adminpage/products/add_attribute.html', context)
+
+def edit_attribute(request, uid):
+    if request.method == 'POST':
+        new_attribute = request.POST.get('attribute')
+        print(new_attribute)
+        attribute = Attributes.objects.get(uid=uid)
+        attribute.name=new_attribute
+        attribute.save()
+        return redirect('product:add_attribute')
+    print('ghs')
+    context = {'attribute':Attributes.objects.get(uid=uid)}
+    return render(request,'adminpage/products/edit_attribute.html', context)
+
+def delete_attribute(reqest, uid):
+    attribute = Attributes.objects.get(uid=uid)
+    print(attribute, 'ijogjio')
+    attribute.is_listed=not attribute.is_listed
+    # Product.objects.filter(Category=category).update(is_category_listed=category.is_listed)
+    attribute.save()
+    return redirect('product:add_attribute')
+
+def attribute_values(request, uid):
+    attribute = Attributes.objects.get(uid=uid)
+    if request.method == 'POST':
+        value = request.POST.get('value')
+        if Attribute_values.objects.filter(value = value).exists():
+            messages.warning(request, f"Attribute value with name '{value}' already exists.")
+            return redirect('product:attribute_values', uid)
+        Attribute_values.objects.create(attribute=attribute, value = value)
+
+    context = {'values':attribute.attribute_values.all(), 'attribute':attribute}
+    return render(request,'adminpage/products/attribute_values.html', context)
+
+def edit_attribute_value(request, uid):
+    value = Attribute_values.objects.get(uid=uid)
+    if request.method == 'POST':
+        new_value = request.POST.get('value')
+        value.value=new_value
+        value.save()
+        return redirect('product:attribute_values', value.attribute.uid)
+
+    context={'value':Attribute_values.objects.get(uid=uid)}
+    return render(request, 'adminpage/products/edit_attribute_value.html', context)

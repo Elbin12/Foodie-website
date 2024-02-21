@@ -132,8 +132,8 @@ def payment_with_wallet(request,data, uid, discount):
         if discount:
             order.coupon_discount=discount
             order.save()
-        ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product_name, unit_price=unit_price,qty=quantity)
-        ordered_item.image=product
+        ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product_attribute.product.product_name, unit_price=unit_price,qty=quantity)
+        ordered_item.image=product_attribute.product
         variants=[]
         for i in product_attribute.value.all():
             variants.append(i.value)
@@ -142,7 +142,8 @@ def payment_with_wallet(request,data, uid, discount):
 
         Transaction.objects.create(wallet=wallet, amount=discount_price, transaction_type=Transaction.Type.PURCHASED_PRODUCT)
 
-        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
+        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=True, amount=discount_price)
+
         data={'success':order.uid}
         return data
     else:
@@ -182,7 +183,7 @@ def payment_with_wallet(request,data, uid, discount):
             cart.save()
         
         Transaction.objects.create(wallet=wallet, amount=discount_price, transaction_type=Transaction.Type.PURCHASED_PRODUCT)
-        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
+        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=True, amount=discount_price)
         data={'success':order.uid}
         return data
 
@@ -219,6 +220,7 @@ def checkout(request, uid=None):
                 discount_price=data['discount']
                 coupon=Coupon.objects.get(uid=coupon_uid)
                 discount=coupon.discount_price
+                discount_price = int(sub_total) - discount
                 if coupon.is_expired==False and coupon.expire_date>=timezone.now():
                     coupon.no_of_coupons-=1
                     coupon.save()
@@ -515,20 +517,24 @@ def order_success(request, uid):
 def shop_page(request):
     products = Product.objects.filter(is_listed=True)
 
+    if request.method == 'POST':
+        search = request.POST.get('search')
+        products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search)
+
     if request.method=='GET':
         filter_value = request.GET.getlist('category')
         sort_value = request.GET.get('sortbyprice')
 
-    print(filter_value, sort_value)
+        print(filter_value, sort_value)
 
-    if filter_value:
-        products= products.filter(Category__category_name__in=filter_value)
-    if sort_value:
-        if sort_value == '1':
-            print('1')
-            products = products.order_by('price')
-        elif sort_value == '2':
-            products = products.order_by('-price')
+        if filter_value:
+            products= products.filter(Category__category_name__in=filter_value)
+        if sort_value:
+            if sort_value == '1':
+                print('1')
+                products = products.order_by('price')
+            elif sort_value == '2':
+                products = products.order_by('-price')
 
     page_number = request.GET.get('page')
     paginator = Paginator(products, 3)

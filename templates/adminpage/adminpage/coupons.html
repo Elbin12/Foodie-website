@@ -55,6 +55,7 @@
                                 <th scope="col">Discount amount </th>
                                 <th scope="col">Is expired</th>
                                 <th scope="col">Expire date</th>
+                                <th scope="col" class="text-end"> Active </th>
                                 <th scope="col" class="text-end"> Action </th>
                             </tr>
                         </thead>
@@ -67,6 +68,17 @@
                                 <td>{{coupon.discount_price}}</td>
                                 <td><span class="badge rounded-pill alert-warning">{{coupon.is_expired}}</span></td>
                                 <td>{{coupon.expire_date}}</td>
+                                <td>
+                                    {% if coupon.is_expired %}
+                                    <a href="{% url 'adminpage:activate_coupon' coupon.uid %}" class="btn btn-sm font-sm rounded btn-brand">
+                                        <i class="material-icons md-edit"></i> Activate
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'adminpage:activate_coupon' coupon.uid %}" class="btn btn-sm font-sm btn-light rounded">
+                                        <i class="material-icons md-delete_forever"></i> Inactive   
+                                    </a>
+                                    {% endif %}
+                                </td>
                                 <td class="text-end">
                                     
                                     <a href="{% url 'adminpage:edit_coupon' coupon.uid %}" class="btn btn-md rounded font-sm" >Edit</a>
@@ -81,6 +93,7 @@
         </div> <!-- card end// -->
     </main>
     
+
         
 {% endblock content %}
 

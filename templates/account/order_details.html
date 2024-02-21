@@ -250,7 +250,10 @@ a.itemside {
                         {% if order.order_status != "Cancelled" and order.order_status != "Delivered" %}
                         <button style="width: 110px; height: 50px;"  class="btn btn-primary">Cancel Order</button>
                         {% endif %}
-                        <button type="button" > <a href="{% url 'account:invoice' order.uid %}">Invoice</a></button>
+
+                        {% if order.order_status == "Delivered" %}
+                        <button type="button"  class="btn"> <a href="{% url 'account:invoice' order.uid %}" style="text-decoration: none; color: #fff;">Download Invoice</a></button>
+                        {% endif %}
                         </form>
                     </div> <!-- col// -->
                 </div>

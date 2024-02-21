@@ -18,5 +18,9 @@ urlpatterns = [
     path('get_attributes/', views.get_attributes, name='get_attributes'),
     path('product_attributes/', views.product_attributes, name='product_attributes'),
     path('edit_product_attribute/<uid>', views.edit_product_attribute, name='edit_product_attribute'),
-    
+    path('add_attribute/', views.add_attribute, name='add_attribute'),
+    path('edit_attribute/<uid>', views.edit_attribute, name='edit_attribute'),
+    path('delete_attribute/<uid>', views.delete_attribute, name='delete_attribute'),
+    path('attribute_values/<uid>', views.attribute_values, name='attribute_values'),
+    path('edit_attribute_value/<uid>', views.edit_attribute_value, name='edit_attribute_value'),
 ]

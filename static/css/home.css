@@ -6,21 +6,21 @@ p{
   font-size: 12px;
   margin-bottom: 0;
 }
-.navbar{
+/* .navbar{
   height: 5rem;
 }
 .navbar-brand, .nav-link {
-  color: #333; /* Dark text color for navbar links */
+  color: #333; 
 }
 .nav-item{
   width: 5rem;
 }
 .navbar-brand:hover, .nav-link:hover {
-  color: #000; /* Hover color for navbar links */
+  color: #000; 
 }
 .nav-icon{
   width: 3rem;
-}
+} */
 .search{
   border-radius: 30px;
   border: 0;
