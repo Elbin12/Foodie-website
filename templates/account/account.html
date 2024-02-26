@@ -111,7 +111,7 @@
                         <p>To edit the email, you need to verify the email first</p>
                         <div class="d-flex">
                             <input type="email" class="form-control" id="email" name="email" value="{{profile.user.email}}" readonly>
-                            <button id="sentOTP" type="button" onclick="sent()" class="btn" name="sentOTP" style="display: none; font-size: 10px; width: 10%; padding: 0;">sent OTP</button>
+                            <button id="sentOTP" type="button" onclick="sent()" class="btn btn-primary" name="sentOTP" style="display: none; font-size: 10px; width: 10%; padding: 0;">sent OTP</button>
 
                             <input class="form-control" name="OTP" style="display: none; margin-left: 8px;" id="OTP" placeholder="Enter OTP" type="text">
                             <span id="OTPError"></span>
@@ -122,8 +122,8 @@
                     </div>
                 
                     <div class="d-flex">
-                        <button type="submit" class="btn" id="save" style="display: none;">Save Changes</button>
-                        <button type="button" onclick="enableEdit()" id="edit" class="btn">Edit Profile</button>
+                        <button type="submit" class="btn btn-primary" id="save" style="display: none;">Save Changes</button>
+                        <button type="button" onclick="enableEdit()" id="edit" class="btn btn-primary">Edit Profile</button>
                     </div>
                 </form>
             </div>

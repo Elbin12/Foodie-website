@@ -34,6 +34,22 @@ th, td {
 th {
     background-color: #f0f0f0;
 }
+
+table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 5px 0;
+        }
 </style>
 
 {% endblock title%}
@@ -42,7 +58,7 @@ th {
 
 
 <div class="container-1 mt-4">
-<div  id="content">
+<div  id="invoice">
     <h1 style="color: rgb(96, 166, 192);">Invoice</h1>
     <div class="address">
         <p><strong >User Address:</strong></p>
@@ -98,16 +114,20 @@ th {
         <button type="button" class="btn" style="background-color: rgb(199, 161, 115); color: #fff;" onclick="generate_pdf('{{order.uid}}')">print</button>
 </div>
 
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.2/xlsx.full.min.js"></script>
 
 <script>
     function generate_pdf(uid){
         const { jsPDF } = window.jspdf;
  
             let doc = new jsPDF();
-            let pdfjs = document.getElementById('content');
+            let pdfjs = document.getElementById('invoice');
  
             doc.html(pdfjs, {
                 callback: function(doc) {
@@ -119,6 +139,21 @@ th {
     windowWidth: 650 //window width in CSS pixels
 });
     }
+
+
+
+
+
+    function exportToExcel() {
+    // Select the content container
+    var content = document.getElementById('invoice');
+
+    // Convert the content into an Excel file
+    var wb = XLSX.utils.table_to_book(content);
+
+    // Save the workbook as an Excel file
+    XLSX.writeFile(wb, 'invoice.xlsx');
+}
     
 </script>
 

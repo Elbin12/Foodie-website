@@ -230,11 +230,11 @@
       letter-spacing: 2px; }
 
       .ftco-section {
-  padding: 7em 0;
+  padding: 2em 0;
   position: relative; }
   @media (max-width: 767.98px) {
     .ftco-section {
-      padding: 6em 0; } }
+      padding: 1em 0; } }
 
 
       .ion-ios-star-outline {
@@ -253,7 +253,284 @@
 }
 </style>
 
+<style>
+  .section-padding {
+    padding: 25px 0;
+}
 
+.bg-grey-9 {
+    background-color: #f4f5f9;
+}
+
+.heading-tab {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    text-align: left;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.banner-img.style-2 {
+    border: 1px solid #e2e9e1;
+    background-color: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 295px;
+}
+.banner-img {
+    position: relative;
+    clear: both;
+}.banner-img .banner-text {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    padding: 20px 30px;
+}
+
+
+.banner-img .banner-text span {
+    color: #90908e;
+}
+
+.banner-img.style-2 h4 {
+  color: #fff;
+}
+.banner-img .banner-text h4 {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.banner-img:hover img {
+    opacity: 0.9;
+}
+
+
+.bg-grey-9 {
+      background-color: #c2bbbb;
+    }
+    .section-title {
+      color: #333;
+      text-align: center;
+    }
+    .nav-link {
+      color: #333;
+    }
+    .nav-link.active {
+      font-weight: bold;
+    }
+
+    .product-content-wrap {
+      padding: 0 20px 15px 20px;
+    }
+    .product-price {
+      font-weight: bold;
+    }
+
+    .bg-grey-9 {
+  background-color: #f5f5f5;
+}
+.section-title {
+  color: #333;
+  text-align: center;
+}
+.nav-link {
+  color: #333;
+}
+.nav-link.active {
+  font-weight: bold;
+}
+.product-img img {
+  width: 100%;
+  height: auto;
+}
+.product-price {
+  font-weight: bold;
+}
+
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+}
+
+.slider-btn {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  margin: 0 5px;
+}
+
+.product-cart-wrap {
+  max-width: 180px;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #e7e0cc;
+  border-radius: 25px;
+  overflow: hidden;
+  margin-left: 10px;
+  transition: .2s;
+  -moz-transition: .2s;
+  -webkit-transition: .2s;
+  -o-transition: .2s;
+}
+
+@media (max-width: 768px) {
+    .product-cart-wrap {
+        max-width: calc(50% - 35px); /* Set to 50% width on smaller screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .product-cart-wrap {
+        max-width: 40%; /* Set to 100% width on even smaller screens */
+    }
+}
+
+.product-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img img {
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-img:hover img {
+  transform: scale(1.1);
+}
+
+
+
+.product-category a {
+  color: #666;
+  font-size: 14px;
+}
+
+.product-category a:hover {
+  color: #333;
+}
+
+.product-category a::before {
+  content: "/";
+}
+
+.product-category a:first-child::before {
+  content: "";
+}
+
+
+.product-content-wrap p a {
+  color: #333;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.product-content-wrap p a:hover {
+  color: #007bff;
+}
+
+.rating-result {
+  display: inline-block;
+}
+
+.rating-result span {
+  display: inline-block;
+  position: relative;
+  color: #f39c12;
+}
+
+.rating-result span:before {
+  content: "★";
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.rating-result span span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #333;
+}
+
+
+
+.product-price span {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.old-price {
+  color: #999;
+  text-decoration: line-through;
+}
+
+
+
+.categories-section {
+  background-color: #f8f9fa;
+}
+
+.section-title {
+  color: #333;
+}
+
+.category-item {
+  transition: transform 0.3s ease;
+}
+
+.category-item:hover {
+  transform: translateY(-5px);
+}
+
+.categories-section {
+  padding: 50px 0;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.category-item {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.category-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.category-item h3 {
+  margin-top: 20px;
+  font-size: 24px;
+}
+
+.category-item .btn-primary {
+  margin-top: 20px;
+}
+
+
+
+</style>
 
 {% endblock title%}
 
@@ -383,14 +660,13 @@
         </div>
     </div>
 </div> -->
-
+<!-- 
 
 <div class="container">
     <div class="row">
         {% for product in products %}
         <div class="col-lg-3 mb-4">
             <div class="card product-card">
-                <!-- Display the first product image -->
                 <a href="{% url 'products:product' product.uid %}">
                     <img src="/media/{{product.product_images.first.image}}" class="card-img-top product-image" alt="{{ product.product_name }}">
                 </a>
@@ -405,14 +681,153 @@
         </div>
         {% endfor %}
     </div>
-</div>
-<div class="container">
+</div> -->
+
+
+
+
+<section class="bg-grey-9 section-padding">
+  <div class="container pt-25 pb-25" style="background-color: #e9ddc4; padding: 30px;">
+    <div class="heading-tab d-flex mb-4">
+      <div class="heading-tab-left">
+        <h3 class="section-title mb-20"><span>Monthly</span> Best Sell</h3>
+      </div>
+      <div class="heading-tab-right">
+        <ul class="nav nav-tabs right no-border" id="myTab-1" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="nav-tab-one-1" data-bs-toggle="tab" data-bs-target="#tab-one-1" type="button" role="tab" aria-controls="tab-one" aria-selected="true">Featured</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="nav-tab-two-1" data-bs-toggle="tab" data-bs-target="#tab-two-1" type="button" role="tab" aria-controls="tab-two" aria-selected="false">Popular</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="nav-tab-three-1" data-bs-toggle="tab" data-bs-target="#tab-three-1" type="button" role="tab" aria-controls="tab-three" aria-selected="false">New added</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 d-none d-lg-flex">
+        <div class="banner-img style-2">
+          <img style="max-width: 100%;" src="media/product/pexels-ardiansyah-putra-16241419.jpg" alt="">
+          <div class="banner-text">
+            <span>Woman Area</span>
+            <h4 style="margin-top: 5px;">Save 17% on <br>Clothing</h4>
+            <a href="shop-grid-right.html" class="text-white">Shop Now <i class="fi-rs-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9 col-md-12">
+        <div class="tab-contentn" id="myTabContent-1">
+          <!-- Tab One Content -->
+          
+          <div class="tab-pane fade show active" id="tab-one-1" role="tabpanel" aria-labelledby="tab-one-1">
+            <div class="carausel-4-columns-cover arrow-center position-relative">
+              <!-- Products for Tab One -->
+              <div class="slider-arrow slider-arrow-2 carausel-4-columns-arrow" id="carausel-4-columns-arrows">
+                <span class="slider-btn slider-prev slick-arrow" ><i class="fi-rs-angle-left"></i></span>
+                <span class="slider-btn slider-next slick-arrow" ><i class="fi-rs-angle-right"></i></span>
+              </div>
+              <div class="carausel-4-columns carausel-arrow-center slick-initialized slick-slider d-flex " id="carausel-4-columns">
+                <!-- Product 1 -->
+                {% for product in products|slice:":4" %}
+                <div class="product-cart-wrap" >
+                  <!-- Product Image -->
+                  <div class="product-img-action-wrap">
+                    <div class="product-img product-img-zoom">
+                      <a href="shop-product-right.html" tabindex="-1">
+                        <img class="default-img" style="border-radius: 20px;" src="{{product.product_images.first.image.url}}" alt="">
+                      </a>
+                    </div>
+                    <!-- Product Actions -->
+                    <div class="product-action-1">
+                      <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal" tabindex="-1">
+                        <i class="fi-rs-eye"></i>
+                      </a>
+                      <a aria-label="Add To Wishlist" class="action-btn small hover-up" href="shop-wishlist.html" tabindex="-1">
+                        <i class="fi-rs-heart"></i>
+                      </a>
+                      <a aria-label="Compare" class="action-btn small hover-up" href="shop-compare.html" tabindex="-1">
+                        <i class="fi-rs-shuffle"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <!-- Product Content -->
+                  <div class="product-content-wrap">
+                    <div class="product-category">
+                      <a style="text-decoration: none;" href="shop-grid-right.html" tabindex="-1">{{product.Category.category_name}} </a>
+                    </div>
+                    <p style="margin: 0;"><a href="shop-product-right.html" tabindex="-1">{{product.product_name}}</a></p>
+                    <!-- Product Rating -->
+                    <!-- <div class="rating-result" title="90%">
+                      <span>
+                        <span>70%</span>
+                      </span>
+                    </div> -->
+                    <!-- Product Price -->
+                    <div class="product-price">
+                      <span>$152.85 </span>
+                      <span class="old-price">{{product.price}}</span>
+                    </div>
+                    <!-- Add to Cart Button -->
+                    <div class="product-action-1 show">
+                      <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html" tabindex="-1">
+                        <i class="fi-rs-shopping-bag-add"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+          {% endfor %}
+                <!-- Product 2, 3, 4, etc. goes here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- <section class="categories-section py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">Browse Categories</h2>
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="category-item text-center p-4 bg-white rounded shadow">
+          <img src="/media/product/pexels-daniel-reche-3616956.jpg" alt="Category 1" class="img-fluid rounded-circle mb-3">
+          <h3 class="mb-3">Category 1</h3>
+          <a href="category1.html" class="btn btn-primary">View Products</a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="category-item text-center p-4 bg-white rounded shadow">
+          <img src="category2.jpg" alt="Category 2" class="img-fluid rounded-circle mb-3">
+          <h3 class="mb-3">Category 2</h3>
+          <a href="category2.html" class="btn btn-primary">View Products</a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="category-item text-center p-4 bg-white rounded shadow">
+          <img src="category3.jpg" alt="Category 3" class="img-fluid rounded-circle mb-3">
+          <h3 class="mb-3">Category 3</h3>
+          <a href="category3.html" class="btn btn-primary">View Products</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+
+<!-- <div class="container">
     <div class="row">
         <h2 class="text-center mt-4 mb-5">Browse Categories</h2>
         {% for category in categories %}
         <div class="col-md-4">
             <div class="card category-card">
-                    <!-- Display the first product image -->
                     <img src="/media/{{category.category_image }}" class="card-img-top category-image"  alt="{{ category.category_name }}">
     
                 <div class="card-body">
@@ -424,7 +839,7 @@
         </div>
         {% endfor %}
     </div>
-</div>
+</div> -->
 
 <!-- The actual snackbar -->
 <div id="snackbar">Some text some message..</div>

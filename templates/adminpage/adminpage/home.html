@@ -81,7 +81,7 @@
                     <div class="card mb-4">
                         <article class="card-body">
                             <h5 class="card-title">Sale statistics</h5>
-                            <canvas id="myChart" height="120px"></canvas>
+                            <canvas id="Chart" height="120px"></canvas>
                         </article>
                     </div>
                     <div class="row">
@@ -90,42 +90,19 @@
                                 <article class="card-body">
                                     <h5 class="card-title">New Members</h5>
                                     <div class="new-member-list">
+                                        {% for user in users %}
                                         <div class="d-flex align-items-center justify-content-between mb-4">
                                             <div class="d-flex align-items-center">
-                                                <img src="assets/imgs/people/avatar4.jpg" alt="" class="avatar">
                                                 <div>
-                                                    <h6>Patric Adams</h6>
+                                                    <h6>{{user.user.first_name}}</h6>
                                                     <p class="text-muted font-xs">
-                                                        Sanfrancisco
+                                                        {{user.user.last_name}}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
+                                            <p>{{user.user}}</p>
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="assets/imgs/people/avatar2.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Dilan Specter</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="assets/imgs/people/avatar3.jpg" alt="" class="avatar">
-                                                <div>
-                                                    <h6>Tomas Baker</h6>
-                                                    <p class="text-muted font-xs">
-                                                        Sanfrancisco
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                        </div>
+                                        {% endfor %}
                                     </div>
                                 </article>
                             </div>
@@ -359,4 +336,47 @@
                 </nav>
             </div> -->
         </section> <!-- content-main end// -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+        <script>
+            const xValues = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            month = {{ month }} ;
+
+new Chart("Chart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+        label: 'products',
+      data: month ,
+      borderColor: "red",
+      fill: false,
+    },{
+      data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
+      borderColor: "green",
+      fill: false
+    },{
+      data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
+      borderColor: "blue",
+      fill: false
+    }]
+  },
+  options: {
+    legend: {display: true},
+    scales: {
+      yAxes: [{
+        ticks: {
+            min: 0,
+          max: 30,
+          stepSize:5,
+          callback: function(value, index, values) {
+            return value; // Example: Convert numbers to locale-specific string format
+          }
+        }
+      }]
+    }
+  }
+});
+        </script>
         {% endblock content %}

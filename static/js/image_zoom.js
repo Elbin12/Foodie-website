@@ -16,6 +16,13 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
+let image = document.querySelector('.img');
+image.addEventListener('mouseleave', function(){
+    let lens = document.getElementById('lens');
+    console.log('Mouse left image');
+    lens.style.display = 'none';
+});
+
 
 function passUid(uid){
     uid=uid
@@ -43,36 +50,39 @@ function imageZoom(imgID){
     lens.addEventListener("mousemove",moveLens);
     img.addEventListener("touchmove",moveLens)
 
-    function moveLens(event){
+    function moveLens(event) {
         console.log('Mouse moved over image');
-
-        let pos=getCursor(event)
-        console.log('pos:',pos)
-        
-        let positionLeft = pos.x - (lens.offsetWidth/2);
-        let positionTop = pos.y - (lens.offsetHeight/2);
-
+    
+        let pos = getCursor(event);
+        console.log('pos:', pos);
+    
+        let lensWidth = 300; // Adjust as needed
+        let lensHeight = 300; // Adjust as needed
+    
+        let positionLeft = pos.x - (lensWidth / 2);
+        let positionTop = pos.y - (lensHeight / 2);
+    
         console.log('Lens position:', { left: positionLeft, top: positionTop });
-
-        if (positionLeft<0){
-            positionLeft=0
+    
+        // Adjust lens position to stay within image boundaries
+        if (positionLeft < 0) {
+            positionLeft = 0;
         }
-        if(positionTop<0){
-            positionTop=0
+        if (positionTop < 0) {
+            positionTop = 0;
         }
-        if(positionLeft> img.width - lens.offsetWidth/3){
-            positionLeft = img.width - lens.offsetWidth/3
+        if (positionLeft > img.width - lensWidth) {
+            positionLeft = img.width - lensWidth;
         }
-        if(positionTop> img.height - lens.offsetHeight/3){
-            positionTop = img.height - lens.offsetHeight/3
+        if (positionTop > img.height - lensHeight) {
+            positionTop = img.height - lensHeight;
         }
-
-
-        lens.style.left = positionLeft + 'px';
-        lens.style.top = positionTop + 'px';
-
-        lens.style.backgroundPosition= "-" + (pos.x * ratio) + 'px' + " -" + (pos.y * ratio) + 'px';
-
+    
+        lens.style.display = 'block';
+    
+        // Adjust background position to show zoomed image within lens
+        lens.style.backgroundSize = (img.width * ratio) + 'px ' + (img.height * ratio) + 'px';
+        lens.style.backgroundPosition = "-" + (pos.x * ratio - lensWidth / 2) + 'px' + " -" + (pos.y * ratio - lensHeight / 2) + 'px';
     }
 
     function getCursor(e){
@@ -110,7 +120,7 @@ function add_to_cart(uid){
         var selectedValue = value.value;
         selectedValues.push(selectedValue);
     })
-    console.log(selectedValues)
+    console.log(selectedValues, uid)
     fetch('/account/add_to_cart/',{
         method: 'post', // Assuming your backend handles DELETE requests for deletion
         headers: {

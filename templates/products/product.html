@@ -4,6 +4,95 @@
 {% block title %}
     <title>Product Details: {{ product.product_name }}</title>
     <link rel="stylesheet" href="{% static 'css/product.css' %}">
+
+    <style>
+        p{
+            margin-bottom: 1rem;
+        }
+
+        .product-details h3 {
+    font-size: 30px;
+    font-weight: 400; }
+  
+  .product-details .price span {
+    font-size: 30px;
+    color: #000000; }
+  
+  .product-details button i {
+    color: #000000; }
+  
+  .product-details .quantity-left-minus {
+    background: transparent;
+    padding: 0 15px; }
+  
+  .product-details .quantity-right-plus {
+    background: transparent;
+    padding: 0 15px; }
+  
+  .product-details button, .product-details .form-control {
+    height: 40px !important;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #dbcc8f;
+    padding: 10px 20px;
+    background: transparent !important;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    border-radius: 0;
+    font-size: 14px; }
+    .product-details button:hover, .product-details button:focus, .product-details .form-control:hover, .product-details .form-control:focus {
+      text-decoration: none;
+      outline: none; }
+
+      .form-group{
+        margin-bottom: 1rem;
+      }
+  
+  .product-details .form-group {
+    position: relative; }
+    .product-details .form-group .form-control {
+      padding-right: 40px;
+      color: #000000;
+      background: transparent !important; }
+      .product-details .form-group .form-control::-webkit-input-placeholder {
+        /* Chrome/Opera/Safari */
+        color: #4d4d4d; }
+      .product-details .form-group .form-control::-moz-placeholder {
+        /* Firefox 19+ */
+        color: #4d4d4d; }
+      .product-details .form-group .form-control:-ms-input-placeholder {
+        /* IE 10+ */
+        color: #4d4d4d; }
+      .product-details .form-group .form-control:-moz-placeholder {
+        /* Firefox 18- */
+        color: #4d4d4d; }
+    .product-details .form-group .icon {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      font-size: 14px;
+      -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      color: #000000; }
+      .product-details .form-group .icon span {
+        color: #000000; }
+      @media (max-width: 767.98px) {
+        .product-details .form-group .icon {
+          right: 10px; } }
+    .product-details .form-group .select-wrap {
+      position: relative; }
+      .product-details .form-group .select-wrap select {
+        font-size: 13px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        text-transform: uppercase;
+        letter-spacing: 2px; }
+
+
+    </style>
 {% endblock title %}
 
 {% block another %}
@@ -55,11 +144,10 @@
         </div>
     </div> -->
 
-    <div class="container">
+    <!-- <div class="container">
         <div class="row top">
             <div class="col-lg-6 col-md-6 border">
                 <div class="image">
-                    <div id="lens"></div>
                     <img class="img" id="big_{{product.uid}}" onmouseover="passUid('{{product.uid}}')" src="/media/{{product.product_images.first.image}}" alt="">
                 </div>
                 <div class="d-flex other_images">
@@ -69,6 +157,7 @@
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 details">
+                <div id="lens"></div>
                 <div class="product-details">
                     <div class="text">
                         <h2 for="">{{product.product_name}}</h2>
@@ -115,7 +204,84 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
+    <section class="ftco-section mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-5 ftco-animate image">
+                    <img style="max-width: 75%;" id="big_{{product.uid}}" onmouseover="passUid('{{product.uid}}')"  src="/media/{{product.product_images.first.image}}" class="img" alt="Food image">
+                    <div class="d-flex other_images">
+                        {% for image in other_images %}
+                        <img id="small_{{image}}"onmouseover="" onclick="showImage('{{image}}', '{{product.uid}}')" src="/media/{{image}}" style="border: none;" alt="">
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                    <div id="lens"></div>
+                    <h3 id="product_name">{{product.product_name}}</h3>
+                    <input type="hidden" value="{{product.uid}}" id="product_uid">
+                    <input type="hidden" value="{{pro_attrbute.uid}}" id="pro_attrbute_uid">
+                    <div class="rating d-flex">
+                        <p class="text-left mr-4">
+                            <a href="#" class="mr-2">5.0</a>
+                            <a href="#"><span class="ion-ios-star-outline"></span></a>
+                            <a href="#"><span class="ion-ios-star-outline"></span></a>
+                            <a href="#"><span class="ion-ios-star-outline"></span></a>
+                            <a href="#"><span class="ion-ios-star-outline"></span></a>
+                            <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        </p>
+                        <p class="text-left mr-4">
+                            <a href="#" class="mr-2" style="color: #000;">100 <span style="color: #bbb;">Rating</span></a>
+                        </p>
+                        <p class="text-left">
+                            <a href="#" class="mr-2" style="color: #000;">500 <span style="color: #bbb;">Sold</span></a>
+                        </p>
+                    </div>
+                    <p class="price"><span id="product_price">₹ {{pro_attrbute.new_price}}</span></p>
+                    <p id="product_description">{{product.product_description}}</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="form-group d-flex">
+                                {% for key, values in dict %}
+                                <div class="select-wrap mx-2">
+                                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                    <h5>{{key}}</h5>
+                                    <select name="values" data-key="{{ key }}" onclick="selectvariants(this, '{{key}}')" id="values" class="form-control values-select">
+                                        {% for value in values %}
+                                            <option>{{ value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                        {% endfor %}
+                            </div>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="w-100"></div>
+                        <div class="col-md-12">
+                            <p style="color: #000;">80 piece available</p>
+                        </div>
+                        <div>
+                            <p><a href="{% url 'account:add_to_wishlist' pro_attrbute.uid %}" id="add_to_wishlist" style="color: #4d4d4d; text-decoration-line: underline;">Add to Whishlist</a></p>
+                        </div>
+                    </div>
+                    <p>
+                        {% if flat %}
+                        <a class="btn btn-black py-3 px-5 mx-2" onclick="add_to_cart('{{product.uid}}')">Add to Cart</a>
+                        {% else %}
+                        <a class="btn btn-black py-3 px-5 mx-2" onclick="notUser('Please Login to access cart')">Add to Cart</a>
+                        {% endif %}
+
+                        {% if flat %}
+                        <a href="{% url 'products:checkout' pro_attrbute.uid %}" id="buynowbtn" class="btn btn-primary py-3 px-5" >Buy now</a>
+                        {% else %}
+                        <a href="#"  class="btn btn-primary py-3 px-5" onclick="notUser('Please Login to Buy items')">Buy now</a>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="container">
         <div class="row">
@@ -141,6 +307,14 @@
     </div>
 
     <div id="snackbar">Some text some message..</div>
+
+
+
+
+
+    
+
+
     {% if messages %}
         {% for message in messages %}
             <script>alert('{{ message }}')</script>
@@ -164,6 +338,7 @@
             console.log(value.innerHTML,value.value, key)
             pro_attrbute_uid=document.getElementById('pro_attrbute_uid');
             buynowbtn=document.getElementById('buynowbtn');
+            add_to_wishlist = document.getElementById('add_to_wishlist')
             product_price=document.getElementById('product_price');
             product_uid=document.getElementById('product_uid').value;
             values=document.querySelectorAll('.values-select');
@@ -190,9 +365,11 @@
                 if (data.pro_attrbute_uid){
                     pro_attrbute_uid.value=data.pro_attrbute_uid;
                     buynowbtn.href="/products/checkout/"+data.pro_attrbute_uid;
+                    add_to_wishlist.href = "/account/add_to_wishlist/"+data.pro_attrbute_uid;
                 }
                 else{
                     buynowbtn.href='';
+                    add_to_wishlist.href = '';
                 }
             })
         }

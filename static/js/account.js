@@ -68,6 +68,7 @@ function enableEdit(){
         last_name.readOnly=false;
         mobile.readOnly=false;
         but.style.display='block';
+        // edit.className = 'btn btn-black';
         edit.innerHTML='Cancel';
         save.style.display='block';
         genderDisplay.style.display = 'none';

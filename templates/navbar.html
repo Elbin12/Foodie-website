@@ -155,7 +155,7 @@
 
 
     #ftco-navbar{
-      background: transparent !important;
+    background: transparent !important;
     position: absolute;
     top: 20px;
     left: 0;
@@ -277,7 +277,7 @@
 </nav> -->
 
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar" id="ftco-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar" style="background-color:rgb(145, 30, 30)" id="ftco-navbar">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -286,6 +286,9 @@
 
     <div class="collapse navbar-collapse" id="ftco-nav">
       <ul class="navbar-nav ms-auto">
+        <li>
+          <input class="btn btn-primary" type="search" placeholder="search products">
+        </li>
         <li class="nav-item"><a href="{% url 'products:shop_page' %}" class="nav-link">Shop</a></li>
         <li class="nav-item"><a href="{% url 'account:account' %}" class="nav-link">Account</a></li>
         <li class="nav-item"><a href="{% url 'account:cart' %}" class="nav-link">Wishlist</a></li>

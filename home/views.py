@@ -15,6 +15,7 @@ import folium
 import openrouteservice
 import operator
 from functools import reduce
+
 # Create your views here.
 
 

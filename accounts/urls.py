@@ -30,5 +30,7 @@ urlpatterns = [
     path('paymenthandler/<amount>' ,views.paymenthandler, name='paymenthandler'),
     path('check_otp/', views.check_otp, name='check_otp'),
     path('wishlist/', views.wishlist, name='wishlist'),
+    path('add_to_wishlist/<uid>', views.add_to_wishlist, name='add_to_wishlist'),
+    path('whishlist_delete/<uid>', views.whishlist_delete, name='whishlist_delete'),
     path('invoice/<uid>', views.invoice, name='invoice')
 ]

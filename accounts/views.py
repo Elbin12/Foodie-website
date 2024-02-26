@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+
 
 
 from io import BytesIO
@@ -148,8 +150,8 @@ def forgot_password(request):
             hashed_password=make_password(password)
             user.password=hashed_password
             user.save()
-            messages.warning(request,'Password reset done. Login with this password.')
-            return redirect('account:forgot_password')
+            messages.success(request,'Password reset done. Login with this password.')
+            return redirect('account:login')
         else:
             messages.warning(request,"OTP doesn't match")
             return redirect('account:forgot_password')
@@ -160,8 +162,8 @@ def verify(request):
     if request.method=='POST':
         Data=json.loads(request.body)
         email=Data['email']
-        print(email)
-        if User.objects.filter(email=email).exists():
+        user = User.objects.filter(email=email).first()
+        if User.objects.filter(email=email).exists() and Profile.objects.filter(user=user).exists():
             otp = generate_otp()
             print('sent otp',otp)
             request.session['otp'] = otp
@@ -172,7 +174,7 @@ def verify(request):
         else:
             data={'fail':'Account not found'}
             print(data)
-            return JsonResponse(data)      
+            return JsonResponse(data)    
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def add_to_cart(request):
@@ -556,15 +558,27 @@ def paymenthandler(request, amount):
 
 
 def wishlist(request):
-    wishlist=Wishlist.objects.get(user=request.user)
-    return render(request, 'account/wishlist.html')
+    wishlist=Wishlist.objects.get_or_create(user = request.user)
+    w = Wishlist.objects.get(user=request.user)
+    context = {'wishlist':w}
+    return render(request, 'account/wishlist.html', context)
 
 def add_to_wishlist(request,uid):
+    print(uid)
     product_attribute=ProductAttribute.objects.get(uid=uid)
     wishlist=get_object_or_404(Wishlist, user=request.user)
-    wishlist.add(product_attribute)
+    wishlist.products.add(product_attribute)
     wishlist.save()
-    pass
+    return redirect('account:wishlist')
+
+def whishlist_delete(request, uid):
+    product_attribute=ProductAttribute.objects.get(uid=uid)
+    print(product_attribute)
+    wishlist=get_object_or_404(Wishlist, user=request.user)
+    wishlist.products.remove(product_attribute)
+    wishlist.save()
+    return redirect('account:wishlist')
+
 
 
 

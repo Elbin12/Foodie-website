@@ -23,7 +23,7 @@ def admin_login(request):
             return redirect('adminpage:home')
         else:
             messages.error(request, 'You are not admin')
-            return render(request,'adminpage/login.html')
+            return render(request,'adminpage/adminpage/login.html')
     if request.method=='POST':
         username=request.POST.get('username')
         password=request.POST.get('password')
@@ -54,7 +54,20 @@ def home(request):
     orders=Order.objects.filter(order_status=Order.OrderStatus.DELIVERED)
     revenue = Order.objects.filter(order_status=Order.OrderStatus.DELIVERED).aggregate(total_revenue=Sum('total_amount'))['total_revenue'] or 0
     print(revenue)
-    context={'revenue':revenue, 'count':orders.__len__, 'orders':Order.objects.all().order_by('-created_at')}
+    
+
+    chart_month = []
+    for month in range(1,13):
+        c = 0
+        for item in Ordered_item.objects.filter(order_id__order_status=Order.OrderStatus.DELIVERED):
+            print(item,'gg')
+            if item.created_at.month == month:
+                c +=1
+        chart_month.append(c)
+    print(chart_month)
+
+
+    context={'revenue':revenue, 'count':orders.__len__, 'orders':Order.objects.all().order_by('-created_at'), 'users':Profile.objects.all().order_by('-created_at'), 'month' : chart_month}
     return render(request,'adminpage/adminpage/home.html', context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
