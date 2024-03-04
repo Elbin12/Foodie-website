@@ -8,9 +8,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import user_passes_test
 
+from adminpage.adminpage.views import is_superuser
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def add_category(request):
     categories=Category.objects.all().order_by('category_name')
     context={'categories':categories}
@@ -27,7 +29,7 @@ def add_category(request):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_category(request,uid):
     category=Category.objects.get(uid=uid)
     context={'category':category}
@@ -44,10 +46,9 @@ def edit_category(request,uid):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def delete_category(request,uid):
     category=Category.objects.get(uid=uid)
-    print(category)
     category.is_listed=not category.is_listed
     Product.objects.filter(Category=category).update(is_category_listed=category.is_listed)
     category.save()
@@ -55,7 +56,7 @@ def delete_category(request,uid):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def add_sub_category(request,uid):
     category_instance=Category.objects.get(uid=uid)
     categories=Category.objects.all()
@@ -76,7 +77,7 @@ def add_sub_category(request,uid):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_subcategory(request,uid):
     sub_category=Sub_category.objects.get(uid=uid)
     category=Category.objects.get(sub_categories=sub_category)
@@ -90,7 +91,7 @@ def edit_subcategory(request,uid):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def delete_sub_category(request,uid):
     sub_category=Sub_category.objects.get(uid=uid)
     category=Category.objects.get(sub_categories=sub_category)

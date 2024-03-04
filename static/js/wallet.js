@@ -36,17 +36,9 @@ function payment(){
                 key: data.razorpay_merchant_key,
                 amount: data.razorpay_amount,
                 currency: data.currency,
-                name: "Dj Razorpay",
+                name: "Foodie",
                 order_id: data.razorpay_order_id,
                 callback_url: data.callback_url,
-                // handler: function (response) {
-                //     // Handle Razorpay response
-                //     console.log('Razorpay Payment ID:', response.razorpay_payment_id);
-                //     window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
-                //     const headers = new Headers();
-                //     headers.append('Content-Type', 'application/json');
-                //     headers.append('X-CSRFToken', csrftoken);
-                // },
                 theme: {
                     color: '#3399cc',
                 },

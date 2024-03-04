@@ -15,16 +15,17 @@
         </div>
         <div class="card mb-4">
             <header class="card-header">
+                <form id="form_submit" action="" method="get">
+                    {% csrf_token %}
                 <div class="row gx-3">
                     <div class="col-lg-4 col-md-6 me-auto">
-                        <input type="text" placeholder="Search..." class="form-control">
+                        <input type="text" name="search_user" {% if search %} value="{{search}}" {% endif %} placeholder="Search..." class="form-control">
                     </div>
                     <div class="col-lg-2 col-md-3 col-6">
-                        <select class="form-select">
-                            <option>Status</option>
-                            <option>Active</option>
-                            <option>Disabled</option>
-                            <option>Show all</option>
+                        <select name="status" class="form-select" onchange="document.getElementById('form_submit').submit()">
+                            <option {% if not status %} selected {% endif %}>Show all</option>
+                            <option {% if status == 'Active' %} selected {% endif %}>Active</option>
+                            <option {% if status == 'Disabled' %} selected {% endif %}>Disabled</option>
                         </select>
                     </div>
                     <div class="col-lg-2 col-md-3 col-6">
@@ -35,6 +36,7 @@
                         </select>
                     </div>
                 </div>
+            </form>
             </header> <!-- card-header end// -->
             <div class="card-body">
                 <div class="table-responsive">
@@ -48,8 +50,9 @@
                                 <th class="text-end"> Action </th>
                             </tr>
                         </thead>
-                        {% for profile in profiles %}
                         <tbody>
+                            {% if profiles %}
+                            {% for profile in profiles %}
                             <tr>
                                 <td width="40%">
                                     <a href="{% url 'adminpage:edit_user' profile.user.id %}" class="itemside">
@@ -84,8 +87,11 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr><td>No users found</td></tr>
+                            {% endif %}
                         </tbody>
-                        {% endfor %}
                     </table> <!-- table-responsive.// -->
                 </div>
             </div> <!-- card-body end// -->

@@ -106,7 +106,6 @@ function get_sub_category(){
         return response.json()
     })
     .then(data => {
-        console.log(data);
         show(data);
     })
 }
@@ -228,7 +227,6 @@ function sendNewImage(uid){
         return response.json()
     })
     .then(data => {
-        console.log(data);
         if (data.image) {
             imagePreview.src = data.image;
             image_name.textContent=data.image_name;
@@ -268,7 +266,6 @@ function del_image(uid) {
         .then(data => {
           // Handle the response from the server
           if (data.success) {
-            console.log(data)
             Swal.fire({
               title: "Deleted!",
               text: "Image deleted successfully.",

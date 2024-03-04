@@ -11,6 +11,83 @@
         body{
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
+
+        /* #sidebar-collapse{
+            width: 80px;
+            z-index: 2;
+            
+        }
+
+        #sidebar-collapse .user-session{
+            display: none;
+        }
+        #sidebar-collapse .sidebar .icon-text{
+            display: none;
+        }
+        #sidebar-collapse h6{
+            font-size: 10px;
+        } */
+
+/* Expand sidebar when the button is clicked */
+#sidebar-toggle:focus + .sidebar-collapse {
+    left: 0; /* Move the sidebar back into view */
+}
+
+/* Hide sidebar overflow when collapsed */
+.sidebar-collapse.collapsed {
+    left: -10px; /* Keep the sidebar off-screen when collapsed */
+    overflow-y: auto !important; /* Disable vertical scrollbar when sidebar is closed */
+    transition: left 0.3s ease;
+}
+
+
+.screen-overlay{
+    display: none;
+    width: 0%;
+    height: 100%;
+    z-index: 30;
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    background-color: rgba(34, 34, 34, 0.6);
+    -webkit-transition: opacity .2s linear, visibility .1s, width 1s ease-in;
+    transition: opacity .2s linear, visibility .1s, width 1s ease-in;
+}
+
+
+.screen-overlay.show{
+    z-index: 0;
+    -webkit-transition: opacity .5s ease, width 0s;
+    transition: opacity .5s ease, width 0s;
+    opacity: 1;
+    width: 100%;
+    visibility: visible;
+}
+.sidebar-opened {
+    overflow-y: hidden;
+}
+
+
+        @media(max-width: 768px){
+            .sidebar-collapse {
+                position: fixed;
+                top: 0;
+                left: -300px; /* Initially position the sidebar off-screen */
+                width: 250px;
+                height: 100%; /* Set height to cover the entire viewport */
+                background-color: #f8f9fa; /* Add background color for visibility */
+                overflow-y: hidden; /* Enable vertical scrollbar by default */
+            }
+            .screen-overlay{
+                display: block !important;
+            }
+            #sidebar-toggle{
+                display: block !important;
+            }
+        }
+        
     </style>
     {% block title %}
     
@@ -21,6 +98,25 @@
     {% block content %}
 
     {% endblock content %}
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    var sidebarToggle = document.getElementById("sidebar-toggle");
+    var sidebarCollapse = document.getElementById("sidebar-collapse");
+    var screenOverlay = document.getElementById("screen-overlay");
+
+    sidebarToggle.addEventListener("click", function() {
+        sidebarCollapse.classList.toggle("collapsed");
+        screenOverlay.classList.toggle("show");
+        document.body.classList.toggle("sidebar-opened");
+    });
+
+    screenOverlay.addEventListener("click", function() {
+        sidebarCollapse.classList.remove("collapsed");
+        screenOverlay.classList.remove("show");
+        document.body.classList.remove('sidebar-opened');
+    });
+});
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
     

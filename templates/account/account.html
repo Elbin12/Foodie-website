@@ -9,53 +9,10 @@
 
 {% block another %}
 
-<!-- <div class="container">
+<div class="container-fluid" style="margin-left: 0;">
     <div class="row">
-        {% include 'account_sidebar.html' %}
-        <div class="col-lg-8 col-md-8 col-sm-12">
-            <div class="profile-details d-flex flex-column">
-                <h4>Personal Information</h4>
-                <div class="d-flex justify-content-between" style="width: 90%;">
-                    <label for="">username</label>
-                    <p onclick="edit('username')" id="username" style="color: #0d6efd; cursor: pointer; font-size: medium; text-decoration: underline;">Edit</p>
-                </div>
-                <form action="" method="post" onsubmit="return validate()" class="d-flex">
-                    {% csrf_token %}
-                    <input type="text" readonly class="edit_username" name="username" id="user" value="{{profile.user.username}}">
-                    <button id="usernamebutton" type="submit" style="background-color: #0d6efd; height: 50px; margin-top: 0; color: white; border: none; display: none;">save</button>
-                    <span id="usernameError"></span>
-                </form>
-                
-                <div class="d-flex justify-content-between" style="width: 90%;">
-                    <label for="">email</label>
-                    <p onclick="edit('email')" id="email" style="color: #0d6efd; cursor: pointer; font-size: medium; text-decoration: underline;">Edit</p>
-                </div>
-                <form action="" method="post" onsubmit="return validate()" class="d-flex">
-                    {% csrf_token %}
-                    <input type="text" readonly class="edit_email" name="email" id="email_valid" value="{{profile.user.email}}">
-                    <button id="emailbutton" type="submit" style="background-color: #0d6efd; height: 50px; margin-top: 0; color: white; border: none; display: none;">save</button>
-                    <span id="emailError"></span>
-                </form>
-                <div class="d-flex justify-content-between" style="width: 90%;">
-                    <label for="">mobile</label>
-                    <p onclick="edit('mobile')" id="mobile" style="color: #0d6efd; cursor: pointer; font-size: medium; text-decoration: underline;">Edit</p>
-                </div>
-                <form action="" method="post" onsubmit="return validate()"  class="d-flex">
-                    {% csrf_token %}
-                    <input type="text" readonly class="edit_mobile" name="mobile" id="mobile_vaild" value="{{profile.mobile_number}}">
-                    <button id="mobilebutton" type="submit" style="background-color: #0d6efd; height: 50px; margin-top: 0; color: white; border: none; display: none;">save</button>
-                    <span id="mobileError"></span>
-                </form>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
-<div class="container-fluid">
-    <div class="row">
-        {% include 'account_sidebar.html' %}
-        <div class="col-lg-8 col-md-8 col-sm-12">
+{% include 'account_sidebar.html' %}
+        <div class="scroll col-lg-8 col-md-8 col-sm-12">
             <div class="profile-container">
                 <h2>Profile Information</h2>
             

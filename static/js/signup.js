@@ -1,5 +1,4 @@
 function validateForm() {
-    console.log('working');
     var firstName = document.getElementById('first-name').value.trim();
     var lastName = document.getElementById('last-name').value.trim();
     var gender = document.querySelector('input[name="gender"]:checked');

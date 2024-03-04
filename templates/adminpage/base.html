@@ -40,14 +40,14 @@
                     </a>
                 </li>
                 <li class="menu-item has-submenu {% if 'product' in request.path %}active{% endif %}">
-                    <a class="menu" href="{% url 'product:products' %}"> <i class="icon material-icons md-shopping_bag"></i>
+                    <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
                     </a>
-                </li>
-                <li class="menu-item has-submenu {% if 'product' in request.path %}active{% endif %}">
-                    <a class="menu" href="{% url 'product:product_attributes' %}"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Product attributes</span>
-                    </a>
+                    <div class="submenu">
+                        <a class="{% if 'all-products' in request.path %}active{% endif %}" href="{% url 'product:products' %}">Product List</a>
+                        <a class="{% if 'product_attributes' in request.path %}active{% endif %}" href="{% url 'product:product_attributes' %}">Product Attributes</a>
+                        <a class="{% if 'attribute' in request.path %}active{% endif %}" href="{% url 'product:add_attribute' %}">Add Attributes</a>
+                    </div>
                 </li>
                 <li class="menu-item has-submenu {% if 'category' in request.path %}active{% endif %}">
                     <a class="menu" href="{% url 'category:add_category' %}">
@@ -55,17 +55,17 @@
                         <span class="text">Categories</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu {% if 'orders' in request.path %}active{% endif %}">
                     <a class="menu" href="{% url 'adminpage:orders' %}"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu {% if 'banner' in request.path %}active{% endif %}">
                     <a class="menu" href="{% url 'adminpage:banner' %}"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Banner Management</span>
                     </a>
                 </li>
-                <li class="menu-item has-submenu">
+                <li class="menu-item has-submenu {% if 'coupons' in request.path %}active{% endif %}">
                     <a class="menu" href="{% url 'adminpage:coupons' %}"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Coupon Management</span>
                     </a>
@@ -75,23 +75,19 @@
                         <span class="text">Account</span>
                     </a>
                 </li>
-                <li class="menu-item">
+                <!-- <li class="menu-item">
                     <a class="menu" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
                         <span class="text">Reviews</span>
                     </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-                <li class="menu-item">
+                </li> -->
+                <!-- <li class="menu-item">
                     <a class="menu" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
                         <span class="text">Statistics</span>
                     </a>
-                </li>
+                </li> -->
             </ul>
             <hr>
-            <ul class="menu-aside">
+            <!-- <ul class="menu-aside">
                 <li class="menu-item has-submenu">
                     <a class="menu" href="#"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Settings</span>
@@ -102,7 +98,7 @@
                         <span class="text"> Starter page </span>
                     </a>
                 </li>
-            </ul>
+            </ul> -->
             <br>
             <br>
         </nav>
@@ -138,7 +134,7 @@
                     <li class="nav-item">
                         <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
                     </li>
-                    <li class="dropdown nav-item">
+                    <!-- <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguag3q1e">
                             <a class="dropdown-item text-brand" href="#"><img src="assets/imgs/theme/flag-us.png" alt="English">English</a>
@@ -146,7 +142,7 @@
                             <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
                             <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
                         </div>
-                    </li>
+                    </li> -->
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">

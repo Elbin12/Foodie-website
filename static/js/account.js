@@ -97,7 +97,6 @@ function showaddress() {
     var element = document.getElementById('showaddress');
 
     if (element.style.display === 'none' || element.style.display === '') {
-        console.log('vannu');
         element.style.setProperty('display', 'flex', 'important');
     }
 }
@@ -114,7 +113,6 @@ function editaddress(uid){
     var element=document.getElementById('edit_'+uid);
 
     if (element.style.display === 'none' || element.style.display === '') {
-        console.log('vannu');
         element.style.setProperty('display', 'flex', 'important');
     }
 
@@ -154,7 +152,6 @@ function del_address(uid) {
         .then(data => {
           // Handle the response from the server
           if (data.success) {
-            console.log(data)
             Swal.fire({
               title: "Deleted!",
               text: "Your item has been deleted.",
@@ -186,13 +183,11 @@ function del_address(uid) {
 
 function Up(uid) {
   event.preventDefault();
-  console.log(uid)
     var qtyInput = document.querySelector('input[name="qty"][data-uid="' + uid + '"]');
     var final_price=document.getElementById('final_price_'+uid);
     var quantity=document.getElementById('quantity_'+uid);
     var price=document.getElementById('price_'+uid).innerText;
     var totalPrice=document.getElementById('totalPrice');
-    console.log(qtyInput.value, final_price)
 
     var currentQty = parseInt(qtyInput.value);
     qtyInput.value = currentQty + 1;
@@ -247,10 +242,8 @@ function sentproduct(totalPrice,uid){
     var selected_coupon=document.getElementById('selected_coupon');
     coupon_uid = selected_coupon.value;
     var apply_button=document.getElementById('coupon_'+coupon_uid);
-    console.log(selected_coupon, apply_button)
 
     requestBody.coupon = selected_coupon.value;
-    console.log(requestBody)
   }
   fetch("/account/change/", {
         method: 'post',
@@ -262,7 +255,6 @@ function sentproduct(totalPrice,uid){
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       if ('coupon_fail' in data){
         selected_coupon.remove();
         var totalPrice=document.getElementById('totalPrice');
@@ -272,7 +264,7 @@ function sentproduct(totalPrice,uid){
         myFunction(data.coupon_fail)
       }
       else{
-        console.log(data);
+
         var totalPrice=document.getElementById('totalPrice');
         totalPrice.innerHTML=data.total;
       }
@@ -296,10 +288,8 @@ function sentcart(newQty,uid){
     var selected_coupon=document.getElementById('selected_coupon');
     coupon_uid = selected_coupon.value;
     var apply_button=document.getElementById('coupon_'+coupon_uid);
-    console.log(selected_coupon, apply_button)
 
     requestBody.coupon = selected_coupon.value;
-    console.log(requestBody)
   }
   fetch("/account/change/", {
         method: 'post',
@@ -311,7 +301,6 @@ function sentcart(newQty,uid){
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       if ('coupon_fail' in data){
         selected_coupon.remove();
         var totalPrice=document.getElementById('totalPrice');
@@ -321,7 +310,6 @@ function sentcart(newQty,uid){
         myFunction(data.coupon_fail)
       }
       else{
-        console.log(data);
         var totalPrice=document.getElementById('totalPrice');
         totalPrice.innerHTML=data.total;
         // change(uid, newQty,data.price,data.total);
@@ -369,7 +357,6 @@ function hide(){
             payment_section.style.display = 'block';
             order.style.display = 'block';
             var payment_method=document.getElementById('payment').value;
-            console.log('segh',payment_method)
         } 
     }
 }
@@ -400,7 +387,6 @@ function submitData(){
     return;
   }
 
-  console.log('Selected Address:', selectedAddress);
   
   if (document.getElementById('uid')){
     var uid=document.getElementById('uid').value;
@@ -410,11 +396,6 @@ function submitData(){
     var final_price=document.getElementById('final_price_'+uid).innerText;
     var discountPrice = parseFloat(document.getElementById('discountPrice').innerText);
     var discount=document.getElementById('discountPrice');
-
-    // if (!isNaN(discountPrice) && discountPrice>0){
-    //   final_price=discountPrice;
-    //   console.log(final_price)
-    // }
 
     var requestBody = {
       'product_name': product_name,
@@ -432,7 +413,6 @@ function submitData(){
     requestBody['selected_coupon'] = input.value;
     requestBody['discount'] = discount.innerText;
     
-    console.log('opoin',input.value)
   }
 
   if (payment_method === 'Payment') {
@@ -447,7 +427,7 @@ function submitData(){
     })
         .then(response => response.json())
         .then(data => {
-          console.log(data)
+          
             if ('expired' in data){
               myFunction(data.expired)
             }
@@ -462,7 +442,6 @@ function submitData(){
               callback_url: data.callback_url,
               handler: function (response) {
                   // Handle Razorpay response
-                  console.log('Razorpay Payment ID:', response.razorpay_payment_id);
                   window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
                   const headers = new Headers();
                   headers.append('Content-Type', 'application/json');
@@ -491,7 +470,6 @@ function submitData(){
         });
 } 
 else if( final_price > 1000 ){
-  console.log("Products with above Rs. 1000 can't be purchased with Cash On Delivery. Please choose another method.")
   Swal.fire({
     position: "center",
     icon: "error",
@@ -507,15 +485,9 @@ else {
 }
   }
   else{
-    console.log('illla')
     var final_price=document.getElementById('totalPrice').innerText;
     var discountPrice = parseFloat(document.getElementById('discountPrice').innerText);
     var discount=document.getElementById('discountPrice');
-
-    // if (!isNaN(discountPrice) && discountPrice>0){
-    //   final_price=discountPrice;
-    //   console.log(final_price)
-    // }
 
     var requestBody = {
       'name':selectedAddress.name,
@@ -530,7 +502,6 @@ else {
     requestBody['selected_coupon'] = input.value;
     requestBody['discount'] = discount.innerText;
     
-    console.log(input.value)
   }
 
   if (payment_method === 'Payment') {
@@ -555,7 +526,6 @@ else {
                 callback_url: data.callback_url,
                 handler: function (response) {
                     // Handle Razorpay response
-                    console.log('Razorpay Payment ID:', response.razorpay_payment_id);
                     window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
                     const headers = new Headers();
                     headers.append('Content-Type', 'application/json');
@@ -581,7 +551,6 @@ else {
         });
 }
 else if( final_price > 1000 ){
-  console.log("Products with above Rs. 1000 can't be purchased with Cash On Delivery. Please choose another method.")
   Swal.fire({
     position: "center",
     icon: "error",
@@ -615,12 +584,8 @@ function sendOrderToServer(orderDetails, uid='') {
   })
       .then(response => response.json())
       .then(data => {
-        console.log('n;lbhojfgjkmgl')
-        console.log('Server Response:', data);
           // Handle the server response as needed
           if ('url' in data){
-            console.log('Success:', data.url);
-            console.log('Server Response:', data);
             Swal.fire({
               position: "center",
               icon: "success",
@@ -636,7 +601,6 @@ function sendOrderToServer(orderDetails, uid='') {
               myFunction(data.expired);
           }
           else if ('fail' in data){
-            console.log(data.fail)
             Swal.fire({
               position: "center",
               icon: "error",
@@ -667,12 +631,7 @@ function sendOrderToServer(orderDetails, uid='') {
       .then(response => response.json())
       .then(data => {
           // Handle the server response as needed
-          console.log('n;lbhojfgjkmgl')
-        console.log('Server Response:', data);
-          // Handle the server response as needed
           if ('url' in data){
-            console.log('Success:', data.url);
-            console.log('Server Response:', data);
             Swal.fire({
               position: "center",
               icon: "success",
@@ -688,7 +647,6 @@ function sendOrderToServer(orderDetails, uid='') {
               myFunction(data.expired);
           }
           else if ('fail' in data){
-            console.log(data.fail)
             Swal.fire({
               position: "center",
               icon: "error",
@@ -768,7 +726,7 @@ function del(uid) {
       .then(data => {
         // Handle the response from the server
         if (data.success) {
-          console.log(data)
+          
           Swal.fire({
             title: "Deleted!",
             text: "Your item has been deleted.",
@@ -809,7 +767,6 @@ function del(uid) {
 function apply_coupon(coupon_uid){
   var total=document.getElementById('totalPrice');
   total_amount=total.innerText;
-  console.log(total_amount)
   var discountPrice=document.getElementById('discountPrice');
   var apply_button=document.getElementById('coupon_'+coupon_uid);
   var class_=document.querySelector('.coupon-container');
@@ -818,7 +775,6 @@ function apply_coupon(coupon_uid){
     input.remove();
 }
   if (apply_button.innerHTML=='Applied'){
-    console.log('ata')
     input.remove();
     apply_button.innerHTML='Apply';
     apply_button.removeAttribute('name');
@@ -828,7 +784,6 @@ function apply_coupon(coupon_uid){
     var buttons=document.getElementsByClassName('apply-button');
     for (var i = 0; i < buttons.length; i++) {
       if (buttons[i].innerHTML == 'Applied') {
-          console.log('sgf');
           buttons[i].innerHTML = 'Apply';
           buttons[i].removeAttribute('name');
       }
@@ -900,7 +855,6 @@ function sent(){
   return response.json()
 })
 .then(data => {
-  console.log(data);
   if ('success' in data){
       ok.style.display='none';
       otp.style.display='block';
@@ -919,7 +873,6 @@ function sentotp(){
   email=document.getElementById('email');
   otp=document.getElementById('OTP').value;
   emailError=document.getElementById('emailError');
-  console.log('agr', otp);
 
   fetch("/account/check_otp/", {
 
@@ -934,7 +887,6 @@ function sentotp(){
     return response.json()
   })
   .then(data => {
-    console.log(data);
     var otp = document.getElementById('OTP');
     var submit = document.getElementById('submit');
     if (data.success){
@@ -957,7 +909,6 @@ function sentotp(){
 
 
 function edit_address_from_checkout(uid){
-  console.log('Inside edit_address function with UID:', uid);
 
   var name=document.getElementById('edit_name_'+uid).value;
   var mobile=document.getElementById('edit_mobile_'+uid).value;
@@ -1004,10 +955,8 @@ function edit_address_from_checkout(uid){
 
 
 function edit_address_validateForm(uid) {
-  console.log('Function called with UID:', uid);
   var edit_name = document.getElementById('edit_name_' + uid).value;
-  console.log('edit_name:', edit_name);
-  
+
   var edit_mobile = document.getElementById('edit_mobile_' + uid).value;
   var edit_pincode = document.getElementById('edit_pincode_' + uid).value;
   var edit_address = document.getElementById('edit_address_' + uid).value;
@@ -1258,9 +1207,7 @@ function add_address_validate() {
 
 function edit_address_validate(uid){
 
-  console.log('Function called with UID:', uid);
   var edit_name = document.getElementById('edit_name_' + uid).value;
-  console.log('edit_name:', edit_name);
   
   var edit_mobile = document.getElementById('edit_mobile_' + uid).value;
   var edit_pincode = document.getElementById('edit_pincode_' + uid).value;

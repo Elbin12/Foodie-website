@@ -173,112 +173,25 @@
 
 
 {% block content %}
-<!-- <div class="container main-container d-flex flex-column" style="min-height: 100vh; display: flex; flex-direction: column;">
-    <nav class=" navbar navbar-expand-lg navbar-light" style="background-color: #eab863;">
-        <a class="navbar-brand" href="#">Foodie</a>
-        <div class="mx-auto"> -->
-            <!-- Search bar with border-radius -->
-            <!-- <form class="form-inline d-flex flex-row">
-                <input class="form-control rounded-pill" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success rounded-pill ml-2 custom-search-btn" style="margin-left: 10px;" type="submit">Search</button>
-            </form>
-        </div>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Cart</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Wishlist</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Signup</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Account</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    
-    <div class="flex-grow-1" style="flex-grow: 1;"> -->
-        <!-- Middle Content Goes Here 
-    </div>
-
-    <footer class="text-center" style="background-color: #eab863; color: #fff; padding: 20px 0; text-align: center;">
-        <div>
-            <ul class="list-inline">
-                <li class="list-inline-item"><a href="#">Contact Us</a></li>
-                <li class="list-inline-item"><a href="#">About Us</a></li>
-                <li class="list-inline-item"><a href="#">Help</a></li>
-            </ul>
-        </div>
-    </footer>
-</div>-->
-
-<!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-      <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
-      <form class="d-flex" method="post" action="{% url 'products:shop_page' %}">
-        {% csrf_token %}
-        <input class=" me-2 search" type="search" name="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success search_btn" type="submit">Search</button>
-      </form>
-      <div>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-icon">
-            <a style="color: rgb(55, 55, 55);" href="{% url 'account:account' %}"><i class="fa-regular fa-user"></i></a>
-            
-          </li>
-          <li class="nav-icon">
-            <a style="color: rgb(55, 55, 55);" href=""><i class="fa-regular fa-heart"></i></a>
-          </li>
-          <li class="nav-icon">
-            <a style="color: rgb(55, 55, 55);" href="{% url 'account:cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
-          </li>
-        </ul>
-      </div>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              {% if not user %}
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{%url 'account:login' %}">Log In</a>
-              </li>
-              {% else %}
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{%url 'account:app_logout' %}">Log out</a>
-              </li>
-              {% endif %}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li> 
-            </ul>
-        </div>
-      </div>
-    </div>
-</nav> -->
-
 
 <nav class="navbar navbar-expand-lg navbar-dark custom-navbar" style="background-color:rgb(145, 30, 30)" id="ftco-navbar">
   <div class="container">
+    {% if 'account' in request.path and not 'cart' in request.path %}
+    <button id="sidebar-toggle" style="border: none; background: none; cursor: pointer; display: none">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <rect x="2" y="2" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="10" y="2" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="18" y="2" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="2" y="10" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="10" y="10" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="18" y="10" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="2" y="18" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="10" y="18" width="5" height="5" fill="rgb(163, 163, 163)" />
+        <rect x="18" y="18" width="5" height="5" fill="rgb(163, 163, 163)" />
+      </svg>
+    </button>
+    {% endif %}
+
     <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -287,11 +200,14 @@
     <div class="collapse navbar-collapse" id="ftco-nav">
       <ul class="navbar-nav ms-auto">
         <li>
-          <input class="btn btn-primary" type="search" placeholder="search products">
+          <form action="{% url 'products:shop_page'  %}" method="get">
+            {% csrf_token %}
+            <input class="btn btn-primary" name="search" id="search" type="search" {% if search %} value="{{search}}" {% endif %} placeholder="search products">
+          </form>
         </li>
         <li class="nav-item"><a href="{% url 'products:shop_page' %}" class="nav-link">Shop</a></li>
         <li class="nav-item"><a href="{% url 'account:account' %}" class="nav-link">Account</a></li>
-        <li class="nav-item"><a href="{% url 'account:cart' %}" class="nav-link">Wishlist</a></li>
+        <li class="nav-item"><a href="{% url 'account:wishlist' %}" class="nav-link">Wishlist</a></li>
         <li class="nav-item"><a href="{% url 'account:cart' %}" class="nav-link">Cart</a></li>
         <li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span class="icon-shopping_cart"></span>[0]</a></li>
       </ul>

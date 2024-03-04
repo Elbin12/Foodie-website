@@ -64,19 +64,6 @@
 {% endblock title%}
 
 {% block content %}
-<!-- <strong>CONFRIM YOUR ACCOUNT</strong> -->
-
-<!-- <p>check the inbox of your email - {{email}} - and enter the otp<p> -->
-
-<!-- <body>
-    <form action="{% url 'account:otp_verification' %}" method="post">
-        {% csrf_token %}
-        Enter the otp : <input type="text" placeholder="enter the otp" name="otp"><br><br>
-        <button type="submit">verify</button>
-        {% for message in messages %}
-            <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
-        {% endfor %}
-    </form> -->
 
     <div class="otp-container">
         <h2>OTP Verification</h2>
@@ -135,7 +122,6 @@ const csrftoken = getCookie('csrftoken');
                 return response.json()
             })
             .then(data => {
-                console.log(data);
                 if (data.success){
                     emailerror.textContent=data.success;
                 }

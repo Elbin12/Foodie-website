@@ -138,36 +138,6 @@ th {
         <div class="col-lg-8 col-md-3 col-sm-12">
             <div class="card-body">
                 <h3 style="margin-top: .5rem;">My Orders</h3>
-                <!-- <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#ID</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Date</th>
-                                <th scope="col" class="text-end"> Action </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                            <tr>
-                                <td>{{order.uid}}</td>
-                                <td><b>{{order.address.name}}</b></td>
-                                <td>{{order.total_amount}}</td>
-                                <td><span class="badge rounded-pill alert-warning">{{order.order_status}}</span></td>
-                                <td>{{order.created_at}}</td>
-                                <td class="text-end">
-                                    <a href="{% url 'account:order_details' order.uid %}" class="btn btn-md rounded font-sm">Detail</a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div> table-responsive //end -->
-
-
 
                 <div class="order-container">
                     {% for order in orders %}

@@ -78,8 +78,6 @@ def home(request):
         'is_authenticated':request.user.is_authenticated
         }
     banners=Banner.objects.all()
-    for banner in banners:
-        print(banner)
 
     return render(request, 'home/home.html',context)
 
@@ -98,7 +96,6 @@ def calc_distance(lat1,lon1,lat2,lon2):
     a = (sin(dlat/2))**2 + cos(lat1) * cos(lat2) * (sin(dlon/2))**2
     c = 2 * atan2(sqrt(a), sqrt(1-a))
     distance = R * c
-    print(distance)
 
 
     location = float(lat1), float(lon1)
@@ -109,17 +106,11 @@ def calc_distance(lat1,lon1,lat2,lon2):
     folium.Marker(location, popup="The postcode brought me here").add_to(m)
     folium.Marker(location2, popup="The postcode brought me here").add_to(m)
 
-    print(m)
-
 
 def openroute(lat1, lon1, lat2, lon2):
     client = openrouteservice.Client(key='5b3ce3597851110001cf62485f8ae68db77d4d23bc5337f52a297b93')
     coords = [[lat1, lon1], [lat2, lon2]]
     route = client.directions(coordinates=coords, profile='driving-car',format='geojson' )
-
-    print("Route summary:", route['features'][0]['properties']['summary'])
-    print("Total distance:", route['features'][0]['properties']['segments'][0]['distance'])
-    print("Total duration:", route['features'][0]['properties']['segments'][0]['duration'])
 
 
 
@@ -127,7 +118,6 @@ def get_route(origin, destination, api_key):
     client = openrouteservice.Client(key=api_key)
     coords= (origin, destination)
     route = client.directions(coords, profile='driving-car', optimize_waypoints=True)
-    print(route)
     return route
 
 
@@ -144,7 +134,6 @@ def geocode():
     address = "1600+Pennsylvania+Ave+NW,Washington,DC,USA"
     gmaps=googlemaps.Client(key='AIzaSyAKzmg_lrgm17NQFZVOj-v5ZZQ72b-DhRI')
     result=gmaps.geocode(address)
-    print(result)
     url = 'http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false' % address
 
     r = requests.get(url)
@@ -153,9 +142,3 @@ def geocode():
         if 'results' in result and len(result['results']) > 0:
             lat = float(result['results'][0]['geometry']['location']['lat'])
             lng = float(result['results'][0]['geometry']['location']['lng'])
-            print('lat:', lat, 'lng:', lng)
-        else:
-            print('No results found for the address:', address)
-    else:
-        print('Failed to fetch data from the Geocoding API. Status code:', r.status_code)
-        print('Response content:', r.content.decode('utf-8'))

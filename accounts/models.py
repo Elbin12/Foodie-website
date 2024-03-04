@@ -130,8 +130,14 @@ class Payment(BaseModel):
         COD = 'COD', 'COD'
         PAYMENT = 'Payment', 'Payment'
 
+    class PaymentStatus(models.TextChoices):
+        PAID = 'Paid', 'Paid'
+        UNPAID = 'Unpaid', 'Unpaid'
+        REFUND = 'Refund', 'Refund'
+
     order=models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payment', null=True)
     payment_method=models.CharField(choices=PaymentMethod.choices, default=PaymentMethod.COD)
+    payment_status=models.CharField(choices=PaymentStatus.choices, default=PaymentStatus.UNPAID)
     is_paid=models.BooleanField(default=False)
     razorpay_order_id=models.CharField(max_length=100, null=True, blank=True)
     rarzorpay_payment_id=models.CharField(max_length=100, null=True, blank=True)

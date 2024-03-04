@@ -96,116 +96,6 @@
 {% endblock title %}
 
 {% block another %}
-    <!-- <div class="container product-details-container mt-5">
-        <div class="row"> -->
-            <!-- Product Image on the Left -->
-            <!-- <div class="col-md-6">
-                <div class="product-image-container">
-                    <img src="/media/{{ product.product_images.first.image }}" alt="{{ product.product_name }}" class="img-fluid product-image">
-                </div>
-            </div> -->
-            <!-- Product Info on the Right -->
-            <!-- <div class="col-md-6 product-info">
-                <div class="product-details">
-                    <h2>{{ product.product_name }}</h2>
-                    <p class="font-weight-bold">Price: ${{ product.price }}</p>
-                    <p>{{ product.product_description }}</p> -->
-                    <!-- Add to Cart and Buy Now Buttons -->
-                    <!-- <div class="d-flex justify-content-end">
-                        <button class="btn btn-primary mr-2">Add to Cart</button>
-                        <button class="btn btn-success">Buy Now</button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
-        <!-- Similar Products Section -->
-        <!-- <div class="row mt-5">
-            <div class="col-md-12">
-                <h3>Similar Products</h3>
-                <div class="row"> -->
-                    <!-- Sample Similar Product Card -->
-                    <!-- {% for similar_product in similar_products %}
-                        <div class="col-md-3 mb-4">
-                            <div class="card">
-                                <div class="product-image-container">
-                                    <img src="/media/{{ similar_product.product_images.first.image }}" alt="{{ similar_product.product_name }}" class="card-img-top img-fluid product-image">
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ similar_product.product_name }}</h5>
-                                    <p class="card-text font-weight-bold">Price: ${{ similar_product.price }}</p>
-                                    <button class="btn btn-primary">View Details</button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- <div class="container">
-        <div class="row top">
-            <div class="col-lg-6 col-md-6 border">
-                <div class="image">
-                    <img class="img" id="big_{{product.uid}}" onmouseover="passUid('{{product.uid}}')" src="/media/{{product.product_images.first.image}}" alt="">
-                </div>
-                <div class="d-flex other_images">
-                    {% for image in other_images %}
-                    <img id="small_{{image}}"onmouseover="" onclick="showImage('{{image}}', '{{product.uid}}')" src="/media/{{image}}" style="border: none;" alt="">
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 details">
-                <div id="lens"></div>
-                <div class="product-details">
-                    <div class="text">
-                        <h2 for="">{{product.product_name}}</h2>
-                        <input type="hidden" value="{{product.uid}}" id="product_uid">
-                        <input type="hidden" value="{{pro_attrbute.uid}}" id="pro_attrbute_uid">
-                    </div>
-                    <div class="">
-                        <h2 for="" id="product_price"> ₹ {{pro_attrbute.new_price}}</h4>
-                    </div>
-                    <div class="">
-                        <h2 for="">{{product.rating}}</h4>
-                    </div>
-                    <div class="">
-                        <h6 for="">{{product.product_description}}</h6>
-                    </div>
-                    <div class="d-flex">
-                        <div class="btn">
-                            {% if flat %}
-                            <a onclick="add_to_cart('{{product.uid}}')" >Add to cart</a>
-                            {% else %}
-                            <a onclick="notUser('Please Login to access cart')">Add to cart</a>
-                            {% endif %}
-                        </div>
-                        <div class="btn">
-                            {% if flat  %}
-                            <a id="buynowbtn" href="{% url 'products:checkout' pro_attrbute.uid %}">Buy Now</a>
-                            {% else %}
-                            <a onclick="notUser('Please Login to Buy items')">Buy Now</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="d-flex mt-3">
-                        {% for key, values in dict %}
-                        <div class="ms-3" style="width: 20%;">
-                            <h5>{{key}}</h5>
-                            <select class="form-select values-select" name="values" data-key="{{ key }}" onclick="selectvariants(this, '{{key}}')" id="values">
-                                {% for value in values %}
-                                <option>{{ value }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <section class="ftco-section mt-4">
         <div class="container">
             <div class="row">
@@ -335,7 +225,6 @@
 
 
         function selectvariants(value, key){
-            console.log(value.innerHTML,value.value, key)
             pro_attrbute_uid=document.getElementById('pro_attrbute_uid');
             buynowbtn=document.getElementById('buynowbtn');
             add_to_wishlist = document.getElementById('add_to_wishlist')
@@ -348,7 +237,6 @@
                 var selectedValue = value.value;
                 selectedValues[selectedKey]=selectedValue;
             })
-            console.log(selectedValues)
 
             fetch('/products/selectvariants/',{
                 method: 'post', 
@@ -360,7 +248,6 @@
             })
             .then(response => response.json())
             .then(data =>{
-                console.log(data)
                 product_price.innerHTML=data.price;
                 if (data.pro_attrbute_uid){
                     pro_attrbute_uid.value=data.pro_attrbute_uid;

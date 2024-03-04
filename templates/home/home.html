@@ -576,7 +576,7 @@
                     <div class="text py-3 pb-4 px-3">
                         <div class="d-flex">
                             <div class="cat">
-                                <span>Lifestyle</span>
+          
                             </div>
                             <div class="rating">
                                 <p class=" float-end mb-0">
@@ -603,116 +603,19 @@
 
 
 
-
-
-<!-- <div class="container-fluid">
-    <div class="row">
-        <div class="featured-products ">
-            <div class="title d-flex align-items-center">
-                <h5>Featured products</h5>
-            </div>
-            <div class="products">
-            {% for product in products %}
-            <div class="product">
-                <div class="product-img">
-                    <img class="img" src="/media/{{product.product_images.first.image}}" alt="">
-                </div>
-                <div class="detail">
-                    <p>{{product.product_name}}</p>
-                </div>
-            </div>
-            {% endfor %}
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
-
-
-
-
-
-<!-- <div class="container-fluid">
-    <div class="row">
-        <div class="card-line">
-            <div class="left" onclick="moveCards('left')">
-                <i class="fa-solid fa-angle-left"></i>
-            </div>     
-            <div class="out-card">
-                {% for product in products %}
-                <div class="cards" >
-                    <a href=""><i class="wishlist-icon far fa-heart"></i></a>
-                    <div class="">
-                        <a href=""><img class="image" src="/media/{{product.product_images.first.image}}" alt=""></a>
-                    </div>
-                    <div class="details d-flex flex-column">
-                        <p>{{product.product_name}}</p>
-                        <p>{{product.price}}</p>
-                        <p>rating</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <div class="left">
-                <i class="fas fa-angle-right" onclick="moveCards('right')"></i>
-            </div>
-        </div>
-    </div>
-</div> -->
-<!-- 
-
-<div class="container">
-    <div class="row">
-        {% for product in products %}
-        <div class="col-lg-3 mb-4">
-            <div class="card product-card">
-                <a href="{% url 'products:product' product.uid %}">
-                    <img src="/media/{{product.product_images.first.image}}" class="card-img-top product-image" alt="{{ product.product_name }}">
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title">{{product.product_name}}</h5>
-                    <p class="card-text description">{{product.product_description}}</p>
-                    <h5 class="card-text">₹{{product.price}}</h5>
-                    <p onclick="add_to_cart('{{product.uid}}')" class="btn btn-primary">Add to Cart</p>
-                    <a href="{% url 'products:product' product.uid %}" class="btn btn-primary">Buy Now</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div> -->
-
-
-
-
 <section class="bg-grey-9 section-padding">
   <div class="container pt-25 pb-25" style="background-color: #e9ddc4; padding: 30px;">
     <div class="heading-tab d-flex mb-4">
       <div class="heading-tab-left">
         <h3 class="section-title mb-20"><span>Monthly</span> Best Sell</h3>
-      </div>
-      <div class="heading-tab-right">
-        <ul class="nav nav-tabs right no-border" id="myTab-1" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="nav-tab-one-1" data-bs-toggle="tab" data-bs-target="#tab-one-1" type="button" role="tab" aria-controls="tab-one" aria-selected="true">Featured</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="nav-tab-two-1" data-bs-toggle="tab" data-bs-target="#tab-two-1" type="button" role="tab" aria-controls="tab-two" aria-selected="false">Popular</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="nav-tab-three-1" data-bs-toggle="tab" data-bs-target="#tab-three-1" type="button" role="tab" aria-controls="tab-three" aria-selected="false">New added</button>
-          </li>
-        </ul>
-      </div>
+      </div>  
     </div>
     <div class="row">
       <div class="col-lg-3 d-none d-lg-flex">
         <div class="banner-img style-2">
           <img style="max-width: 100%;" src="media/product/pexels-ardiansyah-putra-16241419.jpg" alt="">
           <div class="banner-text">
-            <span>Woman Area</span>
-            <h4 style="margin-top: 5px;">Save 17% on <br>Clothing</h4>
+            <h4 style="margin-top: 5px;">Save 17% on <br>Breakfast</h4>
             <a href="shop-grid-right.html" class="text-white">Shop Now <i class="fi-rs-arrow-right"></i></a>
           </div>
         </div>
@@ -787,59 +690,6 @@
     </div>
   </div>
 </section>
-
-
-
-
-<!-- <section class="categories-section py-5">
-  <div class="container">
-    <h2 class="section-title text-center mb-4">Browse Categories</h2>
-    <div class="row g-4">
-      <div class="col-lg-4 col-md-6">
-        <div class="category-item text-center p-4 bg-white rounded shadow">
-          <img src="/media/product/pexels-daniel-reche-3616956.jpg" alt="Category 1" class="img-fluid rounded-circle mb-3">
-          <h3 class="mb-3">Category 1</h3>
-          <a href="category1.html" class="btn btn-primary">View Products</a>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="category-item text-center p-4 bg-white rounded shadow">
-          <img src="category2.jpg" alt="Category 2" class="img-fluid rounded-circle mb-3">
-          <h3 class="mb-3">Category 2</h3>
-          <a href="category2.html" class="btn btn-primary">View Products</a>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="category-item text-center p-4 bg-white rounded shadow">
-          <img src="category3.jpg" alt="Category 3" class="img-fluid rounded-circle mb-3">
-          <h3 class="mb-3">Category 3</h3>
-          <a href="category3.html" class="btn btn-primary">View Products</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
-
-
-<!-- <div class="container">
-    <div class="row">
-        <h2 class="text-center mt-4 mb-5">Browse Categories</h2>
-        {% for category in categories %}
-        <div class="col-md-4">
-            <div class="card category-card">
-                    <img src="/media/{{category.category_image }}" class="card-img-top category-image"  alt="{{ category.category_name }}">
-    
-                <div class="card-body">
-                    <h5 class="card-title">{{ category.category_name }}</h5>
-                    <p class="card-text"> Starts From ₹{{category.starts_from}}</p>
-                    <a href="{% url 'products:categories' category.uid %}"><button class="btn btn-primary" >View </button></a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div> -->
 
 <!-- The actual snackbar -->
 <div id="snackbar">Some text some message..</div>

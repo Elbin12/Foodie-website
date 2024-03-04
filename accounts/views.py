@@ -69,7 +69,6 @@ def resend(request):
         email=json.loads(request.body)['email']
         otp = generate_otp()
         request.session['otp'] = otp
-        print(otp)
         send_otp_email(email, otp)
         data={'success':'Another OTP is sent to your email'}
         return JsonResponse(data)
@@ -80,7 +79,6 @@ def otp_verification(request):
     if request.method == 'POST':
         entered_otp = request.POST.get('otp')
         stored_otp = get_otp_from_session(request)
-        print('stored',stored_otp, entered_otp)
 
         if stored_otp and stored_otp == entered_otp:
             hashed_password=make_password(request.session['password'])
@@ -111,14 +109,10 @@ def login_page(request):
     if request.method=='POST':
         email=request.POST.get('email')
         password=request.POST.get('password')
-        print(email,password)
         
         user=authenticate(username=email, password=password)
-        print(user)
 
         if user:
-            print(user)
-            print('true')
             profile=Profile.objects.get(user=user)
             if profile.block:
                 messages.warning(request,'You are blocked')
@@ -144,9 +138,7 @@ def forgot_password(request):
         password=request.POST.get('password')
         otp=request.POST.get('OTP')
         user=User.objects.get(email=email)
-        print(otp)
         if otp==request.session['otp']:
-            print(password)
             hashed_password=make_password(password)
             user.password=hashed_password
             user.save()
@@ -158,22 +150,18 @@ def forgot_password(request):
     return render(request, 'account/forgot_password.html')
 
 def verify(request):
-    print('works')
     if request.method=='POST':
         Data=json.loads(request.body)
         email=Data['email']
         user = User.objects.filter(email=email).first()
         if User.objects.filter(email=email).exists() and Profile.objects.filter(user=user).exists():
             otp = generate_otp()
-            print('sent otp',otp)
             request.session['otp'] = otp
             send_otp_email(email, otp)
             data={'success':'An OTP is sent to your email'}
-            print(data)
             return JsonResponse(data)
         else:
             data={'fail':'Account not found'}
-            print(data)
             return JsonResponse(data)    
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -190,14 +178,11 @@ def add_to_cart(request):
         try:
             product_attribute=ProductAttribute.objects.filter(product=product).filter(value=values[0]).filter(value=values[1]).first()
             cart=Cart.objects.get(user=request.user)
-            print(cart)
             if Cart_item.objects.filter(cart=cart,product_attribute=product_attribute).exists():
-                print('true')
                 data={'exists':'Food item is already in your cart'}
                 return JsonResponse(data)
             else:
                 new=Cart_item.objects.create(cart=cart, product=product, product_attribute=product_attribute)
-                print(new)
                 new.is_added=True
                 new.save()
                 cart.save()
@@ -220,8 +205,7 @@ def cart(request):
             for item in cart_items
         ]
         for i in products:
-            print(i)
-        count=products.__len__()
+            count=products.__len__()
         if not products:
             context={'warning':'Your cart is empty'}
             return render(request, 'account/cart.html',context)
@@ -240,21 +224,16 @@ def change(request):
             qty=data['qty']
             uid=data['uid']
             
-
-            print(uid,qty)
             product=ProductAttribute.objects.get(uid=uid)
-            print(product)
             cart=Cart.objects.get(user=request.user)
             cart_item=Cart_item.objects.get(cart=cart,product_attribute=product)
             cart_item.qty=qty
-            print(cart_item)
             cart_item.save()
             cart.save()
 
             if 'coupon' in data:
                 coupon_uid = data['coupon']
                 coupon = Coupon.objects.get(uid=coupon_uid)
-                print(coupon)
                 if cart.total < coupon.minimum_amount:
                     data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total,'coupon_fail':'Coupon removed'}
                     return JsonResponse(data)
@@ -262,18 +241,15 @@ def change(request):
                     data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total}
                     return JsonResponse(data)
             else:
-                print(cart.total,)
                 data={'qty':cart_item.qty,'price':cart_item.price,'total':cart.total}
                 return JsonResponse(data)
         else:
             uid=data['uid']
             total = data['totalPrice']
-            print(uid)
             product=ProductAttribute.objects.get(uid=uid)
             if 'coupon' in data:
                 coupon_uid = data['coupon']
                 coupon = Coupon.objects.get(uid=coupon_uid)
-                print(coupon)
                 if total < coupon.minimum_amount:
                     data={'coupon_fail':'Coupon removed','total':total}
                     return JsonResponse(data)
@@ -287,7 +263,6 @@ def change(request):
 def delete(request):
     if request.method=='POST':
         uid=json.loads(request.body)['uid']
-        print(uid)
         product=ProductAttribute.objects.get(uid=uid)
         cart=Cart.objects.get(user=request.user)
         cart_item=Cart_item.objects.filter(product_attribute=product)
@@ -307,7 +282,6 @@ def account(request):
     except:
         return redirect('home:home')
     if request.method=='POST':
-        print('shtds')
         first_name=request.POST.get('first_name')
         last_name=request.POST.get('last_name')
         email=request.POST.get('email')
@@ -329,9 +303,7 @@ def account(request):
 
 def check_otp(request):
     if request.method=='POST':
-        print('agawega')
         otp=json.loads(request.body)['otp']
-        print(otp)
         if otp==request.session['otp']:
             data={'success':'Your email successfully verified. Now you can edit your email to a new one.'}
         else:
@@ -350,8 +322,6 @@ def manage_addresses(request):
         locality=request.POST.get('locality')
         city=request.POST.get('city')
         state=request.POST.get('state')
-
-        print('noo',state)
         
         user=User.objects.get(username=request.user)
         address=Address.objects.create(user=user, name=name,mobile_number=mobile,pincode=pincode,address=address,city=city,state=state,locality=locality)
@@ -369,7 +339,6 @@ def edit_address(request,uid):
         shipping_address=request.POST.get('address')
         city=request.POST.get('city')
         state=request.POST.get('state')
-        print(name)
 
         address_instance=Address.objects.get(uid=uid)
         address_instance.name=name 
@@ -380,7 +349,6 @@ def edit_address(request,uid):
         address_instance.city=city
         address_instance.state=state    
         address_instance.save()
-        print(address_instance.address)   
         
         return redirect('account:addresses')
     
@@ -430,7 +398,6 @@ def add_address_from_checkout(request):
 
 def delete_address(request):
     uid=json.loads(request.body)['uid']
-    print(uid)
     if request.method=='POST':
         address=Address.objects.get(uid=uid)
         address.delete()
@@ -450,7 +417,6 @@ def my_orders(request):
 def order_details(request, uid):
     order=Order.objects.get(uid=uid)
     ordered_items=Ordered_item.objects.filter(order_id=order)
-    print(ordered_items)
     context={'order':order, 'ordered_items':ordered_items}
     return render(request, 'account/order_details.html', context)
 
@@ -459,7 +425,6 @@ def cancel_request(request, uid):
     order=Order.objects.get(uid=uid)
     order.cancel_request=True
     order.save()
-    print('true')
     return redirect('account:order_details',uid)
 
 
@@ -479,19 +444,16 @@ def wallet(request):
     wallet=Wallet.objects.get(user=request.user)
     order=Order.objects.filter(user=request.user)
     payments=[payment for payment in Payment.objects.filter(payment_method=Payment.PaymentMethod.PAYMENT, order__uid__in=[i.uid for i in order])]
-    print(payments)
     transactions=Transaction.objects.filter(wallet=wallet).all()
     context={ 'wallet':wallet,'transactions':transactions }
     if request.method=='POST':
         currency = 'INR'
         amt=json.loads(request.body)['amount']
         amount = int(amt) * 100  
-        print(amt)
 
         user=User.objects.get(username=request.user)
         datas={'user':user.id}
         serialized_data = json.dumps(datas)
-        print(serialized_data)
         cache.set('data',serialized_data)
         try:
             razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
@@ -509,14 +471,12 @@ def wallet(request):
 
             return JsonResponse(context)
         except Exception as e:
-            print('Error creating Razorpay order:', str(e))
             return JsonResponse({'error': 'Internal Server Error'}, status=500)
     return render(request, 'account/wallet.html', context)
 
 @csrf_exempt
 def paymenthandler(request, amount):
     serialized_data = cache.get('data')
-    print(serialized_data)
     if request.method == "POST":
         # get the required parameters from post request.
         try:
@@ -544,14 +504,12 @@ def paymenthandler(request, amount):
                     wallet.save()
                     return redirect('account:wallet')
                 except:
-                    print('failed')
                     # if there is an error while capturing payment.
                     return render(request, 'paymentfail.html')
         except:
             return redirect('account:wallet')
             
     else:
-        print('fail')
         # if signature verification fails.
         return render(request, 'paymentfail.html')
 
@@ -564,7 +522,6 @@ def wishlist(request):
     return render(request, 'account/wishlist.html', context)
 
 def add_to_wishlist(request,uid):
-    print(uid)
     product_attribute=ProductAttribute.objects.get(uid=uid)
     wishlist=get_object_or_404(Wishlist, user=request.user)
     wishlist.products.add(product_attribute)
@@ -573,59 +530,14 @@ def add_to_wishlist(request,uid):
 
 def whishlist_delete(request, uid):
     product_attribute=ProductAttribute.objects.get(uid=uid)
-    print(product_attribute)
     wishlist=get_object_or_404(Wishlist, user=request.user)
     wishlist.products.remove(product_attribute)
     wishlist.save()
     return redirect('account:wishlist')
 
 
-
-
-
-
-def html_to_pdf(template_src, context_dict={}):
-    template = get_template(template_src)
-    html  = template.render(context_dict)
-    result = BytesIO()
-    pdfs = pisa.pisaDocument(
-        src=BytesIO(html.encode('UTF-8')),
-        dest=result,
-        encoding='UTF-8'
-    )
-    pdf_file = result.getvalue()
-    file_data = ContentFile(pdf_file)
-    file_data.name = 'test.pdf'
-    # pdfff = Pdf.objects.create(pdf=file_data)
-    # pdfff.save()
-    # print(pdfff)
-    print(file_data, pdf_file)
-    print(pdfs)
-    if not pdfs.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
-    return None
-
-
-def topdf(template_src, context):
-    print('mkkomrhd')
-    template = get_template(template_src)
-    html  = template.render(context)
-    conf = pdfkit.configuration(wkhtmltopdf="C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe")
-    css_path = r"C:/Users/elbin/Desktop/First project/foodstore/static/css/invoice.css"
-    print('agmakg')
-    pdf = pdfkit.from_string(html, template_src, configuration=conf, css=css_path)
-    print(pdf)
-    return pdf
-
-
 def invoice(request, uid):
     order=Order.objects.get(uid=uid)
     context={'order':order}
-    if request.method=='POST':
-        r=html_to_pdf(
-            'pdf.html',
-            context
-        )
-        return r
-
     return render(request, 'pdf.html', context)
+    

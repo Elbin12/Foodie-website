@@ -117,8 +117,7 @@ ol {
 	position: relative;
 	background-position: center center;
 	background-size: cover; 
-	width: 200px; 
-	height: 200px;
+	height: 360px;
 }
 
 .product__item__pic .label {
@@ -408,7 +407,7 @@ ol {
 .shop__sidebar__price ul {
 	height: auto;
 }
-/* 
+
 .shop__sidebar__accordion .card-heading a:after,
 .shop__sidebar__accordion .card-heading>a.active[aria-expanded=false]:after {
 	content: "";
@@ -419,7 +418,7 @@ ol {
 	position: absolute;
 	right: 0;
 	line-height: 20px;
-} */
+}
 
 .shop__sidebar__accordion .card-heading.active :after {
 	content: "";

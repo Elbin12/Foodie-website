@@ -18,7 +18,7 @@
                     <p>Whole data about your business here</p>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+                    <a href="{% url 'adminpage:export_data_to_excel' %}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
                 </div>
             </div>
             <div class="row">
@@ -54,9 +54,9 @@
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Products</h6> <span>9.856</span>
+                                <h6 class="mb-1 card-title">Products</h6> <span>{{products_count}}</span>
                                 <span class="text-sm">
-                                    In 19 Categories
+                                    In {{categories_count}} Categories
                                 </span>
                             </div>
                         </article>
@@ -67,7 +67,7 @@
                         <article class="icontext">
                             <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket"></i></span>
                             <div class="text">
-                                <h6 class="mb-1 card-title">Monthly Earning</h6> <span>$6,982</span>
+                                <h6 class="mb-1 card-title">Monthly Earning</h6> <span>{{monthly_earning}}</span>
                                 <span class="text-sm">
                                     Based in your local time.
                                 </span>
@@ -81,7 +81,7 @@
                     <div class="card mb-4">
                         <article class="card-body">
                             <h5 class="card-title">Sale statistics</h5>
-                            <canvas id="Chart" height="120px"></canvas>
+                            <canvas id="myChart" height="120px"></canvas>
                         </article>
                     </div>
                     <div class="row">
@@ -110,83 +110,25 @@
                         <div class="col-lg-7">
                             <div class="card mb-4">
                                 <article class="card-body">
-                                    <h5 class="card-title">Recent activities</h5>
-                                    <ul class="verti-timeline list-unstyled font-sm">
-                                        <li class="event-list">
+                                    <h5 class="card-title">Top selling products</h5>
+                                    <ul class=" list-unstyled font-sm">
+                                        {% for product_attribute, count in sorted_product_attributes|slice:":10"  %}
+                                        <li class="">
                                             <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
+                                                <i class="font-xxl"></i>
                                             </div>
                                             <div class="media">
                                                 <div class="me-3">
-                                                    <h6><span>Today</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
+                                                    <img  src="{{ product_attribute.product_images.first.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-width: 100px;">
                                                 </div>
                                                 <div class="media-body">
-                                                    <div>
-                                                        Lorem ipsum dolor sit amet consectetur
-                                                    </div>
+                                                    <h6> {{ product_attribute.product_name }} <span style="color: rgb(165, 134, 88);">{% for val in product_attribute.value.all %} {{val}} {% if not forloop.last %} , {% endif %} {% endfor %}</span></h6>
+                                                    <p>Unit Price: {{ product_attribute.new_price }}</p>
+                                                    <p>Quantity Sold: {{ count }}</p>
                                                 </div>
                                             </div>
                                         </li>
-                                        <li class="event-list active">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>17 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Debitis nesciunt voluptatum dicta reprehenderit
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>13 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Accusamus voluptatibus voluptas.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>05 April</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        At vero eos et accusamus et iusto odio dignissi
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="event-list">
-                                            <div class="event-timeline-dot">
-                                                <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                            </div>
-                                            <div class="media">
-                                                <div class="me-3">
-                                                    <h6><span>26 Mar</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                </div>
-                                                <div class="media-body">
-                                                    <div>
-                                                        Responded to need “Volunteer Activities
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
+                                        {% endfor %}
                                     </ul>
                                 </article>
                             </div>
@@ -194,13 +136,13 @@
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-12">
-                    <div class="card mb-4">
+                    <!-- <div class="card mb-4">
                         <article class="card-body">
                             <h5 class="card-title">Revenue Base on Area</h5>
                             <canvas id="myChart2" height="217"></canvas>
                         </article>
-                    </div>
-                    <div class="card mb-4">
+                    </div> -->
+                    <!-- <div class="card mb-4">
                         <article class="card-body">
                             <h5 class="card-title">Marketing Chanel</h5>
                             <span class="text-muted font-xs">Facebook</span>
@@ -224,45 +166,33 @@
                                 <div class="progress-bar" role="progressbar" style="width: 80%"> 80%</div>
                             </div>
                         </article>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="card mb-4">
                 <header class="card-header">
                     <h4 class="card-title">Latest orders</h4>
+                    <form action="" method="get">
+                        {% csrf_token %}
                     <div class="row align-items-center">
-                        <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
+                        <div class="col-md-2 col-6">
+                            <input type="date" id="date" name="date" value="02.05.2021" class="form-control">
+                        </div>
+                        <div class="col-md-2 col-6">
                             <div class="custom_select">
-                                <select class="form-select select-nice">
-                                    <option selected>All Categories</option>
-                                    <option>Women's Clothing</option>
-                                    <option>Men's Clothing</option>
-                                    <option>Cellphones</option>
-                                    <option>Computer & Office</option>
-                                    <option>Consumer Electronics</option>
-                                    <option>Jewelry & Accessories</option>
-                                    <option>Home & Garden</option>
-                                    <option>Luggage & Bags</option>
-                                    <option>Shoes</option>
-                                    <option>Mother & Kids</option>
+                                <select class="form-select select-nice" id="order_filter" name="order_filter">
+                                    <option selected>All</option>
+                                    {% for status in payment_statuses %}
+                                    <option {% if status.0 == order_filter %} selected {% endif %} >{{ status.1 }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-2 col-6">
-                            <input type="date" value="02.05.2021" class="form-control">
-                        </div>
-                        <div class="col-md-2 col-6">
-                            <div class="custom_select">
-                                <select class="form-select select-nice">
-                                    <option selected>Status</option>
-                                    <option>All</option>
-                                    <option>Paid</option>
-                                    <option>Chargeback</option>
-                                    <option>Refund</option>
-                                </select>
-                            </div>
+                            <button style="border: none; background-color: transparent; font-size: x-large;" type="submit"><i class="fa-solid fa-filter" style="color: rgb(167, 129, 79);"></i></button>
                         </div>
                     </div>
+                </form>
                 </header>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -305,7 +235,7 @@
                                         <td>
                                             {% for payment in order.payment.all %}
                                                 <span class="badge badge-pill {% if payment.is_paid %}badge-soft-success{% else %}badge-soft-warning{% endif %}">
-                                                    {% if payment.is_paid %}Paid{% else %}Unpaid{% endif %}
+                                                    {{payment.payment_status}}
                                                 </span>
                                             {% endfor %}
                                         </td>
@@ -337,46 +267,131 @@
             </div> -->
         </section> <!-- content-main end// -->
 
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
         <script>
-            const xValues = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            month = {{ month }} ;
+            var date = document.getElementById('date');
+            var new_date = '{{date}}';
+            date.value=new_date;
 
-new Chart("Chart", {
-  type: "line",
-  data: {
-    labels: xValues,
-    datasets: [{
-        label: 'products',
-      data: month ,
-      borderColor: "red",
-      fill: false,
-    },{
-      data: [1600,1700,1700,1900,2000,2700,4000,5000,6000,7000],
-      borderColor: "green",
-      fill: false
-    },{
-      data: [300,700,2000,5000,6000,4000,2000,1000,200,100],
-      borderColor: "blue",
-      fill: false
-    }]
-  },
-  options: {
-    legend: {display: true},
-    scales: {
-      yAxes: [{
-        ticks: {
-            min: 0,
-          max: 30,
-          stepSize:5,
-          callback: function(value, index, values) {
-            return value; // Example: Convert numbers to locale-specific string format
-          }
-        }
-      }]
-    }
-  }
-});
+            var order_filter = '{{ order_filter }}';
+            
+        var month = {{ month }} ;
+        var new_users = {{ new_users }} ;
+        var orders_count = {{ orders_count }};
+        
+
+(function ($) {
+    "use strict";
+    
+
+    /*Sale statistics Chart*/
+    if ($('#myChart').length) {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        
+
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            
+            // The data for our dataset
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                        label: 'Sales',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(44, 120, 220, 0.2)',
+                        borderColor: 'rgba(44, 120, 220)',
+                        data: orders_count,
+                        pointStyle: 'circle'    
+                    },
+                    {
+                        label: 'Visitors',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(4, 209, 130, 0.2)',
+                        borderColor: 'rgb(4, 209, 130)',
+                        data: new_users
+                    },
+                    {
+                        label: 'Products',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(380, 200, 230, 0.2)',
+                        borderColor: 'rgb(380, 200, 230)',
+                        data: month,
+                    }
+
+                ]
+            },
+            options: {
+                plugins: {
+                legend: {
+                    labels: {
+                    usePointStyle: true,
+                    },
+                }
+                }
+            }
+        });
+    } //End if
+
+    /*Sale statistics Chart*/
+    if ($('#myChart2').length) {
+        var ctx = document.getElementById("myChart2");
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: ["900", "1200", "1400", "1600"],
+            datasets: [
+                {
+                    label: "US",
+                    backgroundColor: "#5897fb",
+                    barThickness:10,
+                    data: [233,321,783,900]
+                }, 
+                {
+                    label: "Europe",
+                    backgroundColor: "#7bcf86",
+                    barThickness:10,
+                    data: [408,547,675,734]
+                },
+                {
+                    label: "Asian",
+                    backgroundColor: "#ff9076",
+                    barThickness:10,
+                    data: [208,447,575,634]
+                },
+                {
+                    label: "Africa",
+                    backgroundColor: "#d595e5",
+                    barThickness:10,
+                    data: [123,345,122,302]
+                },
+            ]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        labels: {
+                        usePointStyle: true,
+                        },
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    } //end if
+    
+})(jQuery);
+
+        
         </script>
         {% endblock content %}

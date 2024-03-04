@@ -54,7 +54,6 @@ emailInput.addEventListener("input", validate_email);
 
 
 function validateForm(){
-    console.log('works')
     var email = document.getElementById('email').value.trim();
     var password = document.getElementById('password').value.trim();
 

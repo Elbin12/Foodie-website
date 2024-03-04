@@ -19,7 +19,6 @@ const csrftoken = getCookie('csrftoken');
 let image = document.querySelector('.img');
 image.addEventListener('mouseleave', function(){
     let lens = document.getElementById('lens');
-    console.log('Mouse left image');
     lens.style.display = 'none';
 });
 
@@ -36,9 +35,6 @@ function imageZoom(imgID){
     let img=document.getElementById(imgID);
     let lens = document.getElementById('lens');
 
-    console.log('Image zoom function called');
-    console.log('Image source:', img.src);
-
     lens.style.backgroundImage= `url(${img.src})`;
     
     let ratio = 5;
@@ -51,18 +47,15 @@ function imageZoom(imgID){
     img.addEventListener("touchmove",moveLens)
 
     function moveLens(event) {
-        console.log('Mouse moved over image');
     
         let pos = getCursor(event);
-        console.log('pos:', pos);
+
     
         let lensWidth = 300; // Adjust as needed
         let lensHeight = 300; // Adjust as needed
     
         let positionLeft = pos.x - (lensWidth / 2);
         let positionTop = pos.y - (lensHeight / 2);
-    
-        console.log('Lens position:', { left: positionLeft, top: positionTop });
     
         // Adjust lens position to stay within image boundaries
         if (positionLeft < 0) {
@@ -87,8 +80,6 @@ function imageZoom(imgID){
 
     function getCursor(e){
         let bounds=img.getBoundingClientRect();
-        console.log('e',e);
-        console.log('bounds',bounds)
         let x=e.pageX-bounds.left;
         let y=e.pageY-bounds.top;
         x=x - window.scrollX;
@@ -107,7 +98,7 @@ function showImage(uid,product){
     var big_image=document.getElementById('big_'+product);
     var small_image=document.getElementById('small_'+uid);
 
-    image = big_image.src;
+    // image = big_image.src;
     big_image.src=small_image.src;
 }
 
@@ -120,7 +111,6 @@ function add_to_cart(uid){
         var selectedValue = value.value;
         selectedValues.push(selectedValue);
     })
-    console.log(selectedValues, uid)
     fetch('/account/add_to_cart/',{
         method: 'post', // Assuming your backend handles DELETE requests for deletion
         headers: {
@@ -162,7 +152,6 @@ radioButtons[0].checked='checked';
     for (var i = 0; i < radioButtons.length; i++) {
         radioButtons[i].checked = (radioButtons[i].value === value);
     }
-    console.log( value, uid)
 
     fetch('/products/get_value_price/',{
         method: 'post', // Assuming your backend handles DELETE requests for deletion

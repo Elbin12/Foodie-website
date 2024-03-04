@@ -22,6 +22,8 @@
         </div>
         <div class="card mb-4">
             <header class="card-header">
+                <form id="category" action="" method="get">
+                    {% csrf_token %}
                 <div class="row align-items-center">
                     <div class="col col-check flex-grow-0">
                         <div class="form-check ms-2">
@@ -29,25 +31,25 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                        <select class="form-select">
-                            <option selected>All category</option>
-                            <option>Electronics</option>
-                            <option>Clothes</option>
-                            <option>Automobile</option>
+                        <select class="form-select" name="category" onchange="document.getElementById('category').submit()">
+                            <option >All category</option>
+                            {% for category in categories %}
+                            <option {% if category.category_name == selected_category %} selected {% endif %}> {{ category.category_name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-2 col-6">
-                        <input type="date" value="02.05.2021" class="form-control">
+                        <input type="date" name="date" {% if date %} value="{{date}}"{% endif %} onchange="document.getElementById('category').submit()" class="form-control">
                     </div>
                     <div class="col-md-2 col-6">
-                        <select class="form-select">
-                            <option selected>Status</option>
-                            <option>Active</option>
-                            <option>Disabled</option>
-                            <option>Show all</option>
+                        <select class="form-select" name="status" onchange="document.getElementById('category').submit()">
+                            <option {% if not status %} selected {% endif  %} >Show all</option>
+                            <option {% if status == 'Active' %} selected {% endif %}>Active</option>
+                            <option {% if status == 'Disabled' %} selected {% endif %} >Disabled</option>
                         </select>
                     </div>
                 </div>
+            </form>
             </header> <!-- card-header end// -->
             <div class="card-body">
                 <article class="itemlist">

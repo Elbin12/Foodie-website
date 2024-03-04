@@ -21,16 +21,18 @@
         </div>
         <div class="card mb-4">
             <header class="card-header">
+                <form id="order" action="" method="get">
+                    {% csrf_token %}
                 <div class="row gx-3">
                     <div class="col-lg-4 col-md-6 me-auto">
                         <input type="text" placeholder="Search..." class="form-control">
                     </div>
                     <div class="col-lg-2 col-6 col-md-3">
-                        <select class="form-select">
-                            <option>Status</option>
-                            <option>Active</option>
-                            <option>Disabled</option>
-                            <option>Show all</option>
+                        <select class="form-select" name="status" onchange="document.getElementById('order').submit()">
+                            <option {% if not status %} selected {% endif %} >All status</option>
+                            {% for status in order.OrderStatus.choices  %}
+                            <option {% if status.1  == selected_status %} selected {% endif %}>{{ status.1 }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-lg-2 col-6 col-md-3">
@@ -41,6 +43,7 @@
                         </select>
                     </div>
                 </div>
+            </form>
             </header> <!-- card-header end// -->
             <div class="card-body">
                 <div class="table-responsive">
@@ -60,8 +63,8 @@
                             {% for order in orders %}
                             <tr>
                                 <td>{{order.uid}}</td>
-                                <td><b>{{order.address.name}}</b></td>
-                                <td><template class="__cf_email__" data-cfemail="aec3cfdcd8c7c0eecbd6cfc3dec2cb80cdc1c3">[email&#160;protected]</template></td>
+                                <td><b>{{order.name}}</b></td>
+                                <td>{{order.user.email}}<template class="__cf_email__" data-cfemail="aec3cfdcd8c7c0eecbd6cfc3dec2cb80cdc1c3">[email&#160;protected]</template></td>
                                 <td>{{order.total_amount}}</td>
                                 <td><span class="badge rounded-pill alert-warning">{{order.order_status}}</span></td>
                                 <td>{{order.created_at}}</td>

@@ -1,0 +1,117 @@
+{% extends 'adminpage/base.html' %}
+{% load static %}
+
+    <!-- Template CSS -->
+    {% block title  %}
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet" type="text/css" />
+    <style>
+#sales_report th {
+        font-weight: bolder; /* Apply font-weight to the heading cells */
+    }
+    </style>
+    {% endblock %}
+
+
+    {% block content %}
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Sales Report</h2>
+        </div>
+        <div class="card b-4">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Months</th>
+                        <th>Sales</th>
+                        <th>Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Jan</td>
+                        <td>31,280</td>
+                        <td>14,090</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card b-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="sales_report">
+                        <thead>
+                            <tr>
+                                <th style="width: fit-content;">Order ID</th>
+                                <th>Order Date</th>
+                                <th>Product</th>
+                                <th>Product Category</th>
+                                <th>Quantity</th>
+                                <th>Product Price</th>
+                                <th>Discount</th>
+                                <th>Customer Name</th>
+                                <th>Customer Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{item.order_id.uid}}</td>
+                                <td>{{item.order_id.created_at}}</td>
+                                <td>{{item.ordered_product_name}}</td>
+                                <td>{{item.image.Category.category_name}}</td>
+                                <td>{{item.qty}}</td>
+                                <td>{{item.price}}</td>
+                                {% if item.order_id.coupon_discount %}
+                                <td>{{item.order_id.coupon_discount}}</td>
+                                {% else %}
+                                <td>0.00</td>
+                                {% endif %}
+                                <td>{{item.order_id.name}}</td>
+                                <td>{{item.order_id.address}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-md" onclick="exportToExcel()">Download</button>
+            </div>
+        </div>
+    </section>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.2/xlsx.full.min.js"></script>
+    <script>
+       function exportToExcel() {
+        // Select the content container
+        var content = document.getElementById('sales_report');
+        
+        // Create a new workbook
+        var wb = XLSX.utils.book_new();
+        
+        // Create a new worksheet
+        var ws = XLSX.utils.table_to_sheet(content);
+        
+        // Set column widths to fit content
+        var wscols = [];
+        var maxRowsToCheck = Math.min(content.rows.length, 10); // Check only the first 10 rows
+        var maxCellsToCheck = Math.min(content.rows[0].cells.length, 5); // Check only the first 5 cells in each row
+        
+        for (var i = 0; i < maxCellsToCheck; i++) {
+            var maxCellWidth = 0;
+            for (var j = 0; j < maxRowsToCheck; j++) {
+                var cellWidth = content.rows[j].cells[i].getBoundingClientRect().width;
+                maxCellWidth = Math.max(maxCellWidth, cellWidth);
+            }
+            wscols.push({ width: maxCellWidth / 8 }); // Divide by 8 to adjust the width to a reasonable value
+        }
+        ws['!cols'] = wscols;
+        
+        // Add the worksheet to the workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
+        
+        // Save the workbook as an Excel file
+        XLSX.writeFile(wb, 'invoice.xlsx');
+    }
+    </script>
+    {% endblock content %}
+    

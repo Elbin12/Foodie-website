@@ -22,14 +22,13 @@ razorpay_client=razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_
 def get_product(request,uid):
     flat=False
     if request.user.is_authenticated:
-        print(request.user)
+
         flat=True
     product=Product.objects.get(uid=uid)
     images=ProductImage.objects.filter(product=product)
     category=Category.objects.get(uid=product.Category.uid)
     products=Product.objects.filter(Category=category).exclude(uid=product.uid)
     product_attributes=ProductAttribute.objects.filter(product=product)
-    print(product_attributes)
     d={}
     for i in product_attributes:
         pro_attrbute=i
@@ -42,7 +41,6 @@ def get_product(request,uid):
                     d[key].append(value)
             else:
                 d[key] = [value]
-    print(d)
     context={'product':product, 'other_images':images, 'flat':flat,'pro_attrbute':pro_attrbute, 'products':products , 'dict':d.items()}
     return render(request, 'products/product.html', context)
 
@@ -53,7 +51,6 @@ def get_value_price(request):
         value=data['value']
         product=Product.objects.get(uid=uid)
         product_attribute=ProductAttribute.objects.filter(product=product, value__value=value).first()
-        print(product_attribute.new_price)
 
         data={'new_price':product_attribute.new_price}
         return JsonResponse(data)
@@ -66,28 +63,21 @@ def selectvariants(request):
         selected_values=data['selected_values']
         product_uid=data['product_uid']
         product=Product.objects.get(uid=product_uid)
-
-        print(selected_values)
         selected=[]
         for key, values in selected_values.items():
-            print(values)
             val=Attribute_values.objects.get(value=values)
             selected.append(val.uid)
-        print(selected)
 
         try:
             pro_attrbute=ProductAttribute.objects.filter(product=product).filter(value=selected[0]).filter(value=selected[1]).first()
-            print(pro_attrbute.new_price,'gfdf')
             new=[]
             product_attributes=ProductAttribute.objects.filter(product=product)
-            print(product_attributes)
             for product_attribute in product_attributes.all():
                 for value in product_attribute.value.all():
                     value=Attribute_values.objects.get(value=value)
                     attribute=Attributes.objects.get(name=value.attribute)
                     if attribute.name != key:
                         new.append(value.value)
-            print(new)
             data={'values':new,'price':f'₹ {pro_attrbute.new_price}', 'pro_attrbute_uid':pro_attrbute.uid}
             return JsonResponse(data)
         except:
@@ -104,12 +94,10 @@ def categories(request,uid):
 
 
 def payment_with_wallet(request,data, uid, discount):
-    print('bjnklm;', uid)
     user=User.objects.get(username=request.user)
     wallet=Wallet.objects.get(user=user)
 
     if uid:
-        print('bkjln', uid)
         quantity=data['quantity']
         sub_total=data['final_price']
         discount_price=sub_total
@@ -142,7 +130,7 @@ def payment_with_wallet(request,data, uid, discount):
 
         Transaction.objects.create(wallet=wallet, amount=discount_price, transaction_type=Transaction.Type.PURCHASED_PRODUCT)
 
-        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=True, amount=discount_price)
+        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=True, amount=discount_price, payment_status=Payment.PaymentStatus.PAID)
 
         data={'success':order.uid}
         return data
@@ -167,9 +155,7 @@ def payment_with_wallet(request,data, uid, discount):
             order.coupon_discount=discount
             order.save()
         for item in cart_items:
-            print(item.product_attribute)
             product_attribute=ProductAttribute.objects.get(uid=item.product_attribute.uid)
-            print(product_attribute)
             product=Product.objects.get(uid=item.product.uid)
             ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=item.qty)
             ordered_item.image=product
@@ -183,7 +169,7 @@ def payment_with_wallet(request,data, uid, discount):
             cart.save()
         
         Transaction.objects.create(wallet=wallet, amount=discount_price, transaction_type=Transaction.Type.PURCHASED_PRODUCT)
-        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=True, amount=discount_price)
+        Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=True, amount=discount_price,payment_status=Payment.PaymentStatus.PAID)
         data={'success':order.uid}
         return data
 
@@ -191,7 +177,6 @@ def payment_with_wallet(request,data, uid, discount):
 
 @login_required(login_url='account:login')
 def checkout(request, uid=None):
-    print(uid)
     user=User.objects.get(username=request.user)
     if uid:
         product_attribute=ProductAttribute.objects.get(uid=uid)
@@ -208,9 +193,6 @@ def checkout(request, uid=None):
             address=data['address']
             product_name=data['product_name']
             payment_method=data['payment_method']
-
-            print(payment_method,product_attribute.product, 'ijohgaszgfdf')
-            print(product_attribute.product.uid)
 
             product=Product.objects.get(uid=product_attribute.product.uid)
             discount=None
@@ -231,10 +213,8 @@ def checkout(request, uid=None):
                     data={'expired':'Coupon expired'}
                     return JsonResponse(data)
             if data['payment_method']=='Payment':
-                print('payment function called ')
                 datas={'quantity':quantity,'sub_total':sub_total,'discount_price':discount_price, 'unit_price':unit_price,'name':name, 'mob':mob, 'address':address, 'product_uid':uid, 'discount':discount, 'user':user.id, 'payment_method':payment_method}
                 serialized_data = json.dumps(datas)
-                print(serialized_data)
                 cache.set('data',serialized_data)
                 currency = 'INR'
                 amount = int(discount_price) * 100  
@@ -258,14 +238,10 @@ def checkout(request, uid=None):
 
                     return JsonResponse(context)
                 except Exception as e:
-                    print('Error creating Razorpay order:', str(e))
                     return JsonResponse({'error': 'Internal Server Error'}, status=500)
             elif data['payment_method']=='Wallet':
-                print('bibnokl',uid)
                 try:
                     message=payment_with_wallet(request,data, uid, discount)
-                    print('ijnjnj',message)
-                    print('success',message['success'])
                     return JsonResponse({'url':'/products/order_success/'+str(message['success'])})
                 except ValueError as e:
                     return JsonResponse({'fail': str(e)})
@@ -285,8 +261,6 @@ def checkout(request, uid=None):
                 ordered_item.save()
 
                 Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
-                
-                print(sub_total, address)
                 
                 return JsonResponse({'url':'/products/order_success/'+str(order.uid)})
     else:
@@ -312,19 +286,15 @@ def checkout(request, uid=None):
                 if coupon.is_expired==False:
                     coupon.no_of_coupons-=1
                     coupon.save()
-                    print(cart)
                     cart.applied_coupon=coupon
-                    print(cart,cart.applied_coupon)
                     cart.save()
                 else:
                     data={'expired':'Coupon expired'}
                     return JsonResponse(data)
                 
             if data['payment_method']=='Payment':
-                print('paymentiuy')
                 datas={'sub_total':sub_total,'discount_price':discount_price,'name':name, 'mob':mob, 'address':address, 'discount':discount, 'user':user.id, 'payment_method':payment_method}
                 serialized_data = json.dumps(datas)
-                print(serialized_data)
                 cache.set('data',serialized_data)
                 currency = 'INR'
                 amount = int(discount_price) * 100  
@@ -348,21 +318,16 @@ def checkout(request, uid=None):
 
                     return JsonResponse(context)
                 except Exception as e:
-                    print('Error creating Razorpay order:', str(e))
                     return JsonResponse({'error': 'Internal Server Error'}, status=500)
                 
             elif data['payment_method']=='Wallet':
-                print('bibnokl')
                 try:
                     message=payment_with_wallet(request,data, uid, discount)
-                    print('ijnjnj',message)
-                    print('success',message['success'])
                     return JsonResponse({'url':'/products/order_success/'+str(message['success'])})
                 except ValueError as e:
                     return JsonResponse({'fail': str(e)})
 
             else:
-                print('bioul;nlkj')
                 order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total,payment_method=payment_method)
                 if discount:
                     order.coupon_discount=discount
@@ -380,8 +345,6 @@ def checkout(request, uid=None):
                 cart_items.delete()
                 cart.save()
                 Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
-                
-                print('working')
                 return JsonResponse({'url':'/products/order_success/'+str(order.uid)})
         
         context={'cart_items':cart_items,'cart':cart,'len':len, 'addresses':Address.objects.filter(user=user).order_by('-created_at'),'all_coupons':Coupon.objects.filter(is_expired=False)}
@@ -389,17 +352,12 @@ def checkout(request, uid=None):
 
 @csrf_exempt
 def paymenthandler(request, amount):
-    print("Payment Handler endpoint reached")
-    print("Content Type:", request.content_type)
-    print("Request Parameters:", request.POST)
 
     serialized_data = cache.get('data')
-    print(serialized_data,request.user)
  
     # only accept POST request.
     if request.method == "POST":
         try:
-            print('yugilh;', amount)
            
             # get the required parameters from post request.
             payment_id = request.POST.get('razorpay_payment_id', '')
@@ -433,25 +391,22 @@ def paymenthandler(request, amount):
                             user=data['user']
                             payment_method=data['payment_method']
 
-                            product=Product.objects.get(uid=product_uid)
+                            product_attribute=ProductAttribute.objects.get(uid=product_uid)
 
                             order_user=User.objects.get(id=user)
                             order=Order.objects.create(user=order_user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total, payment_method=payment_method)
                             if discount:
                                 order.coupon_discount=discount
                                 order.save()
-                            ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name, unit_price=unit_price,qty=quantity)
-                            ordered_item.image=product
-                            product_attribute = ProductAttribute.objects.get(product=product)
+                            ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product_attribute.product.product_name, unit_price=unit_price,qty=quantity)
+                            ordered_item.image=product_attribute.product
                             variants=[]
                             for i in product_attribute.value.all():
                                 variants.append(i.value)
                             ordered_item.product_variants=variants
                             ordered_item.save()
                 
-                            print(sub_total, address)
                         else:
-                            print('cart')
                             data = json.loads(serialized_data)
                             sub_total=data['sub_total']
                             name=data['name']
@@ -486,19 +441,14 @@ def paymenthandler(request, amount):
 
                             cart_items.delete()
                             cart.save()
-                
-                            print('working')
 
-                    Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.PAYMENT, is_paid=True, razorpay_order_id=razorpay_order_id, rarzorpay_payment_id=payment_id, razorpay_payment_signature=signature, amount=discount_price)
+                    Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.PAYMENT, is_paid=True,payment_status=Payment.PaymentStatus.PAID, razorpay_order_id=razorpay_order_id, rarzorpay_payment_id=payment_id, razorpay_payment_signature=signature, amount=discount_price)
                     razorpay_client.payment.capture(payment_id, amount)
-                    print('payment captured',order.uid)
 
                     return redirect('products:order_success',order.uid)
                 except:
-                    print('failed')
                     return render(request, 'paymentfail.html')
             else:
-                print('fail')
                 return render(request, 'paymentfail.html')
         except:
             return redirect('products:cart_checkout')
@@ -514,95 +464,82 @@ def order_success(request, uid):
     context={'order':order}
     return render(request, 'products/order_success.html', context)
 
+
+def clear_search_from_session(request):
+    if request.method == 'POST':
+        if 'search_value' in request.session:
+            del request.session['search_value']
+            return JsonResponse({'message': 'Search value cleared from session'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+def search_view(request):
+    val=1
+    serialized_data = []
+    if request.method == 'GET':
+        search = request.GET.get('search')
+        searchdata = json.dumps(search)
+        request.session['search_value'] = search
+        products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search)
+    page_number = request.GET.get('page')
+    paginator = Paginator(products, 3)
+    page = paginator.get_page(page_number)
+    # Redirect to shop view with search query and filter option
+    context = {'page': page, 'categories': Category.objects.all(), 'val':val, 'serialized_data': serialized_data, 'search':searchdata}
+    return render(request, 'shop.html', context)
+
 def shop_page(request):
     products = Product.objects.filter(is_listed=True)
+    val=1
+    serialized_data = []
+    searchdata =None
 
     if request.method == 'POST':
         search = request.POST.get('search')
+        print(search)
         products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search)
 
     if request.method=='GET':
+        search_shop = request.GET.get('search')
+        print('ss', search_shop)    
+        if search_shop and search_shop is not None:
+            products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search_shop)
+            print(products)
+        # search_query = request.GET.get('search', '')
         filter_value = request.GET.getlist('category')
         sort_value = request.GET.get('sortbyprice')
 
-        print(filter_value, sort_value)
+        # if search_query:
+        #     products = products.filter(name__icontains=search_query)
 
         if filter_value:
             products= products.filter(Category__category_name__in=filter_value)
+            serialized_data = json.dumps(filter_value)
         if sort_value:
             if sort_value == '1':
-                print('1')
                 products = products.order_by('price')
+                val ='1'
             elif sort_value == '2':
+                val = '2'
                 products = products.order_by('-price')
 
     page_number = request.GET.get('page')
     paginator = Paginator(products, 3)
     page = paginator.get_page(page_number)
 
-    context = {'page': page, 'categories': Category.objects.all()}
+    context = {'page': page, 'categories': Category.objects.all(), 'val':val, 'serialized_data': serialized_data}
+    if search_shop and search_shop is not None:
+        context['search'] =search_shop
+    if searchdata is not None:
+        context['search'] = searchdata
     return render(request, 'shop.html', context)
-
-
-# if request.method=='POST':
-#         data=json.loads(request.body)
-#         print(request.body)
-#         categories=data['categories']
-#         sortbyprice=data['sortbyprice']
-#         print(categories)
-#         if categories:
-#             new = []
-#             for category in categories:
-#                 cat=Category.objects.get(category_name=category)
-#                 products=Product.objects.filter(Category=cat).order_by('price')
-#                 print(cat)
-#                 for product in products:
-#                     image = ProductImage.objects.filter(product=product).first()
-
-#                     product_info = {
-#                         'name': product.product_name,
-#                         'price': product.price,
-#                         'image':image.image.url
-#                     }
-#                     new.append({'product': product_info,})
-#             print(products, new)
-#             if sortbyprice=='1':
-#                 new_sorted = sorted(new, key=lambda x: x['product']['price'])
-#             else:
-#                 new_sorted = sorted(new, key=lambda x: x['product']['price'], reverse=True)
-#             data={'products':new_sorted}
-#             return JsonResponse(data)
-#         else:
-#             if sortbyprice=='1':
-#                 products=Product.objects.filter(is_listed=True).order_by('price')
-#                 if search:
-#                     products=products_by_search.order_by('price')
-#             else:
-#                 products=Product.objects.filter(is_listed=True).order_by('-price')
-#                 if search:
-#                     products=products_by_search.order_by('price')
-#             new=[]
-#             for product in products:
-#                 image = ProductImage.objects.filter(product=product).first()
-
-#                 product_info = {
-#                     'name': product.product_name,
-#                     'price': product.price,
-#                     'image':image.image.url
-#                 }
-#                 new.append({'product': product_info})
-#             data={'products':new}
-#             return JsonResponse(data)
 
 
 def apply_coupon(request):
     if request.method=='POST':
         data=json.loads(request.body)
-        print(request.body)
         coupon_uid=data['coupon_uid']
         total=data['total']
         coupon=Coupon.objects.get(uid=coupon_uid,)
-        print(total,coupon.minimum_amount)
         if coupon.is_expired==True or coupon.no_of_coupons==0:
             data = {'fail':'Coupon Expired'}
             return JsonResponse(data)

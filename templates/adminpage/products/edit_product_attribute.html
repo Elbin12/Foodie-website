@@ -144,7 +144,6 @@ function validateForm(){
     var attribute=document.getElementById('attribute').value;
     var value=document.querySelectorAll('.values-select');
     
-    console.log(product_name, value)
     
     var attributeError = document.getElementById('attributeError');
     var valueError = document.getElementById('valueError');
@@ -166,10 +165,8 @@ function validateForm(){
     }
 
     var valuesArray = Array.from(value);
-    console.log(valuesArray.length)
     value.forEach(function(element) {
         if (element.value!=='' && element.value !== null && element.value !== undefined) {
-            console.log(element.value,'kkopoo')
             valuesArray.push(element.value);
         } 
         else {
@@ -208,7 +205,6 @@ function validateForm(){
             if (!parentContainer) return; // Exit if the parent container is not found
 
             const valuesSelect = parentContainer.querySelector('.values-select');
-            console.log(valuesSelect)
 
             fetch('/product/get_attribute_values/', {
                 method: 'post',
@@ -222,7 +218,6 @@ function validateForm(){
                 return response.json()
             })
             .then(data =>{
-                console.log(data);
                 show(data, valuesSelect)
             })
         }
@@ -246,22 +241,18 @@ valuesSelect.innerHTML+=option;
 function get_attributes(){
     attributes=document.querySelectorAll('.attribute');
     var attributeValues = [];
-    console.log(attributeValues, attributeValues.length)
     attributes.forEach(function(element) {
         if (element.value.trim() !== '') {
             attributeValues.push(element.value);
         }
     });
-    console.log(attributeValues, attributeValues.length)
     var attributeError=document.getElementById('attributeError')
     attributeError.textContent='';
     if (attributeValues.length === 0){
-        console.log('okroirhion',attributeValues)
         var attributeError=document.getElementById('attributeError')
         attributeError.textContent='Please add one attribute and values';
     }
     else{
-        console.log(attributeValues.length,'injoiobi');
     fetch('/product/get_attributes/', {
         method: 'post',
         headers: {

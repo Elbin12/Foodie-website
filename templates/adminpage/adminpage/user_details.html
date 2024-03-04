@@ -43,25 +43,10 @@
                         <div class="card-body">
                             <div>
                                 <label class="form-label" >Shipping Address</label>
-                                <textarea name="description" id="description" class="form-control" rows="4"></textarea>
+                                <textarea name="description" readonly id="description" class="form-control" rows="4">{{profile.user.address.first.name}},{{profile.user.address.first.address}},{{profile.user.address.first.locality}}, {{profile.user.address.first.city}}</textarea>
                             </div>
                         </div>
                     </div> <!-- card end// -->
-                    <div class="mb-4">
-                        <span id="descriptionError"></span>
-                    </div>
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Images</label>
-                                <input class="form-control" name="image" type="file">
-                                <img src="/media/{{product.product_images.first.image}}" id="image" class="img-sm img-thumbnail" alt="Item">
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                    <div class="mb-4">
-                        <span id="imageError"></span>
-                    </div>
                 </div>
                     <div class="col-lg-5">
                         <div class="table-responsive card">
@@ -81,7 +66,7 @@
                                             <td>
                                                 <a class="itemside" href="#">
                                                     <div class="left">
-                                                        <img src="{{ordered_item.image.url }}" width="40" height="40" class="img-xs" alt="Item">
+                                                        <img src="{{ordered_item.image.product_images.first.image.url}}" width="40" height="40" class="img-xs" alt="Item">
                                                     </div>
                                                     <div class="info"> {{ordered_item.ordered_product_name}} </div>
                                                 </a>
@@ -96,65 +81,6 @@
                             </table>
                         </div>
                     </div>
-                <!-- <div class="col-lg-4">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label class="form-label">Price</label>
-                                <input type="text" name="price" value="{{product.price}}" id="price" class="form-control">
-                            </div>
-                            <div class="mb-4">
-                                <span id="priceError"></span>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select">
-                                    <option>Published</option>
-                                    <option>Draft</option>
-                                </select>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Tags</label>
-                                <input type="text" placeholder="Type here" class="form-control">
-                            </div>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Tech</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Mobile</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Apple</a>
-                            <hr>
-                            <h5 class="mb-3">Categories</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat">
-                                <label class="form-check-label" for="product-cat"> Shirt </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
-                                <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
-                                <label class="form-check-label" for="product-cat-2"> Sneakers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
-                                <label class="form-check-label" for="product-cat-3"> Joggers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
-                                <label class="form-check-label" for="product-cat-4"> Vests </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
-                                <label class="form-check-label" for="product-cat-5"> Knitwear </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
-                                <label class="form-check-label" for="product-cat-8"> Shorts </label>
-                            </div>
-                        </div>
-                    </div> card end// -->
-                    <!-- <div>
-                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Save</button>
-                    </div> -->
                     {% for message in messages %}
                     <span style="color: rgb(142, 66, 66);" class="mb-2">{{message}}</span>
                     {% endfor %}

@@ -19,9 +19,7 @@ class Coupon(BaseModel):
     expire_date=models.DateTimeField(default=True)
     
     def save(self, *args, **kwargs):
-        print(self.no_of_coupons)
         if int(self.no_of_coupons) == 0  :
-            print(self.no_of_coupons)
             self.is_expired=True
         super(Coupon, self).save(*args, **kwargs)
 

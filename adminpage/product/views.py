@@ -7,23 +7,50 @@ from django.views.decorators.cache import cache_control
 from django.http import JsonResponse
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import timezone
+from datetime import datetime
 
+from django.contrib.auth.decorators import user_passes_test
+from adminpage.adminpage.views import is_superuser
 # Create your views here.
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def products(request):
     products=Product.objects.all().order_by('product_name')
+    categories = Category.objects.all()
+
     context={
-        'products':products,
+        'categories':categories,
     }
+
+    if request.method == 'GET':
+        category = request.GET.get('category')
+        date = request.GET.get('date')
+        status = request.GET.get('status')
+        if category and category != 'All category':
+            products = products.filter(Category__category_name = category)
+            context['selected_category'] = category
+        if date:
+            date_obj = timezone.datetime.strptime(date, '%Y-%m-%d').date()
+            date_datetime = datetime.strptime(str(date), '%Y-%m-%d')
+            products = products.filter(created_at__date=date_datetime)
+            context['date'] = date
+        if status == 'Active':
+            products = products.filter(is_listed = True)
+            context['status'] = status
+        if status == 'Disabled':
+            products = products.filter(is_listed = False)
+            context['status'] = status
+
+    context['products'] = products
     return render(request, 'adminpage/products/products.html',context)
 
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def add_product(request):
     categories=Category.objects.all()
     sub_categories=Sub_category.objects.all()
@@ -105,7 +132,7 @@ def add_product(request):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_product(request,uid):
     product=Product.objects.get(uid=uid)
     categories=Category.objects.exclude(category_name=product.Category)
@@ -140,11 +167,11 @@ def edit_product(request,uid):
     context={'product':product, 'categories':categories, 'sub_categories':sub_categories,'images':images}
     return render(request, 'adminpage/products/edit_product.html',context)
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_image(request):
     if request.method=='POST':
         new_image_file = request.FILES.get('new_image')
         uid=request.POST.get('uid')
-        print(uid,new_image_file)
 
 
         product_image = get_object_or_404(ProductImage, uid=uid)
@@ -169,7 +196,6 @@ def edit_image(request):
 def delete_image(request):
     if request.method=='POST':
         uid=json.loads(request.body)['uid']
-        print(uid)
         image=ProductImage.objects.get(uid=uid)
         image.delete()
         data={'success':'Image deleted successfully'}
@@ -177,13 +203,14 @@ def delete_image(request):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='adminpage:custom_login')
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def delete_product(request,uid):
     product=Product.objects.get(uid=uid)
     product.is_listed=not product.is_listed
     product.save()
     return redirect('product:products')
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def get_sub_categories(request):
     if request.method=='POST':
         cat=json.load(request)['category']
@@ -200,6 +227,7 @@ def get_sub_categories(request):
     return JsonResponse(data)
 
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def add_product_attributes(request):
     attributes=Attributes.objects.all()
     products=Product.objects.all()
@@ -208,8 +236,6 @@ def add_product_attributes(request):
         values=request.POST.getlist('values')
         product=request.POST.get('product')
         price=request.POST.get('price')
-        print(product)
-        print(values)
         pro=Product.objects.get(product_name=product)
         new=[]
         unique_values = set()
@@ -226,9 +252,7 @@ def add_product_attributes(request):
                 unique_values.add(val)
                 unique_values.add(val.attribute)
                 new.append(val)
-                print(new)
             product_attribute_exists=ProductAttribute.objects.filter(product=pro,value=val)
-            print(product_attribute_exists)
 
         product_attribute=ProductAttribute.objects.create(product=pro, new_price=price)
         for i in new:
@@ -239,8 +263,8 @@ def add_product_attributes(request):
     return render(request, 'adminpage/products/add_product_attributes.html', context)
 
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def get_attribute_values(request):
-    print('kmsfhkmobgsmod')
     if request.method=='POST':
         name=json.loads(request.body)['attribute']
         if name=='':
@@ -251,16 +275,16 @@ def get_attribute_values(request):
             data={'values':list(values.values())}
         return JsonResponse(data)
     
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def get_attributes(request):
     if request.method=='POST':
-        print('bubobui')
         data = json.loads(request.body)
         attributes = data.get('attributes', [])
         excluded_attributes = Attributes.objects.exclude(name__in=attributes)
-        print(excluded_attributes)
         data={'excluded_attributes':list(excluded_attributes.values())}
         return JsonResponse(data)
-    
+
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def product_attributes(request):
     product_attributes=ProductAttribute.objects.all()
     page_number = request.GET.get('page')
@@ -269,14 +293,13 @@ def product_attributes(request):
     context={'page':page}
     return render(request, 'adminpage/products/product_attributes.html',context)
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_product_attribute(request, uid):
     product_attribute=ProductAttribute.objects.get(uid=uid)
     if request.method=='POST':
         values=request.POST.getlist('values')
         product=request.POST.get('product')
         price=request.POST.get('price')
-        print(product)
-        print(values)
 
         product_attribute.value.clear()
         for value in values:
@@ -285,13 +308,12 @@ def edit_product_attribute(request, uid):
 
         product_attribute.new_price=price
         product_attribute.save()
-        print(product_attribute)
             
     context={'product_attribute':product_attribute, 'attributes':Attributes.objects.all()}
     return render(request, 'adminpage/products/edit_product_attribute.html', context)
 
 
-
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def add_attribute(request):
     if request.method == 'POST':
         attribute = request.POST.get('attribute')
@@ -302,26 +324,26 @@ def add_attribute(request):
     context = {'attributes':Attributes.objects.all().order_by('name')}
     return render(request,'adminpage/products/add_attribute.html', context)
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_attribute(request, uid):
     if request.method == 'POST':
         new_attribute = request.POST.get('attribute')
-        print(new_attribute)
         attribute = Attributes.objects.get(uid=uid)
         attribute.name=new_attribute
         attribute.save()
         return redirect('product:add_attribute')
-    print('ghs')
     context = {'attribute':Attributes.objects.get(uid=uid)}
     return render(request,'adminpage/products/edit_attribute.html', context)
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def delete_attribute(reqest, uid):
     attribute = Attributes.objects.get(uid=uid)
-    print(attribute, 'ijogjio')
     attribute.is_listed=not attribute.is_listed
     # Product.objects.filter(Category=category).update(is_category_listed=category.is_listed)
     attribute.save()
     return redirect('product:add_attribute')
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def attribute_values(request, uid):
     attribute = Attributes.objects.get(uid=uid)
     if request.method == 'POST':
@@ -334,6 +356,7 @@ def attribute_values(request, uid):
     context = {'values':attribute.attribute_values.all(), 'attribute':attribute}
     return render(request,'adminpage/products/attribute_values.html', context)
 
+@user_passes_test(is_superuser, login_url='adminpage:custom_login')
 def edit_attribute_value(request, uid):
     value = Attribute_values.objects.get(uid=uid)
     if request.method == 'POST':

@@ -28,8 +28,6 @@ function category(){
         .filter(checkbox => checkbox.checked)
         .map(checkbox => checkbox.value);
 
-    // Log or perform further actions with the checked categories
-    console.log(checkedCategories);
     fetch('/products/shop_page/',{
         method: 'post', // Assuming your backend handles DELETE requests for deletion
         headers: {
@@ -40,13 +38,10 @@ function category(){
     })
     .then(response => response.json())
     .then(data=>{
-        console.log(data.products)
         const productsContainer = document.querySelector('.row.product');
 productsContainer.innerHTML = ''; // Clear existing products
 
 data.products.forEach(product => {
-    console.log('Product:', product);
-    console.log('Image:', product.product.image);
     var collapse=document.getElementById('collapseOne');
     setTimeout(function() {
         collapse.classList.remove('show');
@@ -113,4 +108,6 @@ data.products.forEach(product => {
 });
     })
 }
+
+
 
