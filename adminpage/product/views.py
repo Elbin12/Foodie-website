@@ -58,7 +58,7 @@ def add_product(request):
     for i in attributes:
         attribute_values = i.attribute_values.all()
         # values.extend(attribute_value.value for attribute_value in attribute_values)
-    context={'categories':categories, 'sub_categories':sub_categories,'values':attribute_values, 'attributes':attributes}
+    context={'categories':categories, 'sub_categories':sub_categories, 'attributes':attributes}
     if request.method=='POST':
         title=request.POST.get('title')
         description=request.POST.get('description')

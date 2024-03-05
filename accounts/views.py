@@ -514,7 +514,7 @@ def paymenthandler(request, amount):
         return render(request, 'paymentfail.html')
 
 
-
+@login_required(login_url='account:login')
 def wishlist(request):
     wishlist=Wishlist.objects.get_or_create(user = request.user)
     w = Wishlist.objects.get(user=request.user)
