@@ -13,7 +13,7 @@ from django.db.models import Q
 from django.core.files import File as DjangoFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-
+from decouple import config
 
 # Create your views here.
 
@@ -222,7 +222,7 @@ def checkout(request, uid=None):
                 try:
                     razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
                     razorpay_order_id = razorpay_order['id']
-                    callback_url = "http://" + "127.0.0.1:8000" + '/products/paymenthandler/'+str(amount/100)
+                    callback_url = config('CALLBACK_URL') + '/products/paymenthandler/' + str(amount/100)
 
                     context = {
                         'name': name,
