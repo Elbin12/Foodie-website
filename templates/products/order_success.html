@@ -11,8 +11,8 @@
 {% block another %}
 
 
-<div class="d-flex">
-    <div class="order-container  col-lg-8 col-md-12">
+<div class="">
+    <div class="order-container col-12 col-lg-8 col-md-12" style="float: left;">
         {% for ordered_item in order.ordered_items.all %}
         <div class="item">
             <div class="product-details d-flex flex-row">
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="order-summary-container col-lg-3 col-md-12">
+    <div class="order-summary-container col-10 col-lg-3 col-md-6">
         <div id="tick-mark">&#10004;</div>
         <div id="order-success">Order Successful!</div>
     

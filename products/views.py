@@ -499,8 +499,7 @@ def shop_page(request):
         products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search)
 
     if request.method=='GET':
-        search_shop = request.GET.get('search')
-        print('ss', search_shop)    
+        search_shop = request.GET.get('search') 
         if search_shop and search_shop is not None:
             products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search_shop)
             print(products)
