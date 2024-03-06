@@ -222,7 +222,7 @@ def checkout(request, uid=None):
                 try:
                     razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
                     razorpay_order_id = razorpay_order['id']
-                    callback_url = config('CALLBACK_URL') + '/products/paymenthandler/' + str(amount/100)
+                    callback_url = 'http://elbin.site/products/paymenthandler/' + str(amount/100)
 
                     context = {
                         'name': name,
