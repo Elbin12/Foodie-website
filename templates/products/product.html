@@ -152,7 +152,11 @@
                             <p style="color: #000;">80 piece available</p>
                         </div>
                         <div>
+                            {% if flat %}
                             <p><a href="{% url 'account:add_to_wishlist' pro_attrbute.uid %}" id="add_to_wishlist" style="color: #4d4d4d; text-decoration-line: underline;">Add to Whishlist</a></p>
+                            {% else %}
+                            <p><a id="add_to_wishlist" style="color: #4d4d4d; text-decoration-line: underline;" onclick="notUser('Plese Login to access wishlist')">Add to Whishlist</a></p>
+                            {% endif %}
                         </div>
                     </div>
                     <p>
