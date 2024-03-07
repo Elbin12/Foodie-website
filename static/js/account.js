@@ -526,7 +526,7 @@ else {
                 callback_url: data.callback_url,
                 handler: function (response) {
                     // Handle Razorpay response
-                    window.alert('Razorpay Payment ID:', response.razorpay_payment_id);
+                    alert('Razorpay Payment ID:', response.razorpay_payment_id);
                     const headers = new Headers();
                     headers.append('Content-Type', 'application/json');
                     headers.append('X-CSRFToken', csrftoken);

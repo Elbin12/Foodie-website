@@ -495,14 +495,12 @@ def shop_page(request):
 
     if request.method == 'POST':
         search = request.POST.get('search')
-        print(search)
         products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search)
 
     if request.method=='GET':
         search_shop = request.GET.get('search') 
         if search_shop and search_shop is not None:
             products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search_shop)
-            print(products)
         # search_query = request.GET.get('search', '')
         filter_value = request.GET.getlist('category')
         sort_value = request.GET.get('sortbyprice')

@@ -99,15 +99,8 @@ ol {
 	opacity: 1;
 }
 
-.product__item:hover .product__item__text a {
-	top: 22px;
-	opacity: 1;
-	visibility: visible;
-}
 
-.product__item:hover .product__item__text h6 {
-	opacity: 0;
-}
+
 
 .product__item:hover .product__item__text .product__color__select {
 	opacity: 1;
@@ -198,13 +191,12 @@ ol {
 
 .product__item__text a {
 	font-size: 15px;
-	color: #e53637;
+	color: #191919;
 	font-weight: 700;
 	position: absolute;
 	left: 0;
+	text-decoration: none;
 	top: 0;
-	opacity: 0;
-	visibility: hidden;
 	-webkit-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;

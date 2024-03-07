@@ -79,14 +79,14 @@
                     {% for product in page.object_list %}
                     <div class="col-lg-4 col-md-6 col-sm-6" >
                         <div class="product__item">
-                            <div class="product__item__pic set-bg" style="background-image: url(/media/{{product.product_images.first.image}});">
-                                <ul class="product__hover">
-                                    <li><a href="#"><i class="fas fa-heart" style="color: #fff;"></i></a></li>
-                                </ul>
+                            <div class="product__item__pic set-bg" >
+                                <a href="{% url 'products:product' product.uid %}">
+                                    <img src="{{product.product_images.first.image.url}}" alt="">
+                                </a>
                             </div>
                             <div class="product__item__text">
-                                <h6>{{product.product_name}}</h6>
-                                <a href="#" class="add-cart">+ Add To Cart</a>
+                                
+                                <h6><a href="{% url 'products:product' product.uid %}">{{product.product_name}}</a></h6>
                                 <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
