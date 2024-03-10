@@ -335,9 +335,29 @@ def sales_report(request):
     return render(request, 'adminpage/adminpage/sales_report.html', context)
 
 
-def export_data_to_excel(request):
-    objs = Ordered_item.objects.all()
-    orders = Order.objects.all()
+def export_data_to_excel(request, filter):
+    if filter == 'All':
+        objs = Ordered_item.objects.all()
+        orders = Order.objects.all()
+    elif filter == 'Daily':
+        today = timezone.now().date()
+        objs = Ordered_item.objects.filter(order_id__created_at=today)
+        orders = Order.objects.filter(created_at=today)
+    elif filter == 'Weekly':
+        today = timezone.now().date()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=6)
+        objs = Ordered_item.objects.filter(order_id__created_at__range=[start_of_week, end_of_week])
+        orders = Order.objects.filter(created_at__range=[start_of_week, end_of_week])
+    elif filter == 'Monthly':
+        current_year = timezone.now().year
+        current_month = timezone.now().month
+        objs = Ordered_item.objects.filter(order_id__created_at__year=current_year, order_id__created_at__month=current_month)
+        orders = Order.objects.filter(created_at__year=current_year, created_at__month=current_month)
+    elif filter == 'Yearly':
+        current_year = timezone.now().year
+        objs = Ordered_item.objects.filter(order_id__created_at__year=current_year)
+        orders = Order.objects.filter(created_at__year=current_year)
     
     data = []
 

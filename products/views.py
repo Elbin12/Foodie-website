@@ -458,7 +458,6 @@ def paymenthandler(request, amount):
 
 
 
-@login_required(login_url='account:login')
 def order_success(request, uid):
     order=Order.objects.get(uid=uid)
     context={'order':order}

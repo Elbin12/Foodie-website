@@ -17,8 +17,19 @@
                     <h2 class="content-title card-title">Dashboard </h2>
                     <p>Whole data about your business here</p>
                 </div>
+                <div class="col-md-2 col-6" >
+                    <div class="custom_select">
+                        <select class="form-select select-nice" onchange="append_filter(this.value)">
+                            <option selected>All</option>
+                            <option>Daily</option>
+                            <option>Weekly</option>
+                            <option>Monthly</option>
+                            <option>Yearly</option>
+                        </select>
+                    </div>
+                </div>
                 <div>
-                    <a href="{% url 'adminpage:export_data_to_excel' %}" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+                    <a href="{% url 'adminpage:export_data_to_excel' 'All' %}" id="sales_report_a" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
                 </div>
             </div>
             <div class="row">
@@ -391,6 +402,14 @@
     } //end if
     
 })(jQuery);
+
+
+function append_filter(val){
+    console.log(val);
+    var sales_report_a = document.getElementById('sales_report_a');
+    sales_report_a.href = '/adminpage/export_data_to_excel/'+val ;
+
+}
 
         
         </script>
