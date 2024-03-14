@@ -22,7 +22,8 @@
                     {{ value }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
                 </p>
-                <p class="d-flex align-items-center" style="font-size: medium; margin-left: 60px;">{{ordered_item.unit_price}}</p>
+                <p class="d-flex align-items-center" style="font-size: medium; margin-left: 60px;"> ₹ {{ordered_item.unit_price}}</p>
+                <p  class="d-flex align-items-center" style="font-size: medium; margin-left: 60px;">{{ ordered_item.qty }} </p>
                 <div class="d-flex  " style="font-size: medium; color: green; margin-left: 20px; margin-left: auto;">
                     <p style="font-size: medium;">Delivery in 15 minutes</p>
                 </div>
@@ -44,7 +45,7 @@
     
         <div class="order-details">
             <p>Number of Items: {{order.ordered_items.all|length}}</p>
-            <p>Total Amount: {{order.subtotal}}</p>
+            <p>Total Amount:  ₹ {{order.subtotal}}</p>
         </div>
     
         <div class="coupon-details">
@@ -59,7 +60,7 @@
         </div>
     
         <div class="total-amount">
-            <p>Final Amount : {{order.total_amount}}</p>
+            <p>Final Amount : ₹ {{order.total_amount}}</p>
         </div>
     </div>
 </div>

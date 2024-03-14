@@ -98,7 +98,9 @@
     {% block content %}
 
     {% endblock content %}
+    {% if 'account' in request.path and not 'cart' in request.path %}
     <script>
+        
 document.addEventListener("DOMContentLoaded", function() {
     var sidebarToggle = document.getElementById("sidebar-toggle");
     var sidebarCollapse = document.getElementById("sidebar-collapse");
@@ -117,6 +119,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
     </script>
+    {% endif %}
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
     
