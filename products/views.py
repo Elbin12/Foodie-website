@@ -242,7 +242,7 @@ def checkout(request, uid=None):
             elif data['payment_method']=='Wallet':
                 try:
                     message=payment_with_wallet(request,data, uid, discount)
-                    return JsonResponse({'url':'/products/order_success/'+str(message['success'])})
+                    return JsonResponse({'url': config('CALLBACK_URL') + '/products/order_success/'+str(message['success'])})
                 except ValueError as e:
                     return JsonResponse({'fail': str(e)})
                 
