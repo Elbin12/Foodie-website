@@ -31,6 +31,8 @@ from django.core.files.base import ContentFile
 import jinja2
 import pdfkit
 
+
+from decouple import config
 # Create your views here.
 
 
@@ -458,7 +460,7 @@ def wallet(request):
         try:
             razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
             razorpay_order_id = razorpay_order['id']
-            callback_url = "http://" + "127.0.0.1:8000" + '/account/paymenthandler/'+str(amount/100)
+            callback_url = config('CALLBACK_URL') + '/account/paymenthandler/'+str(amount/100)
 
             context = {
                 'amount': amount,
