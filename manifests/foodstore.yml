@@ -1,0 +1,32 @@
+apiVersion : v1
+kind : Service
+metadata :
+  name : foodstore
+spec :
+  selector :
+    app : foodstore
+  type : LoadBalancer
+  ports :
+    - port : 8000
+      targetPort : 8000
+---
+apiVersion : apps/v1
+kind : Deployment
+metadata :
+  name : foodstore
+spec :
+  replicas : 1
+  selector :
+    matchLabels :
+      app : foodstore
+  template :
+    metadata :
+      labels :
+        app : foodstore
+    spec :
+      containers :
+      - name : foodstore-container
+        image : elbin/foodstore
+        ports :
+          - containerPort : 8000
+        imagePullPolicy : Always

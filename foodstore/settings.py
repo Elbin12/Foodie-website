@@ -84,11 +84,11 @@ WSGI_APPLICATION = 'foodstore.wsgi.application'
 
 DATABASES = {
    'default': {
-       'ENGINE': 'django.db.backends.postgresql',
+       'ENGINE': 'django.db.backends.postgresql',   
        'NAME': 'foodstore',
        'USER': 'postgres',
-       'PASSWORD': 'elbin',
-       'HOST': '127.0.0.1',
+       'PASSWORD': 'Elbin',
+       'HOST': 'host.docker.internal',
        'PORT': '5432',
    }
 }
