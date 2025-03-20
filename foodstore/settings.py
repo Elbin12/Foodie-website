@@ -88,7 +88,7 @@ DATABASES = {
        'NAME': 'foodstore',
        'USER': 'postgres',
        'PASSWORD': 'Elbin',
-       'HOST': 'host.docker.internal',
+       'HOST': 'localhost',
        'PORT': '5432',
    }
 }
