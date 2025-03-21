@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-ygfix31p1_+fzyl&x20=st96cf3i(nm)gcamx@7vpul5xb&ntu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['foodie.elbin.live', '13.60.61.223', 'localhost', 'www.foodie.elbin.live']
 
 
 # Application definition
