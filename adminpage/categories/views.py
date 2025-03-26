@@ -62,6 +62,7 @@ def add_sub_category(request,uid):
     categories=Category.objects.all()
     sub_categories=Sub_category.objects.filter(category=category_instance)
     context={'sub_categories':sub_categories,'category':category_instance, 'categories':categories}
+    print(context, 'kfkfkkf')
     
     if request.method=='POST':
         sub_category=request.POST.get('sub_category')

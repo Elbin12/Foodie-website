@@ -183,6 +183,7 @@ def checkout(request, uid=None):
         context={'product_attribute':product_attribute, 'addresses':Address.objects.filter(user=user).order_by('-created_at'), 'all_coupons':Coupon.objects.filter(is_expired=False)}
 
         if request.method=='POST':
+            print(config('CALLBACK_URL'), 'kkkfkfkf')
             data = json.loads(request.body)
             quantity=data['quantity']
             sub_total=data['final_price']
@@ -238,6 +239,7 @@ def checkout(request, uid=None):
 
                     return JsonResponse(context)
                 except Exception as e:
+                    print(e, 'eee prrro')
                     return JsonResponse({'error': 'Internal Server Error'}, status=500)
             elif data['payment_method']=='Wallet':
                 try:
@@ -264,6 +266,7 @@ def checkout(request, uid=None):
                 
                 return JsonResponse({'url':'/products/order_success/'+str(order.uid)})
     else:
+        print(config('CALLBACK_URL'), 'kkkfkfkf')
         cart=Cart.objects.get(user=user)
         cart_items=Cart_item.objects.filter(cart=cart)
         len=cart_items.__len__()

@@ -60,6 +60,7 @@ def add_product(request):
         # values.extend(attribute_value.value for attribute_value in attribute_values)
     context={'categories':categories, 'sub_categories':sub_categories, 'attributes':attributes}
     if request.method=='POST':
+        print(request.POST, 'request data')
         title=request.POST.get('title')
         description=request.POST.get('description')
         images=request.FILES.getlist('image')
@@ -83,7 +84,9 @@ def add_product(request):
                 
 
         category_instance=Category.objects.get(category_name=category)
+        print('workinggggg.....',sub_category, Sub_category.objects.filter(sub_category_name=sub_category))
         sub_category_instance=Sub_category.objects.get(sub_category_name=sub_category)
+        print('workinggggg..... hhrfhgfv')
 
 
         if Product.objects.filter(product_name=title).exists():

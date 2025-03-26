@@ -172,13 +172,20 @@ def add_to_cart(request):
         data=json.loads(request.body)
         uid=data['uid']
         selected=data['selected_values']
+        print(selected, 'selectedddd')
         values=[]
         for value in selected:
             val=Attribute_values.objects.get(value=value)
             values.append(val)
         product=Product.objects.get(uid=uid)
+        print(values, 'values')
         try:
-            product_attribute=ProductAttribute.objects.filter(product=product).filter(value=values[0]).filter(value=values[1]).first()
+            product_attribute=ProductAttribute.objects.filter(product=product)
+            for value in values:
+                print(value, 'oldkd')
+                product_attribute = product_attribute.filter(value=value)
+            print(product_attribute.first(), 'ikdd')
+            product_attribute = product_attribute.first()
             cart=Cart.objects.get(user=request.user)
             if Cart_item.objects.filter(cart=cart,product_attribute=product_attribute).exists():
                 data={'exists':'Food item is already in your cart'}
@@ -193,7 +200,8 @@ def add_to_cart(request):
         except Cart.DoesNotExist:
             data={'fail':'Please log in to visit your cart'}
             return JsonResponse(data)
-        except:
+        except Exception as e:
+            print(e, 'dkfgkfg')
             data={'fail':'Item not in stock'}
             return JsonResponse(data)
     
