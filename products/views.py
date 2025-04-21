@@ -62,27 +62,50 @@ def selectvariants(request):
         key=data['attribute']
         selected_values=data['selected_values']
         product_uid=data['product_uid']
-        product=Product.objects.get(uid=product_uid)
-        selected=[]
-        for key, values in selected_values.items():
-            val=Attribute_values.objects.get(value=values)
-            selected.append(val.uid)
-
         try:
-            pro_attrbute=ProductAttribute.objects.filter(product=product).filter(value=selected[0]).filter(value=selected[1]).first()
-            new=[]
-            product_attributes=ProductAttribute.objects.filter(product=product)
-            for product_attribute in product_attributes.all():
+            product = Product.objects.get(uid=product_uid)
+            selected = []
+
+            # Get Attribute_values instances for the selected values
+            for attr_key, attr_value in selected_values.items():
+                val = Attribute_values.objects.get(value=attr_value)
+                selected.append(val)
+
+            # Filter ProductAttribute instances for this product
+            product_attributes = ProductAttribute.objects.filter(product=product)
+
+            for value in selected:
+                product_attributes = product_attributes.filter(value=value)
+
+            matched_attribute = product_attributes.first()
+
+            if not matched_attribute:
+                data = {'price': 'Currently not available.'}
+                return JsonResponse(data)
+
+            # Now, prepare available options for other attributes
+            available_options = []
+            product_attributes_all = ProductAttribute.objects.filter(product=product)
+
+            for product_attribute in product_attributes_all:
                 for value in product_attribute.value.all():
-                    value=Attribute_values.objects.get(value=value)
-                    attribute=Attributes.objects.get(name=value.attribute)
+                    value_instance = Attribute_values.objects.get(value=value)
+                    attribute = value_instance.attribute
                     if attribute.name != key:
-                        new.append(value.value)
-            data={'values':new,'price':f'₹ {pro_attrbute.new_price}', 'pro_attrbute_uid':pro_attrbute.uid}
-            return JsonResponse(data)
-        except:
-            data={'price':'Currently not available.'}
-            return JsonResponse(data) 
+                        available_options.append(value_instance.value)
+
+            response_data = {
+                'values': available_options,
+                'price': f'₹ {matched_attribute.new_price}',
+                'pro_attrbute_uid': matched_attribute.uid
+            }
+            return JsonResponse(response_data)
+
+        except Product.DoesNotExist:
+            return JsonResponse({'error': 'Product not found.'}, status=404)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': 'Something went wrong.'}, status=500)
 
 
 
