@@ -96,11 +96,13 @@
 {% endblock title %}
 
 {% block another %}
-    <section class="ftco-section mt-4">
+    <section class="ftco-section" style="margin-top: 4rem;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-5 ftco-animate image">
-                    <img style="max-width: 75%;" id="big_{{product.uid}}" onmouseover="passUid('{{product.uid}}')"  src="/media/{{product.product_images.first.image}}" class="img" alt="Food image">
+                    <div class="" style="width: 80%; height: 560px; overflow: hidden;">
+                        <img style="width: 100%; height: 100%; object-fit: cover;" id="big_{{product.uid}}" onmouseover="passUid('{{product.uid}}')"  src="/media/{{product.product_images.first.image}}" class="img" alt="Food image">
+                    </div>
                     <div class="d-flex other_images">
                         {% for image in other_images %}
                         <img id="small_{{image}}"onmouseover="" onclick="showImage('{{image}}', '{{product.uid}}')" src="/media/{{image}}" style="border: none;" alt="">
