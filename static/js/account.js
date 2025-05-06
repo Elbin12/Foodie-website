@@ -363,11 +363,48 @@ function hide(){
 }
 
 
+async function checkBeforeOrder() {
+  try {
+      const response = await fetch("/products/check/", {
+          method: 'get',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      const data = await response.json();
+      console.log(data, 'from checkout order');
+
+      if (data.success) {
+          return true;  // Proceed with placing the order
+      } else {
+        const result = await Swal.fire({
+          icon: 'warning',
+          title: 'Some items are not available',
+          text: data.error || 'Some items are no longer available.',
+          showCancelButton: true,
+          confirmButtonText: 'Continue order',
+          cancelButtonText: 'Cancel',
+        });
+  
+        return result.isConfirmed;  // true if "Continue order", false if "Cancel"
+      }
+  } catch (error) {
+      console.error('Error:', error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Something went wrong while checking product availability.',
+      });
+      return false;
+  }
+}
+
  
 
 
 
-function submitData(){
+async function submitData(){
+  console.log('hi from submit data')
   var payment_method=document.getElementById('payment').value;
   if (payment_method=='select a method'){
       var paymentError=document.getElementById('paymentError');
@@ -483,8 +520,13 @@ else {
     // Handle other payment methods or send order details directly
     sendOrderToServer(requestBody, uid);
 }
-  }
+}
   else{
+    // const isValid = await checkBeforeOrder();
+    // console.log('CheckBeforeOrder Result:', isValid);
+    // if (!isValid) return;
+
+    // console.log(isValid, 'isvalid')
     var final_price=document.getElementById('totalPrice').innerText;
     var discountPrice = parseFloat(document.getElementById('discountPrice').innerText);
     var discount=document.getElementById('discountPrice');
@@ -548,6 +590,18 @@ else {
         })
         .catch(error => {
             console.error('Error fetching Razorpay order details:', error);
+            Swal.fire({
+              position: "center",
+              icon: "error",
+              title: "Something went wrong.",
+              showConfirmButton: true,
+              confirmButtonText: "Reload Page",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload();
+              }
+            });
+            
         });
 }
 else if( final_price > 1000 ){
@@ -563,6 +617,7 @@ else if( final_price > 1000 ){
 
  else {
     // Handle other payment methods or send order details directly
+    console.log('from else condition of submit data function')
     sendOrderToServer(requestBody);
 }
 }
@@ -657,6 +712,17 @@ function sendOrderToServer(orderDetails, uid='') {
       })
       .catch(error => {
           console.error('Error processing order on the server:', error);
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Something went wrong.",
+            showConfirmButton: true,
+            confirmButtonText: "Reload Page",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
       });
   }
 }

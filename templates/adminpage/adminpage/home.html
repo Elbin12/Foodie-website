@@ -124,13 +124,13 @@
                                     <h5 class="card-title">Top selling products</h5>
                                     <ul class=" list-unstyled font-sm">
                                         {% for product_attribute, count in sorted_product_attributes|slice:":10"  %}
-                                        <li class="">
+                                        <li class="mb-1">
                                             <div class="event-timeline-dot">
                                                 <i class="font-xxl"></i>
                                             </div>
                                             <div class="media">
                                                 <div class="me-3">
-                                                    <img  src="{{ product_attribute.product_images.first.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-width: 100px;">
+                                                    <img  src="{{ product_attribute.product_images.first.image.url }}" alt="{{ product.name }}" class="img-fluid" style="width: 80px; height: 80px; object-fit: cover;">
                                                 </div>
                                                 <div class="media-body">
                                                     <h6> {{ product_attribute.product_name }} <span style="color: rgb(165, 134, 88);">{% for val in product_attribute.value.all %} {{val}} {% if not forloop.last %} , {% endif %} {% endfor %}</span></h6>

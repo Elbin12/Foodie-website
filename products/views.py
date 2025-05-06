@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from django.shortcuts import render,redirect
 from . models import *
 from accounts.models import *
@@ -159,7 +161,7 @@ def payment_with_wallet(request,data, uid, discount):
         return data
     else:
         cart=Cart.objects.get(user=user)
-        cart_items=Cart_item.objects.filter(cart=cart)
+        cart_items=Cart_item.objects.filter(cart=cart, product__is_listed=True)
         name=data['name']
         mob=data['mob']
         address=data['address']
@@ -196,6 +198,29 @@ def payment_with_wallet(request,data, uid, discount):
         data={'success':order.uid}
         return data
 
+def check(request):
+    cart = Cart.objects.get(user=request.user)
+    cart_items = Cart_item.objects.filter(cart=cart)
+
+    unavailable_items = [item.product.product_name for item in cart_items if not item.product.is_listed]
+    
+    total_price = cart_items.filter(product__is_listed=True).aggregate(total=Sum('price'))['total'] or 0
+    cart.total = total_price
+    cart.save()
+
+    if unavailable_items:
+        if len(unavailable_items) == cart_items.count():
+            return JsonResponse({
+                'error': f'All items in your cart ({", ".join(unavailable_items)}) are currently not available.',
+                'all_unavailable': True
+            }, status=200)
+        else:
+            return JsonResponse({
+                'error': f'{", ".join(unavailable_items)} {"is" if len(unavailable_items) == 1 else "are"} currently not available.',
+                'all_unavailable': False
+            }, status=200)
+
+    return JsonResponse({'success': True}, status=200)
 
 
 @login_required(login_url='account:login')
@@ -291,7 +316,7 @@ def checkout(request, uid=None):
     else:
         print(config('CALLBACK_URL'), 'kkkfkfkf')
         cart=Cart.objects.get(user=user)
-        cart_items=Cart_item.objects.filter(cart=cart)
+        cart_items=Cart_item.objects.filter(cart=cart, product__is_listed = True)
         len=cart_items.__len__()
         if request.method=='POST':
             data = json.loads(request.body)
@@ -299,8 +324,11 @@ def checkout(request, uid=None):
             mob=data['mob']
             address=data['address']
             sub_total=data['final_price']
-            payment_method=data['payment_method']
+            payment_method=data['payment_method']   
             discount_price=sub_total
+
+            if int(sub_total) != cart.total:
+                return JsonResponse({'error':'something went wrong'}, status=400)
 
             discount=None
 
@@ -319,7 +347,7 @@ def checkout(request, uid=None):
                     return JsonResponse(data)
                 
             if data['payment_method']=='Payment':
-                datas={'sub_total':sub_total,'discount_price':discount_price,'name':name, 'mob':mob, 'address':address, 'discount':discount, 'user':user.id, 'payment_method':payment_method}
+                datas={'sub_total':sub_total,'discount_price':discount_price,'name':name, 'mob':mob, 'address':address, 'discount':discount, 'user':user.id, 'payment_method':payment_method, 'available_items':[str(item.uid) for item in cart_items]}
                 serialized_data = json.dumps(datas)
                 cache.set('data',serialized_data)
                 currency = 'INR'
@@ -442,10 +470,11 @@ def paymenthandler(request, amount):
                             discount_price=data['discount_price']
                             user=data['user']
                             payment_method=data['payment_method']
+                            available_item_ids = [UUID(uid_str) for uid_str in data['available_items']]
 
                             order_user=User.objects.get(id=user)
                             cart=Cart.objects.get(user=order_user)
-                            cart_items=Cart_item.objects.filter(cart=cart)
+                            cart_items=Cart_item.objects.filter(uid__in=available_item_ids)
 
                             order=Order.objects.create(user=order_user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total,payment_method=payment_method)
 
@@ -513,22 +542,24 @@ def search_view(request):
     return render(request, 'shop.html', context)
 
 def shop_page(request):
-    products = Product.objects.filter(is_listed=True)
+    products = Product.objects.all()
     val=1
     serialized_data = []
     searchdata =None
 
     if request.method == 'POST':
         search = request.POST.get('search')
-        products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search)
+        products = Product.objects.filter(product_name__icontains = search)
 
     if request.method=='GET':
         search_shop = request.GET.get('search') 
         if search_shop and search_shop is not None:
-            products = Product.objects.filter(is_listed = True).filter(product_name__icontains = search_shop)
+            products = Product.objects.filter(product_name__icontains = search_shop)
         # search_query = request.GET.get('search', '')
         filter_value = request.GET.getlist('category')
         sort_value = request.GET.get('sortbyprice')
+
+        print(filter_value, sort_value, products)
 
         # if search_query:
         #     products = products.filter(name__icontains=search_query)

@@ -10,6 +10,7 @@
     <style>
         body{
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            padding-top: 3rem;
         }
 
         /* #sidebar-collapse{
@@ -87,6 +88,18 @@
                 display: block !important;
             }
         }
+
+        .custom-alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
+            width: auto;
+            max-width: 300px;
+            background-color: red;
+            color: white;
+            font-size: larger;
+        }
         
     </style>
     {% block title %}
@@ -94,7 +107,19 @@
     {% endblock title %}
 </head>
 <body>
-    
+    {% if messages %}
+        <div class="custom-alert-container">
+            {% for message in messages %}
+            {% if 'auth' in message.tags %}
+                <div class="alert alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
     {% block content %}
 
     {% endblock content %}

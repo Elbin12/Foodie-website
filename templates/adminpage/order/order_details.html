@@ -106,7 +106,7 @@
                                         <td>
                                             <a class="itemside" href="#">
                                                 <div class="left">
-                                                    <img src="/media/{{ordered_item.Ordered_product.product_images.first.image}}" width="40" height="40" class="img-xs" alt="Item">
+                                                    <img src="{{ordered_item.image.product_images.first.image.url}}" width="40" height="40" class="img-xs" alt="Item">
                                                 </div>
                                                 <div class="info">{{ordered_item.ordered_product_name}}</div>
                                             </a>

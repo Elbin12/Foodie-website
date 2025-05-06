@@ -13,6 +13,7 @@ urlpatterns = [
     path('search_view/', views.search_view, name='search_view'),
     path('clear_search_from_session/', views.clear_search_from_session, name='clear_search_from_session'),
     path('categories/<uid>', views.categories, name='categories'),
+    path('check/', views.check, name='check'),
     path('checkout/<uid>', views.checkout, name='checkout'),
     path('checkout/', views.checkout, name='cart_checkout'),
     path('paymenthandler/<amount>', views.paymenthandler, name='paymenthandler'),

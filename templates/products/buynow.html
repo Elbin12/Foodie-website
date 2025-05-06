@@ -316,7 +316,7 @@
           </select>
           <span id="paymentError"></span>
         </div>
-        <button class="btn btn-primary" type="submit" id="order" onclick="submitData()" style="display: none;" >Order Item</button>
+        <button class="btn btn-primary" id="order" onclick="submitData()" style="display: none;" >Order Item</button>
       </div>
       <div class="col-md-4 col-lg-3 mt-5">
         <div class="card">
@@ -326,7 +326,7 @@
             {% if cart %}
             <p>Total Items: <span id="totalItems">{{len}}</span></p>
             <p>Total Price: ₹ <span id="totalPrice">{{cart.total}}</span></p>
-            <p >Discount Price: ₹ <span id="discountPrice">0</span></p>
+            <p >Discountable Price: ₹ <span id="discountPrice">0</span></p>
             {% else %}
             <p>Total Items: <span id="totalItems">1</span></p>
             <p>Total Price: ₹ <span id="totalPrice">{{product_attribute.new_price}}</span></p>

@@ -5,6 +5,26 @@
 <title>addresses</title>
 <link rel="stylesheet" href="{% static 'css/new_css.css' %}">
 
+<style>
+    #showaddress input{
+        width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    }
+    .showaddress input{
+        width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    }
+</style>
 
 {% endblock title%}
 
@@ -66,7 +86,7 @@
     
                         <form action="{% url 'account:edit_address' address.uid %}" method="post" onsubmit="return edit_address_validate('{{address.uid}}')">
                             {% csrf_token %}
-                            <div class="d-flex flex-column m-3" id="edit_{{address.uid}}" style="display: none !important;">
+                            <div class="d-flex flex-column m-3 showaddress" id="edit_{{address.uid}}" style="display: none !important;">
                                 <div class="mb-2">
                                     <input type="text" name="name" value="{{address.name}}" id="edit_name_{{address.uid}}">
                                     <span id="edit_name_Error{{address.uid}}" class="error"></span>

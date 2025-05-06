@@ -56,9 +56,9 @@
                             <tr>
                                 <td width="40%">
                                     <a href="{% url 'adminpage:edit_user' profile.user.id %}" class="itemside">
-                                        <div class="left">
-                                            <img src="/media/{{profile.profile_image}}" class="img-sm img-avatar" alt="Userpic">
-                                        </div>
+                                        <!-- <div class="left">
+                                            <img src="{{profile.profile_image.url}}" class="img-sm img-avatar" alt="Userpic">
+                                        </div> -->
                                         <div class="info pl-3">
                                             <h6 class="mb-0 title">{{profile.user.username}}</h6>
                                             <small class="text-muted">{{profile.user.id}}</small>

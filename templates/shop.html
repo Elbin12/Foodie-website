@@ -79,24 +79,21 @@
                     {% for product in page.object_list %}
                     <div class="col-lg-4 col-md-6 col-sm-6" >
                         <div class="product__item">
-                            <div class="product__item__pic set-bg" >
+                            <div class="product__item__pic">
+                                {% if not product.is_listed %}
+                                <div class="badge-unavailable">Currently not available</div>
+                                {% endif %}
                                 <a href="{% url 'products:product' product.uid %}">
-                                    <img src="{{product.product_images.first.image.url}}" alt="">
+                                    <img src="{{ product.product_images.first.image.url }}" alt="{{ product.product_name }}">
                                 </a>
                             </div>
                             <div class="product__item__text">
-                                
-                                <h6><a href="{% url 'products:product' product.uid %}">{{product.product_name}}</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                    <i class="fa fa-star-o"></i>
-                                </div>
-                                <h5>₹{{product.price}}</h5>
+                                <h6>
+                                    <a href="{% url 'products:product' product.uid %}">{{ product.product_name }}</a>
+                                </h6>
+                                <h3>₹ {{ product.price }}</h3>
                             </div>
-                        </div>
+                        </div>                        
                     </div>
                     {% endfor %}
                 </div>

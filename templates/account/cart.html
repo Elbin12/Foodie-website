@@ -40,6 +40,9 @@
                               <div class="flex-column ms-4">
                                   <p class="mb-2">{{ product_info.product.product_name }}</p>
                                   <p style="color: rgb(205, 164, 113);" >{% for i in product_info.val.value.all %} {{i}} {% endfor %}</p>
+                                  {% if not product_info.is_available %}
+                                  <h4 >Currently not available</h4>
+                                  {% endif %}
                               </div>
                           </div>
                       </th>
@@ -80,6 +83,7 @@
               <p>Total Price: ₹ <span id="totalPrice">{{price}}</span></p>
               <!-- Checkout button -->
               <a href="{% url 'products:cart_checkout' %}"><button class="btn btn-primary btn-block mt-3" >Checkout</button></a>
+              <!-- <button onclick="productCheck()" class="btn btn-primary btn-block mt-3" >Checkout</button> -->
             </div>  
           </div>
         </div>
@@ -109,6 +113,46 @@
     }
 
     const csrftoken = getCookie('csrftoken');
+
+    function productCheck(){
+      fetch("/products/check/", {
+          method: 'get',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data, 'from cart checkout')
+        if (data.success) {
+          window.location.href = '/products/checkout/';
+        }else if (data.error) {
+          if (data.all_unavailable) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Unavailable',
+                    text: data.error,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Some Items Unavailable',
+                    text: data.error,
+                    showCancelButton: true,
+                    confirmButtonText: 'Continue to Checkout',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/products/checkout/';
+                    }
+                });
+            }
+        }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+    }
 
     function Up(uid) {
         var qtyInput = document.querySelector('input[name="qty"][data-uid="' + uid + '"]');

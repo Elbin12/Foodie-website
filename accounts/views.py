@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 
 
@@ -165,7 +165,8 @@ def verify(request):
         else:
             data={'fail':'Account not found'}
             return JsonResponse(data)    
-
+        
+@login_required(login_url='account:login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def add_to_cart(request):
     if request.method=='POST':
@@ -205,15 +206,17 @@ def add_to_cart(request):
             data={'fail':'Item not in stock'}
             return JsonResponse(data)
     
-
+@login_required(login_url='account:login')
 def cart(request):
     try:
         cart=Cart.objects.get(user=request.user)
         cart_items = cart.cart_items.select_related('product').order_by('product__product_name')
+        print(cart_items, 'cart items')
         products = [
-            {'product': item.product,'val':item.product_attribute, 'qty': item.qty, 'price':item.price}
+            {'product': item.product,'val':item.product_attribute, 'qty': item.qty, 'price':item.price, 'is_available':item.product.is_listed}
             for item in cart_items
         ]
+        print(products)
         for i in products:
             count=products.__len__()
         if not products:
@@ -310,7 +313,7 @@ def account(request):
         return redirect('account:account')
     return render(request, 'account/account.html',context)
 
-
+@login_required(login_url='account:login')
 def check_otp(request):
     if request.method=='POST':
         otp=json.loads(request.body)['otp']
@@ -320,7 +323,7 @@ def check_otp(request):
             data={'fail':'Wrong otp'}
         return JsonResponse(data)
 
-
+@login_required(login_url='account:login')
 def manage_addresses(request):
     addresses=Address.objects.filter(user=request.user).order_by('name')
     context={'addresses':addresses}
@@ -340,8 +343,13 @@ def manage_addresses(request):
         return redirect('account:addresses')
     return render(request, 'account/manage_addresses.html',context)
 
+@login_required(login_url='account:login')
 def edit_address(request,uid):
     if request.method=='POST':
+        address_instance=Address.objects.get(uid=uid)
+        if request.user.id != address_instance.user.id:
+            messages.error(request, "You are not authorized to edit this address.",extra_tags='auth')
+            return redirect('account:addresses')
         name=request.POST.get('name')
         mobile=request.POST.get('mobile')
         pincode=request.POST.get('pincode')
@@ -350,7 +358,6 @@ def edit_address(request,uid):
         city=request.POST.get('city')
         state=request.POST.get('state')
 
-        address_instance=Address.objects.get(uid=uid)
         address_instance.name=name 
         address_instance.mobile_number=mobile
         address_instance.pincode=pincode
@@ -361,7 +368,8 @@ def edit_address(request,uid):
         address_instance.save()
         
         return redirect('account:addresses')
-    
+
+@login_required(login_url='account:login')   
 def edit_address_from_checkout(request):
     if request.method=='POST':
         data=json.loads(request.body)
@@ -388,6 +396,7 @@ def edit_address_from_checkout(request):
         data={'success': 'Address edited successfully'}
         return JsonResponse(data)
 
+@login_required(login_url='account:login')
 def add_address_from_checkout(request):
     if request.method=='POST':
         data=json.loads(request.body)
@@ -405,7 +414,7 @@ def add_address_from_checkout(request):
         data={'success': 'Address added successfully'}
         return JsonResponse(data)
 
-
+@login_required(login_url='account:login')
 def delete_address(request):
     uid=json.loads(request.body)['uid']
     if request.method=='POST':
@@ -414,6 +423,7 @@ def delete_address(request):
         data={'success':'true'}
     return JsonResponse(data)
 
+@login_required(login_url='account:login')
 def my_orders(request):
     orders=Order.objects.filter(user=request.user).order_by('-created_at')
     ordered_items=[]
@@ -423,14 +433,20 @@ def my_orders(request):
     context={'orders':orders,'ordered_items':ordered_items}
     return render(request, 'account/my_orders.html', context)
 
-
+@login_required(login_url='account:login')
 def order_details(request, uid):
-    order=Order.objects.get(uid=uid)
+    try:
+        order=Order.objects.get(uid=uid)
+        if request.user.id != order.user.id:
+            messages.error(request, "You are not authorized to view this order.",extra_tags='auth')
+            return redirect('account:my_orders')
+    except Exception as e:
+        print(e)
     ordered_items=Ordered_item.objects.filter(order_id=order)
     context={'order':order, 'ordered_items':ordered_items}
     return render(request, 'account/order_details.html', context)
 
-
+@login_required(login_url='account:login')
 def cancel_request(request, uid):
     order=Order.objects.get(uid=uid)
     order.cancel_request=True
@@ -440,7 +456,7 @@ def cancel_request(request, uid):
 
 
 
-
+@login_required(login_url='account:login')
 def coupons(request):
     coupons = Coupon.objects.filter(is_expired=False)
     applied_coupons=Coupon.objects.filter(is_expired=True)
@@ -450,6 +466,7 @@ def coupons(request):
 
 razorpay_client=razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
+@login_required(login_url='account:login')
 def wallet(request):
     wallet=Wallet.objects.get(user=request.user)
     order=Order.objects.filter(user=request.user)
@@ -531,6 +548,7 @@ def wishlist(request):
     context = {'wishlist':w}
     return render(request, 'account/wishlist.html', context)
 
+@login_required(login_url='account:login')
 def add_to_wishlist(request,uid):
     product_attribute=ProductAttribute.objects.get(uid=uid)
     wishlist=get_object_or_404(Wishlist, user=request.user)
@@ -538,6 +556,7 @@ def add_to_wishlist(request,uid):
     wishlist.save()
     return redirect('account:wishlist')
 
+@login_required(login_url='account:login')
 def whishlist_delete(request, uid):
     product_attribute=ProductAttribute.objects.get(uid=uid)
     wishlist=get_object_or_404(Wishlist, user=request.user)

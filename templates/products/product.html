@@ -112,22 +112,6 @@
                     <h3 id="product_name">{{product.product_name}}</h3>
                     <input type="hidden" value="{{product.uid}}" id="product_uid">
                     <input type="hidden" value="{{pro_attrbute.uid}}" id="pro_attrbute_uid">
-                    <!-- <div class="rating d-flex">
-                        <p class="text-left mr-4">
-                            <a href="#" class="mr-2">5.0</a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        </p>
-                        <p class="text-left mr-4">
-                            <a href="#" class="mr-2" style="color: #000;">100 <span style="color: #bbb;">Rating</span></a>
-                        </p>
-                        <p class="text-left">
-                            <a href="#" class="mr-2" style="color: #000;">500 <span style="color: #bbb;">Sold</span></a>
-                        </p>
-                    </div> -->
                     <p class="price"><span id="product_price">₹ {{pro_attrbute.new_price}}</span></p>
                     <p id="product_description">{{product.product_description}}</p>
                     <div class="row mt-4">
@@ -160,13 +144,19 @@
                     </div>
                     <p>
                         {% if flat %}
+                        {% if product.is_listed %}
                         <a class="btn btn-black py-3 px-5 mx-2" onclick="add_to_cart('{{product.uid}}')">Add to Cart</a>
+                        {% else %}
+                        <a class="btn btn-black py-3 px-5 mx-2">Currently not available</a>
+                        {% endif %}
                         {% else %}
                         <a class="btn btn-black py-3 px-5 mx-2" onclick="notUser('Please Login to access cart')">Add to Cart</a>
                         {% endif %}
 
                         {% if flat %}
+                        {% if product.is_listed %}
                         <a href="{% url 'products:checkout' pro_attrbute.uid %}" id="buynowbtn" class="btn btn-primary py-3 px-5" >Buy now</a>
+                        {% endif %}
                         {% else %}
                         <a href="#"  class="btn btn-primary py-3 px-5" onclick="notUser('Please Login to Buy items')">Buy now</a>
                         {% endif %}

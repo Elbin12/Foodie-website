@@ -63,7 +63,7 @@ class Cart(BaseModel):
     total=models.IntegerField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        price=Cart_item.objects.filter(cart=self).aggregate(Sum('price'))['price__sum'] or 0
+        price=Cart_item.objects.filter(cart=self, product__is_listed=True).aggregate(Sum('price'))['price__sum'] or 0
         self.total=price
         super(Cart, self).save(*args, **kwargs)
 
