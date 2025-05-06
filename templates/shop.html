@@ -101,7 +101,7 @@
                     <div class="col-lg-10">
                         <div class="product__pagination">
                             {%if page.has_previous %} {# whether the previous page exists #}
-                                <a href="?page={{page.previous_page_number}}"><</a>
+                                <a href="?page={{page.previous_page_number}}"></a>
                             {% endif %}
                             {% for num_page in page.paginator.page_range %}
                             {% if page.number == num_page %}

@@ -42,14 +42,14 @@
       right: 0 !important;
       width: 100% !important;
       z-index: 9999 !important; /* Higher z-index to ensure it's above everything */
-      background-color: rgb(145, 30, 30) !important;
+      background-color: #9A0A09 !important;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
       transition: all 0.3s ease;
     }
 
     /* Extra specific selector to override any Bootstrap styles */
     .navbar.navbar-expand-lg.navbar-dark.custom-navbar.fixed-top {
-      background-color: rgb(145, 30, 30) !important;
+      background-color: #9A0A09 !important;
     }
 
     .navbar {
@@ -185,7 +185,7 @@
 
 {% block content %}
 <!-- Fixed navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top" id="ftco-navbar" style="background-color: rgb(145, 30, 30) !important; padding: 14px 0 14px 0;">
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top" id="ftco-navbar" style="background-color: #9A0A09 !important; padding: 14px 0 14px 0;">
   <div class="container">
     {% if 'account' in request.path and not 'cart' in request.path %}
     <button id="sidebar-toggle" style="border: none; background: none; cursor: pointer; color: #fff; display: none;">
@@ -203,7 +203,7 @@
     </button>
     {% endif %}
 
-    <a class="navbar-brand" href="{% url 'home:home' %}">Foodie</a>
+    <a class="navbar-brand" href="{% url 'home:home' %}"><h2>Foodie</h2></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

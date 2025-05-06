@@ -21,7 +21,7 @@ from functools import reduce
 
 
 def home(request):
-    products=Product.objects.filter(is_listed=True ,is_category_listed=True).order_by('product_name')
+    products=Product.objects.filter(is_listed=True ,is_category_listed=True).order_by('-created_at')[:4]
     # cart=Cart.objects.get(user=request.user)
     # cart_items=Cart_item.objects.get(cart=cart)
     # print(cart_items)

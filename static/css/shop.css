@@ -5,7 +5,6 @@ body {
 }
 
 h1,
-h2,
 h3,
 h4,
 h5,
@@ -18,10 +17,6 @@ h6 {
 
 h1 {
 	font-size: 70px;
-}
-
-h2 {
-	font-size: 36px;
 }
 
 h3 {
