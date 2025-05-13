@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseBadRequest
 
 
 
@@ -444,6 +444,21 @@ def order_details(request, uid):
         print(e)
     ordered_items=Ordered_item.objects.filter(order_id=order)
     context={'order':order, 'ordered_items':ordered_items}
+
+    payment = order.payment.first()  # Assuming OneToMany, take the latest or first payment
+    
+    if not payment.is_paid:
+        razorpay_order = razorpay_client.order.create({
+            "amount": int(payment.amount) * 100,  # amount in paise
+            "currency": "INR",
+            "payment_capture": "0"
+        })
+
+        context['amount'] = int(payment.amount)* 100
+        context['razorpay_order_id'] = razorpay_order['id']
+        context['razorpay_key_id'] = settings.RAZOR_KEY_ID
+        context['callback_url'] = f'{config('CALLBACK_URL')}/account/payment-success/{order.uid}/'
+
     return render(request, 'account/order_details.html', context)
 
 @login_required(login_url='account:login')
@@ -569,4 +584,64 @@ def invoice(request, uid):
     order=Order.objects.get(uid=uid)
     context={'order':order}
     return render(request, 'pdf.html', context)
+
     
+def retry_payment(request, order_uid):
+    order = get_object_or_404(Order, uid=order_uid)
+    payment = order.payment.first()  # Assuming OneToMany, take the latest or first payment
+
+    if payment.is_paid:
+        return redirect('account:order_success', order_uid=order.uid)
+
+    # If no Razorpay order ID exists or expired, create a new one
+    if not payment.razorpay_order_id:
+        razorpay_order = razorpay_client.order.create({
+            "amount": int(payment.amount) * 100,  # amount in paise
+            "currency": "INR",
+            "payment_capture": "1"
+        })
+
+        # Save new order ID to payment record
+        payment.razorpay_order_id = razorpay_order['id']
+        payment.save()
+
+    context = {
+        "order": order,
+        "payment": payment,
+        "razorpay_key_id": settings.RAZORPAY_KEY_ID,
+    }
+    return render(request, "account/retry_payment.html", context)
+
+@csrf_exempt
+def payment_success(request, order_uid):
+    try:
+        order = get_object_or_404(Order, uid=order_uid)
+        payment = order.payment.first()
+
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+
+        # Verify the signature
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+
+        if result:
+            # Save details
+            payment.razorpay_order_id = razorpay_order_id
+            payment.rarzorpay_payment_id = payment_id
+            payment.razorpay_payment_signature = signature
+            payment.payment_status = Payment.PaymentStatus.PAID
+            payment.is_paid = True
+            payment.save()
+
+            return redirect("products:order_success", order.uid)
+
+    except Exception as e:
+        print("Payment verification failed:", e)
+        return redirect('products:order_failed', order.uid)

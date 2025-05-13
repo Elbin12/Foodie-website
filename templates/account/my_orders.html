@@ -164,8 +164,15 @@ th {
                             <div class="qty">
                                 <h6 >{{ordered_item.qty}}</h6>
                             </div>
-                            <div class="status">
+                            <div class="status" style="display: flex; flex-direction: column; justify-content: center;">
                                 <h6>{{order.order_status}}</h6>
+                                {% with order.payment.first as payment  %}
+                                    {% if payment.payment_method == "Payment" %}
+                                        {% if not payment.is_paid %}
+                                            <h6 style="color: red;">Payment Failed</h6>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endwith %}
                             </div>
                         </div>
                         {% endfor %}

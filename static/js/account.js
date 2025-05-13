@@ -637,7 +637,15 @@ function sendOrderToServer(orderDetails, uid='') {
       },
       body: JSON.stringify(orderDetails),
   })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          // This ensures any 4xx or 5xx response triggers the catch block
+          return response.json().then(errData => {
+            throw new Error(errData.fail || 'Unknown error occurred');
+          });
+        }
+        return response.json();
+      })
       .then(data => {
           // Handle the server response as needed
           if ('url' in data){
@@ -683,7 +691,15 @@ function sendOrderToServer(orderDetails, uid='') {
       },
       body: JSON.stringify(orderDetails),
   })
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          // This ensures any 4xx or 5xx response triggers the catch block
+          return response.json().then(errData => {
+            throw new Error(errData.fail || 'Unknown error occurred');
+          });
+        }
+        return response.json();
+      })
       .then(data => {
           // Handle the server response as needed
           if ('url' in data){

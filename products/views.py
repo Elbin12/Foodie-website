@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from . models import *
 from accounts.models import *
 import json
@@ -19,8 +19,8 @@ from decouple import config
 
 # Create your views here.
 
-razorpay_client=razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
+razorpay_client=razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 def get_product(request,uid):
     flat=False
     if request.user.is_authenticated:
@@ -261,46 +261,19 @@ def checkout(request, uid=None):
                 else:
                     data={'expired':'Coupon expired'}
                     return JsonResponse(data)
-            if data['payment_method']=='Payment':
-                datas={'quantity':quantity,'sub_total':sub_total,'discount_price':discount_price, 'unit_price':unit_price,'name':name, 'mob':mob, 'address':address, 'product_uid':uid, 'discount':discount, 'user':user.id, 'payment_method':payment_method}
-                serialized_data = json.dumps(datas)
-                cache.set('data',serialized_data)
-                currency = 'INR'
-                amount = int(discount_price) * 100  
-
-                try:
-                    razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
-                    razorpay_order_id = razorpay_order['id']
-                    callback_url = config('CALLBACK_URL') + '/products/paymenthandler/' + str(amount/100)
-
-                    context = {
-                        'name': name,
-                        'mob': mob,
-                        'address': address,
-                        'total_amount': discount_price,
-                        'razorpay_order_id': razorpay_order_id,
-                        'razorpay_merchant_key': settings.RAZOR_KEY_ID,
-                        'razorpay_amount': amount,
-                        'currency': currency,
-                        'callback_url': callback_url,
-                    }
-
-                    return JsonResponse(context)
-                except Exception as e:
-                    print(e, 'eee prrro')
-                    return JsonResponse({'error': 'Internal Server Error'}, status=500)
-            elif data['payment_method']=='Wallet':
+            
+            if data['payment_method']=='Wallet':
                 try:
                     message=payment_with_wallet(request,data, uid, discount)
                     return JsonResponse({'url': config('CALLBACK_URL') + '/products/order_success/'+str(message['success'])})
                 except ValueError as e:
                     return JsonResponse({'fail': str(e)})
-                
             else:
                 order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total, payment_method=payment_method)
                 if discount:
                     order.coupon_discount=discount
                     order.save()
+
                 ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=quantity)
                 ordered_item.image=product
                 variants=[]
@@ -310,8 +283,38 @@ def checkout(request, uid=None):
                     
                 ordered_item.save()
 
+
+                if data['payment_method']=='Payment':
+                    Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.PAYMENT, is_paid=False, amount=discount_price)
+                    # datas={'quantity':quantity,'sub_total':sub_total,'discount_price':discount_price, 'unit_price':unit_price,'name':name, 'mob':mob, 'address':address, 'product_uid':uid, 'discount':discount, 'user':user.id, 'payment_method':payment_method}
+                    datas = {'order_id':str(order.uid)}
+                    serialized_data = json.dumps(datas)
+                    cache.set('data',serialized_data)
+                    currency = 'INR'
+                    amount = int(discount_price) * 100  
+
+                    try:
+                        razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
+                        razorpay_order_id = razorpay_order['id']
+                        callback_url = config('CALLBACK_URL') + '/products/paymenthandler/' + str(amount/100)
+
+                        context = {
+                            'name': name,
+                            'mob': mob,
+                            'address': address,
+                            'total_amount': discount_price,
+                            'razorpay_order_id': razorpay_order_id,
+                            'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+                            'razorpay_amount': amount,
+                            'currency': currency,
+                            'callback_url': callback_url,
+                        }
+
+                        return JsonResponse(context)
+                    except Exception as e:
+                        print(e, 'eee prrro')
+                        return JsonResponse({'error': 'Internal Server Error'}, status=500)
                 Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
-                
                 return JsonResponse({'url':'/products/order_success/'+str(order.uid)})
     else:
         print(config('CALLBACK_URL'), 'kkkfkfkf')
@@ -346,46 +349,14 @@ def checkout(request, uid=None):
                     data={'expired':'Coupon expired'}
                     return JsonResponse(data)
                 
-            if data['payment_method']=='Payment':
-                datas={'sub_total':sub_total,'discount_price':discount_price,'name':name, 'mob':mob, 'address':address, 'discount':discount, 'user':user.id, 'payment_method':payment_method, 'available_items':[str(item.uid) for item in cart_items]}
-                serialized_data = json.dumps(datas)
-                cache.set('data',serialized_data)
-                currency = 'INR'
-                amount = int(discount_price) * 100  
-
-                try:
-                    razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
-                    razorpay_order_id = razorpay_order['id']
-                    callback_url = config('CALLBACK_URL') + '/products/paymenthandler/' + str(amount/100)
-
-                    context = {
-                        'name': name,
-                        'mob': mob,
-                        'address': address,
-                        'total_amount': discount_price,
-                        'razorpay_order_id': razorpay_order_id,
-                        'razorpay_merchant_key': settings.RAZOR_KEY_ID,
-                        'razorpay_amount': amount,
-                        'currency': currency,
-                        'callback_url': callback_url,
-                    }
-
-                    return JsonResponse(context)
-                except Exception as e:
-                    return JsonResponse({'error': 'Internal Server Error'}, status=500)
-                
-            elif data['payment_method']=='Wallet':
+            if data['payment_method']=='Wallet':
                 try:
                     message=payment_with_wallet(request,data, uid, discount)
                     return JsonResponse({'url':'/products/order_success/'+str(message['success'])})
                 except ValueError as e:
                     return JsonResponse({'fail': str(e)})
-
             else:
                 order=Order.objects.create(user=user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total,payment_method=payment_method)
-                if discount:
-                    order.coupon_discount=discount
-                    order.save()
                 for item in cart_items:
                     product_attribute=ProductAttribute.objects.get(uid=item.product_attribute.uid)
                     product=Product.objects.get(uid=item.product.uid)
@@ -398,6 +369,39 @@ def checkout(request, uid=None):
                     ordered_item.save()
                 cart_items.delete()
                 cart.save()
+                if discount:
+                    order.coupon_discount=discount
+                    order.save()
+                
+                if data['payment_method']=='Payment':
+                    Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.PAYMENT, is_paid=False, amount=discount_price)
+                    datas={'order_id':str(order.uid)}
+                    serialized_data = json.dumps(datas)
+                    cache.set('data',serialized_data)
+                    currency = 'INR'
+                    amount = int(discount_price) * 100  
+
+                    try:
+                        razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='0'))
+                        razorpay_order_id = razorpay_order['id']
+                        callback_url = config('CALLBACK_URL') + '/products/paymenthandler/' + str(amount/100)
+
+                        context = {
+                            'name': name,
+                            'mob': mob,
+                            'address': address,
+                            'total_amount': discount_price,
+                            'razorpay_order_id': razorpay_order_id,
+                            'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+                            'razorpay_amount': amount,
+                            'currency': currency,
+                            'callback_url': callback_url,
+                        }
+
+                        return JsonResponse(context)
+                    except Exception as e:
+                        return JsonResponse({'error': 'Internal Server Error'}, status=500)
+                    
                 Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.COD, is_paid=False, amount=discount_price)
                 return JsonResponse({'url':'/products/order_success/'+str(order.uid)})
         
@@ -408,11 +412,14 @@ def checkout(request, uid=None):
 def paymenthandler(request, amount):
 
     serialized_data = cache.get('data')
+    data = json.loads(serialized_data)
+    print(data, 'dataa')
+    order_id=data['order_id']
+    order = get_object_or_404(Order, uid=UUID(order_id))
  
     # only accept POST request.
     if request.method == "POST":
         try:
-           
             # get the required parameters from post request.
             payment_id = request.POST.get('razorpay_payment_id', '')
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
@@ -428,89 +435,36 @@ def paymenthandler(request, amount):
                 params_dict)
             if result is not None:
                 try: 
+                    print('hi from try of result', result)
                     amount = int(Decimal(amount) * 100)
                     # capture the payemt
-                    if serialized_data is not None:
-                        if 'product_uid' in serialized_data:
-                            data = json.loads(serialized_data)
-                            quantity=data['quantity']
-                            sub_total=data['sub_total']
-                            unit_price=data['unit_price']
-                            name=data['name']
-                            mob=data['mob']
-                            address=data['address']
-                            product_uid=data['product_uid']
-                            discount=data['discount']
-                            discount_price=data['discount_price']
-                            user=data['user']
-                            payment_method=data['payment_method']
-
-                            product_attribute=ProductAttribute.objects.get(uid=product_uid)
-
-                            order_user=User.objects.get(id=user)
-                            order=Order.objects.create(user=order_user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total, payment_method=payment_method)
-                            if discount:
-                                order.coupon_discount=discount
-                                order.save()
-                            ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product_attribute.product.product_name, unit_price=unit_price,qty=quantity)
-                            ordered_item.image=product_attribute.product
-                            variants=[]
-                            for i in product_attribute.value.all():
-                                variants.append(i.value)
-                            ordered_item.product_variants=variants
-                            ordered_item.save()
-                
-                        else:
-                            data = json.loads(serialized_data)
-                            sub_total=data['sub_total']
-                            name=data['name']
-                            mob=data['mob']
-                            address=data['address']
-                            discount=data['discount']
-                            discount_price=data['discount_price']
-                            user=data['user']
-                            payment_method=data['payment_method']
-                            available_item_ids = [UUID(uid_str) for uid_str in data['available_items']]
-
-                            order_user=User.objects.get(id=user)
-                            cart=Cart.objects.get(user=order_user)
-                            cart_items=Cart_item.objects.filter(uid__in=available_item_ids)
-
-                            order=Order.objects.create(user=order_user,name=name, mob=mob, address=address, total_amount=discount_price, subtotal=sub_total,payment_method=payment_method)
-
-                            if discount:
-                                order.coupon_discount=discount
-                                order.save()
-
-                            for item in cart_items:
-                                product_attribute=ProductAttribute.objects.get(uid=item.product_attribute.uid)
-                                product=Product.objects.get(uid=item.product.uid)
-
-                                ordered_item = Ordered_item.objects.create(order_id=order,ordered_product_name=product.product_name,unit_price=product_attribute.new_price, qty=item.qty)
-                                ordered_item.image=product
-                                variants=[]
-                                for i in product_attribute.value.all():
-                                    variants.append(i.value)
-                                ordered_item.product_variants=variants
-                                ordered_item.save()
-
-                            cart_items.delete()
-                            cart.save()
-
-                    Payment.objects.create(order=order, payment_method=Payment.PaymentMethod.PAYMENT, is_paid=True,payment_status=Payment.PaymentStatus.PAID, razorpay_order_id=razorpay_order_id, rarzorpay_payment_id=payment_id, razorpay_payment_signature=signature, amount=discount_price)
+                    payment = order.payment.first()
+                    if payment:
+                        payment.is_paid = True
+                        payment.razorpay_order_id = razorpay_order_id
+                        payment.razorpay_payment_id = payment_id
+                        payment.razorpay_payment_signature = signature
+                        payment.payment_status = Payment.PaymentStatus.PAID
+                        payment.save()
+                    
                     razorpay_client.payment.capture(payment_id, amount)
 
                     return redirect('products:order_success',order.uid)
-                except:
+                except Exception as e:
+                    print(e, 'eeee')
                     return render(request, 'paymentfail.html')
             else:
                 return render(request, 'paymentfail.html')
-        except:
-            return redirect('products:cart_checkout')
+        except Exception as e:
+            print(e, 'errror')
+            return redirect('products:order_failed', order.uid)
     else:
         return redirect('account:login')
 
-
+def order_failed(request, uid):
+    order=Order.objects.get(uid=uid)
+    context={'order':order}
+    return render(request, 'products/payment_fail.html', context)
 
 
 def order_success(request, uid):
